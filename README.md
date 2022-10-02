@@ -2,6 +2,8 @@
 
 Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
+![20221002_18h39m59s_grim](https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg)
+
 - Search your bibliography with [telescope](https://github.com/nvim-telescope/telescope.nvim)
 - Get information about the entry behind the citation key under the cursor
 - Automatically format new notes
@@ -19,6 +21,8 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 ### 'search' module
 
+![search (trimmed)](https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif)
+
 Papis.nvim integrates with telescope to easily and quickly search one's bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
 Commands:
@@ -31,9 +35,13 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 
 ### 'completion' module
 
+![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
+
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [cmp](https://github.com/hrsh7th/nvim-cmp) source.
 
 ### 'cursor-actions' module
+
+![cursor-actions (trimmed)](https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif)
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
 
@@ -44,6 +52,8 @@ Commands:
 - `:PapisEditEntry`: Opens the `info.yaml` file
 
 ### 'formatter' module
+
+![formatter_trimmed](https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif)
 
 When creating new notes (via `:Telescope papis` or `:PapisOpenNote`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `.norg` format.
 
