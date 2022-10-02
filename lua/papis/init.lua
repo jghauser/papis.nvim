@@ -17,7 +17,6 @@ local function make_start_autocmd()
 		pattern = config["init_filenames"],
 		callback = require("papis").start,
 		group = load_papis,
-		once = true,
 		desc = "Load papis.nvim for defined filenames",
 	})
 end
@@ -52,6 +51,9 @@ function M.start()
 
 	-- delete command that starts papis
 	vim.api.nvim_del_user_command("PapisStart")
+
+	-- delete autocmd that starts papis
+	vim.api.nvim_del_augroup_by_name("loadPapis")
 
 	-- require what's necessary within `M.start()` instead of globally to allow lazy-loading
 	local db = require("papis.sqlite-wrapper")
