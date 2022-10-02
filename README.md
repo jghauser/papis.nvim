@@ -341,7 +341,7 @@ By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, h
 - `<leader>po` (normal): Open file under cursor
 - `<leader>pe` (normal): Edit entry under cursor
 - `<leader>pn` (normal): Open note under cursor
-- `K` (normal): Show entry info popup
+- `<leader>pi` (normal): Show entry info popup
 
 ## Highlights
 

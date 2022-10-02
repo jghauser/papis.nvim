@@ -56,7 +56,7 @@ local keybinds = {
 		},
 		show_popup = {
 			mode = "n",
-			lhs = "K",
+			lhs = "<leader>pi",
 			rhs = function()
 				return require("papis.cursor-actions").show_popup()
 			end,
@@ -72,7 +72,6 @@ function M.setup()
 			for _, keybind in pairs(module_keybinds) do
 				local opts = vim.deepcopy(keybind["opts"])
 				opts["silent"] = true
-				opts["buffer"] = 0
 				vim.keymap.set(keybind["mode"], keybind["lhs"], keybind["rhs"], opts)
 			end
 		end

@@ -8,18 +8,7 @@
 local config = require("papis.config")
 local api = vim.api
 
----Creates the `autocmd` that creates a `PapisStart` command in every newly opened buffer
-local function make_papis_start()
-	local load_papis = api.nvim_create_augroup("makePapisStart", { clear = true })
-	api.nvim_create_autocmd("BufEnter", {
-		pattern = "*",
-		callback = function()
-			require("papis.commands").setup("init")
-		end,
-		group = load_papis,
-		desc = "Create the PapisStart command",
-	})
-end
+local log
 
 ---Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
 local function make_start_autocmd()
@@ -28,6 +17,7 @@ local function make_start_autocmd()
 		pattern = config["init_filenames"],
 		callback = require("papis").start,
 		group = load_papis,
+		once = true,
 		desc = "Load papis.nvim for defined filenames",
 	})
 end
@@ -41,7 +31,7 @@ function M.setup(opts)
 	-- update config with user config
 	config:update(opts)
 
-	local log = require("papis.logger")
+	log = require("papis.logger")
 
 	if not require("papis.utils").is_executable("papis") then
 		log:error("The command 'papis' could not be found. Papis must be installed to run papis.nvim")
@@ -50,18 +40,18 @@ function M.setup(opts)
 
 	log:debug("_________________________SETTING UP PAPIS.NVIM_________________________")
 	log:debug("Creating `PapisStart` command")
-	make_papis_start()
+	require("papis.commands").setup("init")
+	-- make_papis_start()
 	log:debug("Creating autocmds to lazily load papis.nvim")
 	make_start_autocmd()
 end
 
 ---This function starts all of papis.nvim.
 function M.start()
-	-- delete autocmd and command that start papis
-	vim.api.nvim_buf_del_user_command(0, "PapisStart")
-
-	local log = require("papis.logger")
 	log:debug("Starting papis.nvim")
+
+	-- delete command that starts papis
+	vim.api.nvim_del_user_command("PapisStart")
 
 	-- require what's necessary within `M.start()` instead of globally to allow lazy-loading
 	local db = require("papis.sqlite-wrapper")
@@ -90,11 +80,11 @@ function M.start()
 		end
 	end
 
+	log:debug("Setting up commands and keymaps")
 	-- setup commands
 	if config["enable_commands"] then
 		require("papis.commands").setup()
 	end
-
 	-- setup keymaps
 	if config["enable_keymaps"] then
 		require("papis.keymaps").setup()

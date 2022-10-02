@@ -90,13 +90,13 @@ function M.setup(module)
 		for module_name, module_commands in pairs(commands) do
 			if config["enable_modules"][module_name] then
 				for _, command in pairs(module_commands) do
-					vim.api.nvim_buf_create_user_command(0, command["name"], command["command"], command["opts"])
+					vim.api.nvim_create_user_command(command["name"], command["command"], command["opts"])
 				end
 			end
 		end
 	else
 		for _, command in pairs(commands[module]) do
-			vim.api.nvim_buf_create_user_command(0, command["name"], command["command"], command["opts"])
+			vim.api.nvim_create_user_command(command["name"], command["command"], command["opts"])
 		end
 	end
 end
