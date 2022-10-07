@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 02
+*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 07
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -21,6 +21,11 @@ Papis.nvim is a neovim <https://github.com/neovim/neovim> companion plugin for
 the bibliography manager papis <https://github.com/papis/papis>. It’s meant
 for all those who do academic and other writing in neovim and who want quick
 access to their bibliography from within the comfort of their editor.
+
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg" title="fig:"/>
+<p class="caption">20221002_18h39m59s_grim</p>
+</div>
 
 
 - Search your bibliography with telescope <https://github.com/nvim-telescope/telescope.nvim>
@@ -56,6 +61,11 @@ These can be (de)activated as desired.
 
 'SEARCH' MODULE ~
 
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif" title="fig:"/>
+<p class="caption">search (trimmed)</p>
+</div>
+
 Papis.nvim integrates with telescope to easily and quickly search one’s
 bibliography. Open the picker and enter the title (or author, year, etc.) of
 the article you’re looking for. Once you’ve found it, you can insert a
@@ -73,11 +83,21 @@ the `info.yaml` file
 
 'COMPLETION' MODULE ~
 
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif" title="fig:"/>
+<p class="caption">completion (trimmed)</p>
+</div>
+
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in
 the database. This module is implemented as a cmp
 <https://github.com/hrsh7th/nvim-cmp> source.
 
 'CURSOR-ACTIONS' MODULE ~
+
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif" title="fig:"/>
+<p class="caption">cursor-actions (trimmed)</p>
+</div>
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
 papis.nvim allows you to interact with the bibliography item referenced by it.
@@ -88,6 +108,11 @@ the entry - `:PapisOpenFile`: Opens files attached to the entry -
 new one if none exist) - `:PapisEditEntry`: Opens the `info.yaml` file
 
 'FORMATTER' MODULE ~
+
+<div class="figure">
+<img src="https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif" title="fig:"/>
+<p class="caption">formatter_trimmed</p>
+</div>
 
 When creating new notes (via `:Telescope papis` or `:PapisOpenNote`),
 papis.nvim can be set up to format the new note with a custom function. You
