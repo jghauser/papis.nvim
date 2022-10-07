@@ -70,6 +70,7 @@ end
 
 M = sqlite({
 	uri = db_uri:absolute(),
+	opts = { busy_timeout = 30000 },
 })
 
 -- the main data table
