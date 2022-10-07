@@ -37,8 +37,8 @@ access to their bibliography from within the comfort of their editor.
 And this is just the beginning! With its fast and always up-to-date sqlite
 database (courtesy of sqlite.lua <https://github.com/tami5/sqlite.lua>), a host
 of |papis-additional-features| are just waiting to be implemented. My hope is
-for this plugin to eventually become neovim’s answer to emacs’ plugins such
-as org-ref <https://github.com/jkitchin/org-ref>, helm-bibtex
+for this plugin to eventually become neovim’s answer to emacs plugins such as
+org-ref <https://github.com/jkitchin/org-ref>, helm-bibtex
 <https://github.com/tmalsburg/helm-bibtex>, and citar
 <https://github.com/emacs-citar/citar>.
 
