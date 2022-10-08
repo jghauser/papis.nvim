@@ -8,6 +8,7 @@ Table of Contents                                    *papis-table-of-contents*
   - The database                                          |papis-the-database|
   - Installation                                          |papis-installation|
   - Setup                                                        |papis-setup|
+  - Usage                                                        |papis-usage|
   - Keymaps                                                    |papis-keymaps|
   - Highlights                                              |papis-highlights|
   - Issues/Troubleshooting                      |papis-issues/troubleshooting|
@@ -432,6 +433,13 @@ disabling treesitter indenting for this filetype.
     })
 <
 
+
+USAGE                                                            *papis-usage*
+
+Papis will start automatically according to the filename patterns defined in
+`init_filenames` (see the |papis-setup-section|. Additionally, it can also be
+started with `:PapisStart`. The rest of the functionality is covered
+|papis-above|.
 
 KEYMAPS                                                        *papis-keymaps*
 
