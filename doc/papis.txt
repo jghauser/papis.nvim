@@ -437,9 +437,9 @@ disabling treesitter indenting for this filetype.
 USAGE                                                            *papis-usage*
 
 Papis will start automatically according to the filename patterns defined in
-`init_filenames` (see the |papis-setup-section|. Additionally, it can also be
-started with `:PapisStart`. The rest of the functionality is covered
-|papis-above|.
+`init_filenames` (see the |papis-setup-section|). Additionally, it can also be
+started with `:PapisStart`. The rest of the functionality is covered in the
+|papis-features-section|.
 
 KEYMAPS                                                        *papis-keymaps*
 
