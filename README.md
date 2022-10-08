@@ -345,7 +345,7 @@ require("nvim-treesitter.configs").setup({
 
 ## Usage
 
-Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup) . Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered [above](#features).
+Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
 
 ## Keymaps
 
