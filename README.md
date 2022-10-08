@@ -121,7 +121,7 @@ Full list of configuration options (with defaults):
 ```lua
 -- List of enabled papis.nvim modules.
 enable_modules = {
-  ["search"] = true,           -- Enables/disables the search module
+  ["search"] = true,          -- Enables/disables the search module
   ["completion"] = true,      -- Enables/disables the completion module
   ["cursor-actions"] = true,  -- Enables/disables the cursor-actions module
   ["formatter"] = true,       -- Enables/disables the formatter module
