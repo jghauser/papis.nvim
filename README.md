@@ -69,7 +69,7 @@ With packer:
 
 ```lua
 use({
-  "~/Documents/coding/neovim_plugins/papis.nvim",
+  "jghauser/papis.nvim",
   after = { "telescope.nvim", "nvim-cmp" },
   requires = {
     "kkharji/sqlite.lua",
