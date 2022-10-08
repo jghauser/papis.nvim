@@ -343,6 +343,10 @@ require("nvim-treesitter.configs").setup({
 })
 ```
 
+## Usage
+
+Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup) . Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered [above](#features).
+
 ## Keymaps
 
 By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
