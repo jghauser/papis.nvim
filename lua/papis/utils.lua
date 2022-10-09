@@ -34,17 +34,6 @@ function M.get_cite_format(filetype)
 	return cite_format
 end
 
----Checks if a given executable exists
----@param cmd string #The name of the executable
----@return boolean #True if executable, false if not
-function M.is_executable(cmd)
-	local is_executable = false
-	if cmd and vim.fn.executable(cmd) == 1 then
-		is_executable = true
-	end
-	return is_executable
-end
-
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
 ---@param sep string #String giving each character by witch to split
