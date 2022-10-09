@@ -77,7 +77,15 @@ use({
     "MunifTanjim/nui.nvim",
     "nvim-treesitter/nvim-treesitter",
   },
-  rocks = { "lyaml" },
+  rocks = {
+    {
+      "lyaml" 
+      -- If using macOS or Linux, you may need to install the `libyaml` package.
+      -- If you install libyaml with homebrew you will need to set the YAML_DIR
+      -- to the location of the homebrew installation of libyaml e.g.
+      -- env = { YAML_DIR = '/opt/homebrew/Cellar/libyaml/0.2.5/' },
+    }
+  },
   config = function()
     require("papis").setup(
     -- Your configuration goes here
