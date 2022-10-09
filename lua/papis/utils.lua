@@ -29,7 +29,7 @@ function M.get_cite_format(filetype)
 	local config = require("papis.config")
 	local cite_formats = config["cite_formats"]
 	local cite_formats_fallback = config["cite_formats_fallback"]
-	local cite_format = cite_formats[filetype] or cite_formats_fallback
+	local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
 
 	return cite_format
 end
