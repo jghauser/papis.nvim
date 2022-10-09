@@ -36,7 +36,7 @@ end
 
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
----@param sep string #String giving each character by witch to split
+---@param sep? string #String giving each character by witch to split
 ---@return table #List of split elements
 function M.do_split_str(inputstr, sep)
 	if sep == nil then
