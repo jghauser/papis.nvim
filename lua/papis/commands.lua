@@ -53,28 +53,28 @@ local commands = {
 		open_file = {
 			name = "PapisOpenFile",
 			command = function()
-				return require("papis").open_file()
+				return require("papis.cursor-actions").open_file()
 			end,
 			opts = { desc = "Papis: open the files attached to entry under cursor" },
 		},
 		open_note = {
 			name = "PapisOpenNote",
 			command = function()
-				return require("papis").open_note()
+				return require("papis.cursor-actions").open_note()
 			end,
 			opts = { desc = "Papis: open the note of the entry under cursor" },
 		},
 		edit_entry = {
 			name = "PapisEditEntry",
 			command = function()
-				return require("papis").edit_entry()
+				return require("papis.cursor-actions").edit_entry()
 			end,
 			opts = { desc = "Papis: edit the entry under cursor" },
 		},
 		show_popup = {
 			name = "PapisShowPopup",
 			command = function()
-				return require("papis").show_popup()
+				return require("papis.cursor-actions").show_popup()
 			end,
 			opts = { desc = "Papis: show popup of the entry under cursor" },
 		},
