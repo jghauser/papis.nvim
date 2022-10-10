@@ -175,12 +175,15 @@ local function start_fs_watch_active_timer()
 		0,
 		10000,
 		vim.schedule_wrap(function()
-			if not does_pid_exist(db.state:get_fw_running()) then
-				log:debug("Taking over file system watching duties")
-				data:sync_db()
-				start_fs_watchers()
-				log:debug("Start autocmd lo unset db state if this instance stops fs watchers")
-				init_autocmd()
+			local ok, fw_running = pcall(db.state.get_fw_running, db.state)
+			if ok then
+				if not fw_running then
+					log:debug("taking over file system watching duties")
+					data:sync_db()
+					start_fs_watchers()
+					log:debug("start autocmd lo unset db state if this instance stops fs watchers")
+					init_autocmd()
+				end
 			end
 		end)
 	)
