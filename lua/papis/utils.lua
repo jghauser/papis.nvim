@@ -29,25 +29,14 @@ function M.get_cite_format(filetype)
 	local config = require("papis.config")
 	local cite_formats = config["cite_formats"]
 	local cite_formats_fallback = config["cite_formats_fallback"]
-	local cite_format = cite_formats[filetype] or cite_formats_fallback
+	local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
 
 	return cite_format
 end
 
----Checks if a given executable exists
----@param cmd string #The name of the executable
----@return boolean #True if executable, false if not
-function M.is_executable(cmd)
-	local is_executable = false
-	if cmd and vim.fn.executable(cmd) == 1 then
-		is_executable = true
-	end
-	return is_executable
-end
-
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
----@param sep string #String giving each character by witch to split
+---@param sep? string #String giving each character by witch to split
 ---@return table #List of split elements
 function M.do_split_str(inputstr, sep)
 	if sep == nil then

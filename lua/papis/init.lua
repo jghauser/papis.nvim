@@ -32,7 +32,7 @@ function M.setup(opts)
 
 	log = require("papis.logger")
 
-	if not require("papis.utils").is_executable("papis") then
+	if not vim.fn.executable("papis") then
 		log:error("The command 'papis' could not be found. Papis must be installed to run papis.nvim")
 		return nil
 	end

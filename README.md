@@ -69,7 +69,7 @@ With packer:
 
 ```lua
 use({
-  "~/Documents/coding/neovim_plugins/papis.nvim",
+  "jghauser/papis.nvim",
   after = { "telescope.nvim", "nvim-cmp" },
   requires = {
     "kkharji/sqlite.lua",
@@ -77,7 +77,15 @@ use({
     "MunifTanjim/nui.nvim",
     "nvim-treesitter/nvim-treesitter",
   },
-  rocks = { "lyaml" },
+  rocks = {
+    {
+      "lyaml" 
+      -- If using macOS or Linux, you may need to install the `libyaml` package.
+      -- If you install libyaml with homebrew you will need to set the YAML_DIR
+      -- to the location of the homebrew installation of libyaml e.g.
+      -- env = { YAML_DIR = '/opt/homebrew/Cellar/libyaml/0.2.5/' },
+    }
+  },
   config = function()
     require("papis").setup(
     -- Your configuration goes here
@@ -88,7 +96,7 @@ use({
 
 *Papis version*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff9913f8b32b9ed898f0487e730d15bd02b0a`).
 
-*Neovim version*: papis.nvim has only been tested with neovim nightly, but should also work with the latest stable version.
+*Neovim version*: papis.nvim is being tested on the latest stable version.
 
 *Operating system*: papis.nvim has only been tested on Linux -- but will hopefully also work on other operating systems (if you run into problems, please open an issue).
 
@@ -121,7 +129,7 @@ Full list of configuration options (with defaults):
 ```lua
 -- List of enabled papis.nvim modules.
 enable_modules = {
-  ["search"] = true           -- Enables/disables the search module
+  ["search"] = true,          -- Enables/disables the search module
   ["completion"] = true,      -- Enables/disables the completion module
   ["cursor-actions"] = true,  -- Enables/disables the cursor-actions module
   ["formatter"] = true,       -- Enables/disables the formatter module
@@ -216,7 +224,7 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
   --      formatting of the key and its highlight group. The key is shown *before*
   --      the value in the preview (even though it is defined after it in this
   --      configuration (e.g. `title = Critique of Pure Reason`)).
-  -- `empty_line` is used to inserts an empty line
+  -- `empty_line` is used to insert an empty line
   preview_format = {
     { "author", "%s", "papispreviewauthor" },
     { "year", "%s", "PapisPreviewYear" },
@@ -343,6 +351,10 @@ require("nvim-treesitter.configs").setup({
 })
 ```
 
+## Usage
+
+Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
+
 ## Keymaps
 
 By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
@@ -371,6 +383,20 @@ Papis.nvim defines and links the following default highlight groups:
 
 In order to change the colours, simply override them with whatever you desire.
 
+## Issues/Troubleshooting
+
+You can use `:checkhealth papis` for some basic troubleshooting. In addition, you can enable the `debug` module, which exposes the following commands and a log:
+
+- `PapisDebugGetLogPath`: Get the path to the log file
+- `PapisDebugFWStop`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
+- `PapisDebugFWStart`: Starts file watching for the current neovim instance
+
+Please open an issue when you find bugs!
+
+## Contributing
+
+I am quite new to programming and there's a million things that I want to improve and probably another million things that I *should* improve but don't yet know about. I'm more than happy about any contributions, ideas for improvements, ideas for new features, bug reports, and so on. If you have a cool idea for a new functionality you want to implement, I'd be happy to guide you through the process of creating a new module. PRs should be formatted with stylua and have emmydoc comments.
+
 ## Planned features and improvements
 
 I'm open to suggestions and PRs. Here are some things I've thought of:
@@ -386,17 +412,3 @@ I'm open to suggestions and PRs. Here are some things I've thought of:
 - [ ] insert formatted references and bibliographies (using .csl)
 - [ ] tests
 - [ ] make more modular
-
-## Issues/Troubleshooting
-
-You can use `:checkhealth papis` for some basic troubleshooting. In addition, you can enable the `debug` module, which exposes the following commands and a log:
-
-- `PapisDebugGetLogPath`: Get the path to the log file
-- `PapisDebugFWStop`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
-- `PapisDebugFWStart`: Starts file watching for the current neovim instance
-
-Please open an issue when you find bugs!
-
-## Contributing
-
-I am quite new to programming and there's a million things that I want to improve and probably another million things that I *should* improve but don't yet know about. I'm more than happy about any contributions, ideas for improvements, ideas for new features, bug reports, and so on. If you have a cool idea for a new functionality you want to implement, I'd be happy to guide you through the process of creating a new module. PRs should be formatted with stylua and have emmydoc comments.
