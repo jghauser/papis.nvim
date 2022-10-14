@@ -149,7 +149,7 @@ enable_modules = {
 -- module). This enables handling cases where there are multiple valid citation
 -- formats for a filetype.
 cite_formats = {
-	tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
+  tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
   markdown = "@%s",
   rmd = "@%s",
   plain = "%s",
