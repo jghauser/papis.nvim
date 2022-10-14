@@ -26,10 +26,7 @@ local hover_required_db_keys = utils:get_required_db_keys({ popup_format })
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref
 local function get_ref_under_cursor()
 	local ref
-	local save_iskeyword = opt.iskeyword:get()
-	opt.iskeyword = { ",", ".", "!", "?", ":", ";", "'" }
 	local word_under_cursor = fn.expand("<cWORD>") .. "\n"
-	opt.iskeyword = save_iskeyword
 	local filetype = vim.bo.filetype
 	log:debug("The filetype is: " .. filetype)
 	local cite_format = utils.get_cite_format(filetype)
@@ -40,7 +37,7 @@ local function get_ref_under_cursor()
 	local _, ref_start = string.find(word_under_cursor, cite_format_prefix)
 	if ref_start then
 		ref_start = ref_start + 1
-		local ref_end = string.find(word_under_cursor, "[%s},%];\n]", ref_start)
+		local ref_end = string.find(word_under_cursor, "[:%.]*[%s},%];\n]", ref_start)
 		ref_end = ref_end - 1
 		ref = string.sub(word_under_cursor, ref_start, ref_end)
 	end
