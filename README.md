@@ -145,10 +145,8 @@ enable_modules = {
 -- filetypes. `%s` is replaced with the citation key.
 cite_formats = {
   tex = "\\cite{%s}",
-  md = "@%s",
   markdown = "@%s",
   rmd = "@%s",
-  pandoc = "@%s",
   plain = "%s",
   org = "[cite:@%s]",
 },

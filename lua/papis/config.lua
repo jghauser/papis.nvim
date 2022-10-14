@@ -41,10 +41,8 @@ local default_config = {
 	}, -- can be set to nil or false or left out
 	cite_formats = {
 		tex = "\\cite{%s}",
-		md = "@%s",
 		markdown = "@%s",
 		rmd = "@%s",
-		pandoc = "@%s",
 		plain = "%s",
 		org = "[cite:@%s]",
 	},
