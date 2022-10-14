@@ -144,8 +144,12 @@ enable_modules = {
 -- Defines citation formats for various filetypes. `%s` stands for replaced with
 -- the citation key. Make sure to escape lua's magic characters with `%` 
 -- (https://www.lua.org/pil/20.2.html) and write `\` as `\\`.
+-- When the value is a table, then the first pattern is used to insert citations,
+-- whereas the second will be used to find references (e.g. by the `cursor-action`
+-- module). This enables handling cases where there are multiple valid citation
+-- formats for a filetype.
 cite_formats = {
-  tex = "\\cite{%s}",
+	tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
   markdown = "@%s",
   rmd = "@%s",
   plain = "%s",

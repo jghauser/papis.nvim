@@ -30,6 +30,9 @@ local function get_ref_under_cursor()
 	local filetype = vim.bo.filetype
 	log:debug("The filetype is: " .. filetype)
 	local cite_format = utils.get_cite_format(filetype)
+	if type(cite_format) == "table" then
+		cite_format = cite_format[2]
+	end
 	log:debug("The cite_format is: " .. cite_format)
 	local _, prefix_end = string.find(cite_format, "%%s")
 	prefix_end = prefix_end - 2

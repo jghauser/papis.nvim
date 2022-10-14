@@ -40,7 +40,7 @@ local default_config = {
 		["debug"] = false,
 	}, -- can be set to nil or false or left out
 	cite_formats = {
-		tex = "\\cite{%s}",
+		tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
 		markdown = "@%s",
 		rmd = "@%s",
 		plain = "%s",
