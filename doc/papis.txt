@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 10
+*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 14
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -226,16 +226,19 @@ Full list of configuration options (with defaults):
                                   -- troubleshoot and diagnose issues)
     },
     
-    -- Defines citation formats (used when inserting citation keys) for various
-    -- filetypes. `%s` is replaced with the citation key.
+    -- Defines citation formats for various filetypes. `%s` stands for replaced with
+    -- the citation key. Make sure to escape lua's magic characters with `%` 
+    -- (https://www.lua.org/pil/20.2.html) and write `\` as `\\`.
+    -- When the value is a table, then the first pattern is used to insert citations,
+    -- whereas the second will be used to find references (e.g. by the `cursor-action`
+    -- module). This enables handling cases where there are multiple valid citation
+    -- formats for a filetype.
     cite_formats = {
-      tex = "\\cite{%s}",
-      md = "@%s",
+      tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
       markdown = "@%s",
       rmd = "@%s",
-      pandoc = "@%s",
       plain = "%s",
-      org = "[cite:@%s]",
+      org = "%[cite:@%s]",
     },
     
     -- What citation format to use when none is defined for the current filetype.
