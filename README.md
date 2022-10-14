@@ -153,7 +153,7 @@ cite_formats = {
   markdown = "@%s",
   rmd = "@%s",
   plain = "%s",
-  org = "%[cite:@%s]",
+  org = { "[cite:@%s]", "%[cite:@%s]" },
 },
 
 -- What citation format to use when none is defined for the current filetype.
