@@ -141,14 +141,15 @@ enable_modules = {
                               -- troubleshoot and diagnose issues)
 },
 
--- Defines citation formats (used when inserting citation keys) for various
--- filetypes. `%s` is replaced with the citation key.
+-- Defines citation formats for various filetypes. `%s` stands for replaced with
+-- the citation key. Make sure to escape lua's magic characters with `%` 
+-- (https://www.lua.org/pil/20.2.html) and write `\` as `\\`.
 cite_formats = {
   tex = "\\cite{%s}",
   markdown = "@%s",
   rmd = "@%s",
   plain = "%s",
-  org = "[cite:@%s]",
+  org = "%[cite:@%s]",
 },
 
 -- What citation format to use when none is defined for the current filetype.

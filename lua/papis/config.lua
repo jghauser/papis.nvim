@@ -44,7 +44,7 @@ local default_config = {
 		markdown = "@%s",
 		rmd = "@%s",
 		plain = "%s",
-		org = "[cite:@%s]",
+		org = "%[cite:@%s]",
 	},
 	cite_formats_fallback = "plain",
 	enable_keymaps = false,
