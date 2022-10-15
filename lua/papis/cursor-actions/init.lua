@@ -25,8 +25,8 @@ local hover_required_db_keys = utils:get_required_db_keys({ popup_format })
 ---Tries to identify the ref under cursor
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref
 local function get_ref_under_cursor()
-	local ref
-	local word_under_cursor = fn.expand("<cWORD>") .. "\n"
+	-- get the word under the cursor
+	local ref = fn.expand("<cWORD>")
 	local filetype = vim.bo.filetype
 	log:debug("The filetype is: " .. filetype)
 	local cite_format = utils.get_cite_format(filetype)
@@ -37,13 +37,14 @@ local function get_ref_under_cursor()
 	local _, prefix_end = string.find(cite_format, "%%s")
 	prefix_end = prefix_end - 2
 	local cite_format_prefix = string.sub(cite_format, 1, prefix_end)
-	local _, ref_start = string.find(word_under_cursor, cite_format_prefix)
+	local _, ref_start = string.find(ref, cite_format_prefix)
+	-- if we found the cite_format prefix in the string, we need to strip it
 	if ref_start then
 		ref_start = ref_start + 1
-		local ref_end = string.find(word_under_cursor, "[:%.]*[%s},%];\n]", ref_start)
-		ref_end = ref_end - 1
-		ref = string.sub(word_under_cursor, ref_start, ref_end)
+		ref = string.sub(ref, ref_start)
 	end
+	-- remove all punctuation characters at the beginning and end of string
+	ref = ref:gsub("^[%p]*(.-)[%p]*$", "%1")
 
 	return ref
 end
