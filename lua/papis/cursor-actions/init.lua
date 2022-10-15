@@ -55,19 +55,15 @@ end
 ---@param type? string #Type argument to be passed to fun
 local function if_ref_valid_run_fun(fun, self, type)
 	local ref = get_ref_under_cursor()
-	if ref then
-		local entry = db.data:get({ ref = ref }, { "id" })
-		if not vim.tbl_isempty(entry) then
-			if self then
-				fun(self, ref, type)
-			else
-				fun(ref, type)
-			end
+	local entry = db.data:get({ ref = ref }, { "id" })
+	if not vim.tbl_isempty(entry) then
+		if self then
+			fun(self, ref, type)
 		else
-			log:info(string.format("No entry in database corresponds to '%s'", ref))
+			fun(ref, type)
 		end
 	else
-		log:info("No valid citation key found under cursor.")
+		log:info(string.format("No entry in database corresponds to '%s'", ref))
 	end
 end
 
