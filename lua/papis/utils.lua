@@ -64,14 +64,16 @@ function M.do_open_file_external(path)
 end
 
 ---Gets the file names given a list of full paths
----@param full_paths table #A list of paths
+---@param full_paths table|nil #A list of paths or nil
 ---@return table #A list of file names
 function M.get_filenames(full_paths)
 	local filenames = {}
-	for _, full_path in ipairs(full_paths) do
-		local filename = Path:new(full_path):_split()
-		filename = filename[#filename]
-		table.insert(filenames, filename)
+	if full_paths then
+		for _, full_path in ipairs(full_paths) do
+			local filename = Path:new(full_path):_split()
+			filename = filename[#filename]
+			table.insert(filenames, filename)
+		end
 	end
 	return filenames
 end
@@ -89,7 +91,7 @@ function M:do_open_attached_files(ref)
 	for k, filename in ipairs(filenames) do
 		lookup_tbl[filename] = entry["files"][k]
 	end
-	if filenames == nil then
+	if vim.tbl_isempty(filenames) then
 		log:debug("This item has no attached files.")
 	elseif #filenames == 1 then
 		log:info("Opening file '" .. filenames[1] .. "' ")
