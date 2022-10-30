@@ -11,11 +11,9 @@ local Path = require("plenary.path")
 local Scan = require("plenary.scandir")
 
 local uv = vim.loop
-local fs_stat = vim.loop.fs_stat
-local new_timer = vim.loop.new_timer
-local create_autocmd = vim.api.nvim_create_autocmd
-local create_augroup = vim.api.nvim_create_augroup
-local del_autocmd = vim.api.nvim_del_autocmd
+local fs_stat = uv.fs_stat
+local new_timer = uv.new_timer
+local api = vim.api
 
 local log = require("papis.logger")
 local config = require("papis.config")
@@ -139,8 +137,9 @@ end
 
 ---Sets up an autocmd to change fw_running in database to nil when this neovim instance quits
 local function init_autocmd()
-	local unsetPapisWatcherState = create_augroup("unsetPapisWatcherState", { clear = true })
-	autocmd_id = create_autocmd("ExitPre", {
+	local unsetPapisWatcherState = api.nvim_create_augroup("unsetPapisWatcherState", { clear = true })
+
+	autocmd_id = api.nvim_create_autocmd("ExitPre", {
 		pattern = "*",
 		callback = function()
 			log:debug("Unset db state to indicate fswatcher is inactive")
@@ -171,7 +170,8 @@ local function start_fs_watch_active_timer()
 	if not file_read_timer then
 		file_read_timer = new_timer()
 	end
-	file_read_timer:start(
+	uv.timer_start(
+		file_read_timer,
 		0,
 		10000,
 		vim.schedule_wrap(function()
@@ -215,10 +215,11 @@ function M.stop()
 	log:debug("This neovim instance will no longer watch for file changes")
 	if file_read_timer then
 		log:trace("Stopping the fs watcher timer")
-		file_read_timer:stop()
+		uv.timer_stop(file_read_timer)
 	end
 	if autocmd_id then
-		del_autocmd(autocmd_id)
+		log:trace("Removing the fs-watcher autocmd")
+		api.nvim_del_autocmd(autocmd_id)
 	end
 	if not vim.tbl_isempty(handles) then
 		log:trace("Stopping the fs watchers")

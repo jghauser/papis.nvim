@@ -203,10 +203,9 @@ end
 ---Takes the format table and removes k = v pairs not existing in the entry + some other conditions
 ---@param format_table table #As defined in config.lua (e.g. "preview_format")
 ---@param entry table #An entry
----@param use_author_if_editor boolean? #If true we don't add the editor if the entry has an author
+---@param remove_editor_if_author boolean? #If true we don't add the editor if the entry has an author
 ---@return table #Same format as `format_table` but with k = v pairs removed
-function M.do_clean_format_tbl(format_table, entry, use_author_if_editor)
-	use_author_if_editor = use_author_if_editor or false
+function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
 	local clean_format_table = {}
 	for _, v in ipairs(format_table) do
 		-- add entry value if either there's an entry value corresponding to the value in the
@@ -214,7 +213,7 @@ function M.do_clean_format_tbl(format_table, entry, use_author_if_editor)
 		if entry[v[1]] or v[1] == "empty_line" then
 			table.insert(clean_format_table, v)
 		-- don't add editor if there is author and use_author_if_editor is true
-		elseif use_author_if_editor and v[1] == "author" and entry["editor"] then
+		elseif remove_editor_if_author and v[1] == "author" and entry["editor"] then
 			table.insert(clean_format_table, v)
 		end
 	end

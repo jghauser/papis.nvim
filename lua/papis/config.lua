@@ -67,7 +67,7 @@ local default_config = {
 		files = "luatable",
 	},
 	db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
-	papis_python = get_papis_py_conf,
+	papis_python = nil,
 	create_new_note_fn = function(ref, notes_name)
 		vim.fn.system(
 			string.format("papis update --set notes %s ref:%s", vim.fn.shellescape(notes_name), vim.fn.shellescape(ref))
@@ -152,8 +152,8 @@ function M:update(opts)
 	local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
 	-- get papis options if not explicitly given in setup
-	if type(newconf["papis_python"]) == "function" then
-		newconf["papis_python"] = newconf["papis_python"]()
+	if not newconf["papis_python"] then
+		newconf["papis_python"] = get_papis_py_conf()
 	end
 
 	-- replace %info_name% with actual value
