@@ -139,7 +139,7 @@ end
 
 ---This function is used to get info for some or all papis entries. Only valid entries are returned.
 ---@param metadata? table #A list with { path = path, mtime = mtime } values
----@return table #A list of {{ ref = ref, entry = entry}, { path = path, mtime = mtime }} values.
+---@return table #A list of {{ ref = ref, key = val, ...}, { path = path, mtime = mtime }} values.
 function M.get_data_full(metadata)
 	metadata = metadata or M.get_metadata()
 	local data_complete = {}
