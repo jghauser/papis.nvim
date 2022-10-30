@@ -228,7 +228,7 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
   --      configuration (e.g. `title = Critique of Pure Reason`)).
   -- `empty_line` is used to insert an empty line
   preview_format = {
-    { "author", "%s", "papispreviewauthor" },
+    { "author", "%s", "PapisPreviewAuthor" },
     { "year", "%s", "PapisPreviewYear" },
     { "title", "%s", "PapisPreviewTitle" },
     { "empty_line" },
