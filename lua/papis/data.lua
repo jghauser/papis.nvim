@@ -23,7 +23,7 @@ local function update_module_tbls(metadata)
 	for module_name, _ in pairs(enable_modules) do
 		local has_module, module = pcall(require, "papis." .. module_name .. ".data")
 		if has_module then
-			log:debug(string.format("Updating module '%s' sqlite table", module_name))
+			log.debug(string.format("Updating module '%s' sqlite table", module_name))
 			module_name = string.gsub(module_name, "-", "_")
 			if module["opts"]["has_row_for_each_main_tbl_row"] then
 				-- this is to handle modules newly activated
@@ -48,23 +48,23 @@ end
 ---Updates the main tables for an entry specified by `metadata`
 ---@param metadata table #Has structure { path = path, mtime = mtime }
 local function update_main_tbls(metadata)
-	log:debug("Updating main tables")
+	log.debug("Updating main tables")
 	if metadata["mtime"] then
-		log:debug("Changing/Adding an entry")
+		log.debug("Changing/Adding an entry")
 		local entry_full_data = papis_storage.get_data_full({ metadata })[1]
-		log:debug("Update/Add entry with following data: " .. vim.inspect(entry_full_data))
+		log.debug("Update/Add entry with following data: " .. vim.inspect(entry_full_data))
 		if entry_full_data then
 			local ref = entry_full_data[1]["ref"]
 			local data_row = entry_full_data[1]
 			local metadata_row = entry_full_data[2]
 			local id = db.data:get({ ref = ref }, { "id" })
 			if not vim.tbl_isempty(id) then
-				log:debug("Changing an existing entry")
+				log.debug("Changing an existing entry")
 				id = id[1]["id"]
 				db:clean_update("data", { id = id }, data_row)
 				db.metadata:update({ id = id }, metadata_row)
 			else
-				log:debug("Adding a new entry")
+				log.debug("Adding a new entry")
 				id = db.data:insert(data_row)
 				metadata_row["entry"] = id
 				-- check if entry already exists (can happen because fs watcher sends multiple events)
@@ -75,7 +75,7 @@ local function update_main_tbls(metadata)
 		end
 	-- we're deleting an entry
 	else
-		log:debug("Deleting an entry")
+		log.debug("Deleting an entry")
 		local id = db.metadata:get_value({ path = metadata["path"] }, { "entry" })
 		if id then
 			db.data:remove({ id = id })
@@ -109,7 +109,7 @@ local function sync_storage_data()
 	for _, metadata_entry in ipairs(old_metadata) do
 		local path_old = metadata_entry["path"]
 		if not new_metadata_ass[path_old] then
-			log:debug("An entry on disk has been deleted. Remove from database...")
+			log.debug("An entry on disk has been deleted. Remove from database...")
 			metadata_entry = { path = path_old, mtime = nil }
 			update_main_tbls(metadata_entry)
 			update_module_tbls(metadata_entry)
@@ -120,7 +120,7 @@ local function sync_storage_data()
 		local mtime_new = metadata_entry["mtime"]
 		local mtime_old = old_metadata_ass[metadata_entry["path"]]
 		if mtime_new ~= mtime_old then
-			log:debug("An entry on disk is new or has changed. Updating from yaml...")
+			log.debug("An entry on disk is new or has changed. Updating from yaml...")
 			update_main_tbls(metadata_entry)
 			update_module_tbls(metadata_entry)
 		end
@@ -132,7 +132,7 @@ local M = {}
 ---Updates the database for a given entry specified by `metadata`
 ---@param metadata table #Has structure { path = path, mtime = mtime } and specifies the entry
 function M.update_db(metadata)
-	log:debug("Updating the database")
+	log.debug("Updating the database")
 	update_main_tbls(metadata)
 	update_module_tbls(metadata)
 end
@@ -154,7 +154,7 @@ end
 
 ---Synchronises the database
 function M:sync_db()
-	log:debug("Synchronising database...")
+	log.debug("Synchronising database...")
 	sync_storage_data()
 end
 

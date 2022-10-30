@@ -28,12 +28,12 @@ local function get_ref_under_cursor()
 	-- get the word under the cursor
 	local ref = fn.expand("<cWORD>")
 	local filetype = vim.bo.filetype
-	log:debug("The filetype is: " .. filetype)
+	log.debug("The filetype is: " .. filetype)
 	local cite_format = utils.get_cite_format(filetype)
 	if type(cite_format) == "table" then
 		cite_format = cite_format[2]
 	end
-	log:debug("The cite_format is: " .. cite_format)
+	log.debug("The cite_format is: " .. cite_format)
 	local _, prefix_end = string.find(cite_format, "%%s")
 	prefix_end = prefix_end - 2
 	local cite_format_prefix = string.sub(cite_format, 1, prefix_end)
@@ -63,7 +63,7 @@ local function if_ref_valid_run_fun(fun, self, type)
 			fun(ref, type)
 		end
 	else
-		log:info(string.format("No entry in database corresponds to '%s'", ref))
+		log.info(string.format("No entry in database corresponds to '%s'", ref))
 	end
 end
 

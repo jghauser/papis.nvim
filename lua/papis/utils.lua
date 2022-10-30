@@ -92,9 +92,9 @@ function M:do_open_attached_files(ref)
 		lookup_tbl[filename] = entry["files"][k]
 	end
 	if vim.tbl_isempty(filenames) then
-		log:debug("This item has no attached files.")
+		log.debug("This item has no attached files.")
 	elseif #filenames == 1 then
-		log:info("Opening file '" .. filenames[1] .. "' ")
+		log.info("Opening file '" .. filenames[1] .. "' ")
 		local path = lookup_tbl[filenames[1]]
 		self.do_open_file_external(path)
 	else
@@ -102,7 +102,7 @@ function M:do_open_attached_files(ref)
 			prompt = "Select attachment to open:",
 		}, function(choice)
 			if choice then
-				log:info("Opening file '" .. choice .. "' ")
+				log.info("Opening file '" .. choice .. "' ")
 				local path = lookup_tbl[choice]
 				self.do_open_file_external(path)
 			end
@@ -116,16 +116,16 @@ end
 function M:do_open_text_file(ref, type)
 	local db = require("papis.sqlite-wrapper")
 	if not db then
-		log:warn("Sqlite-wrapper has not been initialised properly. Aborting...")
+		log.warn("Sqlite-wrapper has not been initialised properly. Aborting...")
 		return nil
 	end
-	log:debug("Opening a text file")
+	log.debug("Opening a text file")
 	local entry = db.data:get({ ref = ref }, { "notes", "id" })[1]
 	local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, { "path" }))
-	log:debug("Text file in folder: " .. info_path:absolute())
+	log.debug("Text file in folder: " .. info_path:absolute())
 	local cmd = ""
 	if type == "note" then
-		log:debug("Opening a note")
+		log.debug("Opening a note")
 		if entry["notes"] then
 			cmd = string.format("edit %s", entry["notes"][1])
 		else
@@ -155,7 +155,7 @@ function M:do_open_text_file(ref, type)
 				if enable_modules["formatter"] then
 					entry = db.data:get({ ref = ref })[1]
 					local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
-					log:debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
+					log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
 					local callback = config["formatter"]["format_notes_fn"]
 					require("papis.formatter").create_autocmd(pattern, callback, entry)
 				end
@@ -167,7 +167,7 @@ function M:do_open_text_file(ref, type)
 					vim.schedule_wrap(function()
 						entry = db.data:get({ ref = ref }, { "notes" })[1]
 						if entry["notes"] and not file_opened then
-							log:debug("Opening newly created notes file")
+							log.debug("Opening newly created notes file")
 							self:do_open_text_file(ref, type)
 							file_opened = true
 							entry_has_note:stop()
@@ -194,7 +194,7 @@ function M:do_open_text_file(ref, type)
 			popup:mount()
 		end
 	elseif type == "info" then
-		log:debug("Opening an info file")
+		log.debug("Opening an info file")
 		cmd = string.format("edit %s", info_path)
 	end
 	vim.cmd(cmd)

@@ -17,14 +17,16 @@ local default_notify_opts = {
 	title = "papis",
 }
 
+local notify_fmt, handle
+
 local M = {}
 
 ---Adds a log entry using Plenary.log
 ---@param msg string #The message to be logged
 ---@param level string #The log level, one of vim.log.levels
-function M:add_entry(msg, level)
-	if not self.__notify_fmt then
-		self.__notify_fmt = function(m)
+local function add_entry(msg, level)
+	if not notify_fmt then
+		notify_fmt = function(m)
 			return string.format(log_config.notify_format, m)
 		end
 	end
@@ -33,8 +35,8 @@ function M:add_entry(msg, level)
 		return
 	end
 
-	if self.__handle then
-		self.__handle[level](msg)
+	if handle then
+		handle[level](msg)
 		return
 	end
 
@@ -45,42 +47,41 @@ function M:add_entry(msg, level)
 		info_level = 4,
 	}
 
-	local handle = log.new(default_opts)
+	handle = log.new(default_opts)
 	handle[level](msg)
-	self.__handle = handle
 end
 
 ---Add a log entry at TRACE level
 ---@param msg string #The message to be logged
-function M:trace(msg)
-	self:add_entry(msg, "trace")
+function M.trace(msg)
+	add_entry(msg, "trace")
 end
 
 ---Add a log entry at DEBUG level
 ---@param msg string #The message to be logged
-function M:debug(msg)
-	self:add_entry(msg, "debug")
+function M.debug(msg)
+	add_entry(msg, "debug")
 end
 
 ---Add a log entry at INFO level
 ---@param msg string #The message to be logged
-function M:info(msg)
-	self:add_entry(msg, "info")
-	vim.notify(self.__notify_fmt(msg), vim.log.levels.INFO, default_notify_opts)
+function M.info(msg)
+	add_entry(msg, "info")
+	vim.notify(notify_fmt(msg), vim.log.levels.INFO, default_notify_opts)
 end
 
 ---Add a log entry at WARN level
 ---@param msg string #The message to be logged
-function M:warn(msg)
-	self:add_entry(msg, "warn")
-	vim.notify(self.__notify_fmt(msg), vim.log.levels.WARN, default_notify_opts)
+function M.warn(msg)
+	add_entry(msg, "warn")
+	vim.notify(notify_fmt(msg), vim.log.levels.WARN, default_notify_opts)
 end
 
 ---Add a log entry at ERROR level
 ---@param msg string #The message to be logged
-function M:error(msg)
-	self:add_entry(msg, "error")
-	vim.notify(self.__notify_fmt(msg), vim.log.levels.ERROR, default_notify_opts)
+function M.error(msg)
+	add_entry(msg, "error")
+	vim.notify(notify_fmt(msg), vim.log.levels.ERROR, default_notify_opts)
 end
 
 ---Retrieves the path of the logfile

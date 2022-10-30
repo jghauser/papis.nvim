@@ -79,13 +79,13 @@ local function is_valid_entry(entry, path)
 	if entry["ref"] then
 		return true
 	else
-		log:info(string.format("The entry at '%s' is missing a reference and is not added to the database.", path))
+		log.info(string.format("The entry at '%s' is missing a reference and is not added to the database.", path))
 		return false
 	end
 end
 
 local function read_yaml(path)
-	log:trace("Reading path: " .. path)
+	log.trace("Reading path: " .. path)
 	local filepath = Path:new(path)
 	local entry = lyaml.load(filepath:read())
 	return entry
@@ -179,7 +179,7 @@ function M.get_data_full(metadata)
 						if type(entry[key]) == "table" then
 							data[key] = entry[key]
 						else
-							log:warn(
+							log.warn(
 								"Wanted to add `"
 									.. key
 									.. "` of `"
