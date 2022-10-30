@@ -192,8 +192,9 @@ data_tbl_schema = {
 db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
 
 -- The papis options relevant for papis.nvim (see above minimal config). By
--- default, this is set to a function that calls `papis config` to get the values.
-papis_python = get_papis_py_conf,
+-- default it is unset, which prompts papis.nvim to call `papis config` to 
+-- get the values.
+papis_python = nil,
 
 -- Function to execute when adding a new note. `ref` is the citation key of the
 -- relevant entry and `notes_name` is defined in `papis_python` above.
