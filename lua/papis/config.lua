@@ -114,7 +114,7 @@ local default_config = {
 		wrap = true,
 		search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
 		preview_format = {
-			{ "author", "%s", "papispreviewauthor" },
+			{ "author", "%s", "PapisPreviewAuthor" },
 			{ "year", "%s", "PapisPreviewYear" },
 			{ "title", "%s", "PapisPreviewTitle" },
 			{ "empty_line" },
