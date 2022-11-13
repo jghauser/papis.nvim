@@ -22,7 +22,7 @@ local tag_delimiter
 ---Gets tag_delimiter for the tag_format
 ---@return string|nil #The delimiter between tags given the format
 local function get_tag_delimiter()
-	local tag_format = db.state:get_value({ id = 1 }, { "tag_format" })
+	local tag_format = db.state:get_value({ id = 1 }, "tag_format")
 	if tag_format == "tbl" then
 		tag_delimiter = "- "
 	elseif tag_format == "," then

@@ -34,7 +34,7 @@ local function update_module_tbls(metadata)
 				else
 					-- we're adding or editing an entry (deletions cascade)
 					if metadata["mtime"] then
-						local id = db.metadata:get_value({ path = metadata["path"] }, { "entry" })
+						local id = db.metadata:get_value({ path = metadata["path"] }, "entry")
 						db[module_name]:update(id)
 					end
 				end
@@ -76,7 +76,7 @@ local function update_main_tbls(metadata)
 	-- we're deleting an entry
 	else
 		log.debug("Deleting an entry")
-		local id = db.metadata:get_value({ path = metadata["path"] }, { "entry" })
+		local id = db.metadata:get_value({ path = metadata["path"] }, "entry")
 		if id then
 			db.data:remove({ id = id })
 			-- HACK because `on_delete = cascade` doesn't work

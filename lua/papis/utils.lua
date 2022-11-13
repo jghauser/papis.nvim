@@ -121,7 +121,7 @@ function M:do_open_text_file(ref, type)
 	end
 	log.debug("Opening a text file")
 	local entry = db.data:get({ ref = ref }, { "notes", "id" })[1]
-	local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, { "path" }))
+	local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, "path"))
 	log.debug("Text file in folder: " .. info_path:absolute())
 	local cmd = ""
 	if type == "note" then
