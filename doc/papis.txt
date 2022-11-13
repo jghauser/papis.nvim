@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 30
+*papis.txt*            For NVIM v0.5.0           Last change: 2022 November 13
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -170,7 +170,7 @@ With packer:
 _Papis version_: papis.nvim is meant to be used in conjunction with papis and
 won’t run if it doesn’t find the `papis` executable. Note that for the note
 creation feature to work, it is currently required to use the git version (with
-commit `d11ff9913f8b32b9ed898f0487e730d15bd02b0a`).
+commit `d11ff99`).
 
 _Neovim version_: papis.nvim is being tested on the latest stable version.
 
