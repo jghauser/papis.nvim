@@ -96,6 +96,8 @@ M.state = M:tbl("state", {
 	tag_format = { "text", default = nil },
 })
 
+---Adds common methods to tbls
+---@param tbls table #Set of tables that should have methods added
 function M.add_tbl_methods(tbls)
 	for _, tbl in pairs(tbls) do
 		for method_name, method in pairs(tbl_methods) do
