@@ -94,7 +94,7 @@ use({
 })
 ```
 
-*Papis version*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff9913f8b32b9ed898f0487e730d15bd02b0a`).
+*Papis version*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff99`).
 
 *Neovim version*: papis.nvim is being tested on the latest stable version.
 
