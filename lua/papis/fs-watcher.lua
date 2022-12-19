@@ -17,7 +17,7 @@ local api = vim.api
 
 local log = require("papis.logger")
 local config = require("papis.config")
-local library_dir = Path:new(config["papis_python"]["dir"]):absolute()
+local library_dir = Path:new(config["papis_python"]["dir"]):expand()
 local info_name = config["papis_python"]["info_name"]
 local does_pid_exist = require("papis.utils").does_pid_exist
 local db = require("papis.sqlite-wrapper")
