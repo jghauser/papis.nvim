@@ -49,6 +49,7 @@ local default_config = {
 		org = "[cite:@%s]",
 	},
 	cite_formats_fallback = "plain",
+	always_use_plain = false,
 	enable_keymaps = false,
 	enable_commands = true,
 	enable_fs_watcher = true,
