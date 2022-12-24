@@ -11,7 +11,7 @@ local M = {}
 
 local keybinds = {
 	["search"] = {
-		open_telescope_normal = {
+		open_search_normal = {
 			mode = "n",
 			lhs = "<leader>pp",
 			rhs = function()
@@ -19,7 +19,7 @@ local keybinds = {
 			end,
 			opts = { desc = "Papis: search library" },
 		},
-		open_telescope_insert = {
+		open_search_insert = {
 			mode = "i",
 			lhs = "<c-p>p",
 			rhs = function()

@@ -39,20 +39,9 @@ function M.get_cite_format(filetype)
 	end
 end
 
----Checks if a given executable exists
----@param cmd string #The name of the executable
----@return boolean #True if executable, false if not
-function M.is_executable(cmd)
-	local is_executable = false
-	if cmd and vim.fn.executable(cmd) == 1 then
-		is_executable = true
-	end
-	return is_executable
-end
-
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
----@param sep string #String giving each character by witch to split
+---@param sep? string #String giving each character by witch to split
 ---@return table #List of split elements
 function M.do_split_str(inputstr, sep)
 	if sep == nil then
@@ -80,14 +69,16 @@ function M.do_open_file_external(path)
 end
 
 ---Gets the file names given a list of full paths
----@param full_paths table #A list of paths
+---@param full_paths table|nil #A list of paths or nil
 ---@return table #A list of file names
 function M.get_filenames(full_paths)
 	local filenames = {}
-	for _, full_path in ipairs(full_paths) do
-		local filename = Path:new(full_path):_split()
-		filename = filename[#filename]
-		table.insert(filenames, filename)
+	if full_paths then
+		for _, full_path in ipairs(full_paths) do
+			local filename = Path:new(full_path):_split()
+			filename = filename[#filename]
+			table.insert(filenames, filename)
+		end
 	end
 	return filenames
 end
@@ -105,10 +96,10 @@ function M:do_open_attached_files(ref)
 	for k, filename in ipairs(filenames) do
 		lookup_tbl[filename] = entry["files"][k]
 	end
-	if filenames == nil then
-		log:debug("This item has no attached files.")
+	if vim.tbl_isempty(filenames) then
+		log.debug("This item has no attached files.")
 	elseif #filenames == 1 then
-		log:info("Opening file '" .. filenames[1] .. "' ")
+		log.info("Opening file '" .. filenames[1] .. "' ")
 		local path = lookup_tbl[filenames[1]]
 		self.do_open_file_external(path)
 	else
@@ -116,7 +107,7 @@ function M:do_open_attached_files(ref)
 			prompt = "Select attachment to open:",
 		}, function(choice)
 			if choice then
-				log:info("Opening file '" .. choice .. "' ")
+				log.info("Opening file '" .. choice .. "' ")
 				local path = lookup_tbl[choice]
 				self.do_open_file_external(path)
 			end
@@ -130,16 +121,16 @@ end
 function M:do_open_text_file(ref, type)
 	local db = require("papis.sqlite-wrapper")
 	if not db then
-		log:warn("Sqlite-wrapper has not been initialised properly. Aborting...")
+		log.warn("Sqlite-wrapper has not been initialised properly. Aborting...")
 		return nil
 	end
-	log:debug("Opening a text file")
+	log.debug("Opening a text file")
 	local entry = db.data:get({ ref = ref }, { "notes", "id" })[1]
-	local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, { "path" }))
-	log:debug("Text file in folder: " .. info_path:absolute())
+	local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, "path"))
+	log.debug("Text file in folder: " .. info_path:absolute())
 	local cmd = ""
 	if type == "note" then
-		log:debug("Opening a note")
+		log.debug("Opening a note")
 		if entry["notes"] then
 			cmd = string.format("edit %s", entry["notes"][1])
 		else
@@ -169,7 +160,7 @@ function M:do_open_text_file(ref, type)
 				if enable_modules["formatter"] then
 					entry = db.data:get({ ref = ref })[1]
 					local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
-					log:debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
+					log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
 					local callback = config["formatter"]["format_notes_fn"]
 					require("papis.formatter").create_autocmd(pattern, callback, entry)
 				end
@@ -181,7 +172,7 @@ function M:do_open_text_file(ref, type)
 					vim.schedule_wrap(function()
 						entry = db.data:get({ ref = ref }, { "notes" })[1]
 						if entry["notes"] and not file_opened then
-							log:debug("Opening newly created notes file")
+							log.debug("Opening newly created notes file")
 							self:do_open_text_file(ref, type)
 							file_opened = true
 							entry_has_note:stop()
@@ -208,7 +199,7 @@ function M:do_open_text_file(ref, type)
 			popup:mount()
 		end
 	elseif type == "info" then
-		log:debug("Opening an info file")
+		log.debug("Opening an info file")
 		cmd = string.format("edit %s", info_path)
 	end
 	vim.cmd(cmd)
@@ -217,10 +208,9 @@ end
 ---Takes the format table and removes k = v pairs not existing in the entry + some other conditions
 ---@param format_table table #As defined in config.lua (e.g. "preview_format")
 ---@param entry table #An entry
----@param use_author_if_editor boolean? #If true we don't add the editor if the entry has an author
+---@param remove_editor_if_author boolean? #If true we don't add the editor if the entry has an author
 ---@return table #Same format as `format_table` but with k = v pairs removed
-function M.do_clean_format_tbl(format_table, entry, use_author_if_editor)
-	use_author_if_editor = use_author_if_editor or false
+function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
 	local clean_format_table = {}
 	for _, v in ipairs(format_table) do
 		-- add entry value if either there's an entry value corresponding to the value in the
@@ -228,7 +218,7 @@ function M.do_clean_format_tbl(format_table, entry, use_author_if_editor)
 		if entry[v[1]] or v[1] == "empty_line" then
 			table.insert(clean_format_table, v)
 		-- don't add editor if there is author and use_author_if_editor is true
-		elseif use_author_if_editor and v[1] == "author" and entry["editor"] then
+		elseif remove_editor_if_author and v[1] == "author" and entry["editor"] then
 			table.insert(clean_format_table, v)
 		end
 	end

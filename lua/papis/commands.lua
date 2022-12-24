@@ -6,6 +6,7 @@
 --
 
 local config = require("papis.config")
+local api = vim.api
 
 local commands = {
 	["init"] = {
@@ -53,28 +54,28 @@ local commands = {
 		open_file = {
 			name = "PapisOpenFile",
 			command = function()
-				return require("papis").open_file()
+				return require("papis.cursor-actions").open_file()
 			end,
 			opts = { desc = "Papis: open the files attached to entry under cursor" },
 		},
 		open_note = {
 			name = "PapisOpenNote",
 			command = function()
-				return require("papis").open_note()
+				return require("papis.cursor-actions").open_note()
 			end,
 			opts = { desc = "Papis: open the note of the entry under cursor" },
 		},
 		edit_entry = {
 			name = "PapisEditEntry",
 			command = function()
-				return require("papis").edit_entry()
+				return require("papis.cursor-actions").edit_entry()
 			end,
 			opts = { desc = "Papis: edit the entry under cursor" },
 		},
 		show_popup = {
 			name = "PapisShowPopup",
 			command = function()
-				return require("papis").show_popup()
+				return require("papis.cursor-actions").show_popup()
 			end,
 			opts = { desc = "Papis: show popup of the entry under cursor" },
 		},
@@ -90,13 +91,13 @@ function M.setup(module)
 		for module_name, module_commands in pairs(commands) do
 			if config["enable_modules"][module_name] then
 				for _, command in pairs(module_commands) do
-					vim.api.nvim_create_user_command(command["name"], command["command"], command["opts"])
+					api.nvim_create_user_command(command["name"], command["command"], command["opts"])
 				end
 			end
 		end
 	else
 		for _, command in pairs(commands[module]) do
-			vim.api.nvim_create_user_command(command["name"], command["command"], command["opts"])
+			api.nvim_create_user_command(command["name"], command["command"], command["opts"])
 		end
 	end
 end

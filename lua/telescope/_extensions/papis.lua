@@ -16,20 +16,19 @@ local entry_display = require("telescope.pickers.entry_display")
 local papis_actions = require("telescope._extensions.papis.actions")
 
 local utils = require("papis.utils")
-local config = require("papis.config")
 local db = require("papis.sqlite-wrapper")
 if not db then
 	return nil
 end
 
-local wrap, cite_formats, cite_formats_fallback, preview_format, required_db_keys
+local wrap, preview_format, required_db_keys
 
 ---Gets the cite format for the filetype
 ---@return string #The cite format for the filetype (or fallback if undefined)
 local function parse_format_string()
-	local cite_format = cite_formats[vim.bo.filetype]
-	if cite_format == nil then
-		cite_format = cite_formats[cite_formats_fallback]
+	local cite_format = utils.get_cite_format(vim.bo.filetype)
+	if type(cite_format) == "table" then
+		cite_format = cite_format[1]
 	end
 	return cite_format
 end
@@ -109,13 +108,11 @@ local function papis_picker(opts)
 end
 
 return telescope.register_extension({
-	setup = function(tele_config)
-		wrap = tele_config["wrap"]
-		cite_formats = config["cite_formats"]
-		cite_formats_fallback = config["cite_formats_fallback"]
-		preview_format = tele_config["preview_format"]
-		local search_keys = tele_config["search_keys"]
-		local results_format = tele_config["results_format"]
+	setup = function(opts)
+		wrap = opts["wrap"]
+		preview_format = opts["preview_format"]
+		local search_keys = opts["search_keys"]
+		local results_format = opts["results_format"]
 		required_db_keys = utils:get_required_db_keys({ search_keys, preview_format, results_format })
 	end,
 	exports = {

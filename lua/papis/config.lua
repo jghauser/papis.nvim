@@ -40,13 +40,11 @@ local default_config = {
 		["debug"] = false,
 	}, -- can be set to nil or false or left out
 	cite_formats = {
-		tex = "\\cite{%s}",
-		md = "@%s",
+		tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
 		markdown = "@%s",
 		rmd = "@%s",
-		pandoc = "@%s",
 		plain = "%s",
-		org = "[cite:@%s]",
+		org = { "[cite:@%s]", "%[cite:@%s]" },
 	},
 	cite_formats_fallback = "plain",
 	always_use_plain = false,
@@ -70,7 +68,7 @@ local default_config = {
 		files = "luatable",
 	},
 	db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
-	papis_python = get_papis_py_conf,
+	papis_python = nil,
 	create_new_note_fn = function(ref, notes_name)
 		vim.fn.system(
 			string.format("papis update --set notes %s ref:%s", vim.fn.shellescape(notes_name), vim.fn.shellescape(ref))
@@ -117,7 +115,7 @@ local default_config = {
 		wrap = true,
 		search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
 		preview_format = {
-			{ "author", "%s", "papispreviewauthor" },
+			{ "author", "%s", "PapisPreviewAuthor" },
 			{ "year", "%s", "PapisPreviewYear" },
 			{ "title", "%s", "PapisPreviewTitle" },
 			{ "empty_line" },
@@ -155,8 +153,8 @@ function M:update(opts)
 	local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
 	-- get papis options if not explicitly given in setup
-	if type(newconf["papis_python"]) == "function" then
-		newconf["papis_python"] = newconf["papis_python"]()
+	if not newconf["papis_python"] then
+		newconf["papis_python"] = get_papis_py_conf()
 	end
 
 	-- replace %info_name% with actual value

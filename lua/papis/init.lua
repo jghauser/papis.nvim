@@ -32,22 +32,22 @@ function M.setup(opts)
 
 	log = require("papis.logger")
 
-	if not require("papis.utils").is_executable("papis") then
-		log:error("The command 'papis' could not be found. Papis must be installed to run papis.nvim")
+	if not vim.fn.executable("papis") then
+		log.error("The command 'papis' could not be found. Papis must be installed to run papis.nvim")
 		return nil
 	end
 
-	log:debug("_________________________SETTING UP PAPIS.NVIM_________________________")
-	log:debug("Creating `PapisStart` command")
+	log.debug("_________________________SETTING UP PAPIS.NVIM_________________________")
+	log.debug("Creating `PapisStart` command")
 	require("papis.commands").setup("init")
 	-- make_papis_start()
-	log:debug("Creating autocmds to lazily load papis.nvim")
+	log.debug("Creating autocmds to lazily load papis.nvim")
 	make_start_autocmd()
 end
 
 ---This function starts all of papis.nvim.
 function M.start()
-	log:debug("Starting papis.nvim")
+	log.debug("Starting papis.nvim")
 
 	-- delete command that starts papis
 	vim.api.nvim_del_user_command("PapisStart")
@@ -58,12 +58,12 @@ function M.start()
 	-- require what's necessary within `M.start()` instead of globally to allow lazy-loading
 	local db = require("papis.sqlite-wrapper")
 	if not db then
-		log:warn("Requiring `sqlite-wrapper.lua` failed. Aborting...")
+		log.warn("Requiring `sqlite-wrapper.lua` failed. Aborting...")
 		return nil
 	end
 	local data = require("papis.data")
 	if not data then
-		log:warn("Requiring `data.lua` failed. Aborting...")
+		log.warn("Requiring `data.lua` failed. Aborting...")
 		return nil
 	end
 	local does_pid_exist = require("papis.utils").does_pid_exist
@@ -71,7 +71,7 @@ function M.start()
 	-- get all functions that we need to run the various commands
 	for module_name, is_enabled in pairs(config["enable_modules"]) do
 		if is_enabled then
-			log:trace(module_name .. " is enabled")
+			log.trace(module_name .. " is enabled")
 			local has_module, module = pcall(require, "papis." .. module_name)
 			-- local module = require("papis." .. module_name)
 			if has_module then
@@ -82,7 +82,7 @@ function M.start()
 		end
 	end
 
-	log:debug("Setting up commands and keymaps")
+	log.debug("Setting up commands and keymaps")
 	-- setup commands
 	if config["enable_commands"] then
 		require("papis.commands").setup()
@@ -99,7 +99,7 @@ function M.start()
 			require("papis.fs-watcher"):init()
 		end
 
-		log:debug("Synchronising the database")
+		log.debug("Synchronising the database")
 		data:sync_db()
 	else
 		-- setup file watchers (or an autocmd if another instance has file watchers)
@@ -108,7 +108,7 @@ function M.start()
 		end
 	end
 
-	log:debug("Papis.nvim up and running")
+	log.debug("Papis.nvim up and running")
 end
 
 return M

@@ -22,7 +22,7 @@ local tag_delimiter
 ---Gets tag_delimiter for the tag_format
 ---@return string|nil #The delimiter between tags given the format
 local function get_tag_delimiter()
-	local tag_format = db.state:get_value({ id = 1 }, { "tag_format" })
+	local tag_format = db.state:get_value({ id = 1 }, "tag_format")
 	if tag_format == "tbl" then
 		tag_delimiter = "- "
 	elseif tag_format == "," then
@@ -63,7 +63,7 @@ function M:is_available()
 		end
 		local node_text
 
-		log:trace("tag_delimiter: " .. tag_delimiter)
+		log.trace("tag_delimiter: " .. tag_delimiter)
 		if tag_delimiter == "- " then
 			local cursor_position = api.nvim_win_get_cursor(0)
 			cmd("normal ^")
@@ -87,7 +87,7 @@ function M:is_available()
 
 		if node_text == "tags" then
 			is_available = true
-			log:debug("cmp source is available")
+			log.debug("cmp source is available")
 		end
 	end
 	return is_available
@@ -102,10 +102,10 @@ function M:complete(request, callback)
 	end
 
 	local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
-	log:debug("Request prefix: " .. prefix)
+	log.debug("Request prefix: " .. prefix)
 
 	if prefix == "tags: " or vim.endswith(prefix, tag_delimiter) then
-		log:debug("Running cmp `complete()` function.")
+		log.debug("Running cmp `complete()` function.")
 		self.items = db.completion:get()[1]["tag_strings"]
 		callback(self.items)
 	end
