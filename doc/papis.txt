@@ -243,8 +243,6 @@ Full list of configuration options (with defaults):
     
     -- What citation format to use when none is defined for the current filetype.
     cite_formats_fallback = "plain",
-    -- Always insert the plain citation format
-    always_use_plain = false,
     
     -- Enable default keymaps.
     enable_keymaps = false,
