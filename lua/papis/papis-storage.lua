@@ -108,7 +108,7 @@ local function make_full_paths(filenames, path)
 
 	local full_paths = {}
 	for _, filename in ipairs(filenames) do
-		local full_path = Path:new(path, filename):absolute()
+		local full_path = Path:new(path, filename):expand()
 		table.insert(full_paths, full_path)
 	end
 	return full_paths
@@ -126,7 +126,7 @@ end
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
-	paths = paths or Scan.scan_dir(library_dir:absolute(), { depth = 2, search_pattern = info_name })
+	paths = paths or Scan.scan_dir(library_dir:expand(), { depth = 2, search_pattern = info_name })
 	local metadata = {}
 	for _, path in ipairs(paths) do
 		local mtime = fs_stat(path).mtime.sec

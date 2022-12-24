@@ -108,7 +108,6 @@ function M.start()
 		end
 	end
 
-	log.debug("Library Directory: " .. config["papis_python"]["dir"])
 	log.debug("Papis.nvim up and running")
 end
 
