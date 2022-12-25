@@ -151,6 +151,13 @@ local M = vim.deepcopy(default_config)
 function M:update(opts)
 	local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
+	-- set not enabled modules to nil
+	for module in pairs(newconf["enable_modules"]) do
+		if module == false then
+			module = nil
+		end
+	end
+
 	-- get papis options if not explicitly given in setup
 	if type(newconf["papis_python"]) == "function" then
 		newconf["papis_python"] = newconf["papis_python"]()
