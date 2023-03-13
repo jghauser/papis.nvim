@@ -59,7 +59,7 @@ When creating new notes (via `:Telescope papis` or `:PapisOpenNote`), papis.nvim
 
 ## The database
 
-All of papis.nvim's features are made possible by a sqlite database that is created when the plugin is first started. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted.The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
+All of papis.nvim's features are made possible by a sqlite database that is created when the plugin is first started. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
 
 Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:PapisReInitData` to re-initialise the database.
 

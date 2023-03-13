@@ -1,2 +1,5 @@
 dev
 doc/tags
+.devenv/
+.direnv/
+.envrc
