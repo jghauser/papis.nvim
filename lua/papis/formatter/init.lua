@@ -17,7 +17,7 @@ function M.create_autocmd(pattern, callback, entry)
 	create_autocmd("BufEnter", {
 		pattern = pattern,
 		callback = function()
-			log:debug("Running formatter callback...")
+			log.debug("Running formatter callback...")
 			callback(entry)
 		end,
 		group = papisFormatter,

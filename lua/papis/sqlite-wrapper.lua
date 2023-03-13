@@ -9,7 +9,7 @@ local log = require("papis.logger")
 
 local has_sqlite, _ = pcall(require, "sqlite")
 if not has_sqlite then
-	log:error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
+	log.error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
 	return nil
 end
 
@@ -41,17 +41,20 @@ end
 ---General sqlite get single value function
 ---@param tbl table #The table to query
 ---@param where table #The sqlite where clause defining which rows' data to return
----@param select table #The sqlite select statement defining which columns to return
+---@param key string #The key of which to return the value
 ---@return unknown #The value queried
-function tbl_methods.get_value(tbl, where, select)
+function tbl_methods.get_value(tbl, where, key)
+	if type(key) ~= "string" then
+		error("get_value() needs to be be called with a single key name")
+	end
 	local result = tbl:__get({
 		where = where,
-		select = select,
+		select = { key },
 	})
 	if vim.tbl_isempty(result) then
 		result = nil
 	else
-		result = result[1][select[1]]
+		result = result[1][key]
 	end
 	return result
 end
@@ -96,6 +99,8 @@ M.state = M:tbl("state", {
 	tag_format = { "text", default = nil },
 })
 
+---Adds common methods to tbls
+---@param tbls table #Set of tables that should have methods added
 function M.add_tbl_methods(tbls)
 	for _, tbl in pairs(tbls) do
 		for method_name, method in pairs(tbl_methods) do
@@ -111,7 +116,7 @@ M.add_tbl_methods({ M.data, M.metadata, M.state })
 ---@param where table #The sqlite where clause defining which rows' data to return
 ---@param new_values table #The new row to be inserted
 function M:clean_update(tbl_name, where, new_values)
-	local id = self[tbl_name]:get_value(where, { "id" })
+	local id = self[tbl_name]:get_value(where, "id")
 
 	local row = self[tbl_name]:__get({
 		where = where,
@@ -138,7 +143,7 @@ end
 function M.state:get_fw_running()
 	local is_running
 	if not self:empty() then
-		is_running = tbl_methods.get_value(self, { id = 1 }, { "fw_running" })
+		is_running = tbl_methods.get_value(self, { id = 1 }, "fw_running")
 		if is_running == 0 then
 			is_running = nil
 		end

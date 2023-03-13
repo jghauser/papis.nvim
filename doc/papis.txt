@@ -133,7 +133,8 @@ With packer:
       rocks = {
         {
           "lyaml" 
-          -- If using macOS or Linux, you may need to install the `libyaml` package.
+          -- If using macOS or Linux, you may need to install the `libyaml` (and
+          -- possibly the `libyaml-devel`) package.
           -- If you install libyaml with homebrew you will need to set the YAML_DIR
           -- to the location of the homebrew installation of libyaml e.g.
           -- env = { YAML_DIR = '/opt/homebrew/Cellar/libyaml/0.2.5/' },
@@ -150,7 +151,7 @@ With packer:
 _Papis version_: papis.nvim is meant to be used in conjunction with papis and
 won’t run if it doesn’t find the `papis` executable. Note that for the note
 creation feature to work, it is currently required to use the git version (with
-commit `d11ff9913f8b32b9ed898f0487e730d15bd02b0a`).
+commit `d11ff99`).
 
 _Neovim version_: papis.nvim is being tested on the latest stable version.
 
@@ -206,19 +207,18 @@ Full list of configuration options (with defaults):
                                   -- troubleshoot and diagnose issues)
     },
     
-    -- Defines citation formats for various filetypes. `%s` stands for replaced with
-    -- the citation key. Make sure to escape lua's magic characters with `%` 
-    -- (https://www.lua.org/pil/20.2.html) and write `\` as `\\`.
-    -- When the value is a table, then the first pattern is used to insert citations,
-    -- whereas the second will be used to find references (e.g. by the `cursor-action`
-    -- module). This enables handling cases where there are multiple valid citation
-    -- formats for a filetype.
+    -- Defines citation formats for various filetypes. When the value is a table, then
+    -- the first entry is used to insert citations, whereas the second will be used to
+    -- find references (e.g. by the `cursor-action` module). `%s` stands for the reference.
+    -- Note that the first entry is a string (where e.g. `\` needs to be excaped as `\\`)
+    -- and the second a lua pattern (where magic characters need to be escaped with
+    -- `%`; https://www.lua.org/pil/20.2.html).
     cite_formats = {
       tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
       markdown = "@%s",
       rmd = "@%s",
       plain = "%s",
-      org = "%[cite:@%s]",
+      org = { "[cite:@%s]", "%[cite:@%s]" },
     },
     
     -- What citation format to use when none is defined for the current filetype.
@@ -258,8 +258,9 @@ Full list of configuration options (with defaults):
     db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
     
     -- The papis options relevant for papis.nvim (see above minimal config). By
-    -- default, this is set to a function that calls `papis config` to get the values.
-    papis_python = get_papis_py_conf,
+    -- default it is unset, which prompts papis.nvim to call `papis config` to 
+    -- get the values.
+    papis_python = nil,
     
     -- Function to execute when adding a new note. `ref` is the citation key of the
     -- relevant entry and `notes_name` is defined in `papis_python` above.
@@ -294,7 +295,7 @@ Full list of configuration options (with defaults):
       --      configuration (e.g. `title = Critique of Pure Reason`)).
       -- `empty_line` is used to insert an empty line
       preview_format = {
-        { "author", "%s", "papispreviewauthor" },
+        { "author", "%s", "PapisPreviewAuthor" },
         { "year", "%s", "PapisPreviewYear" },
         { "title", "%s", "PapisPreviewTitle" },
         { "empty_line" },

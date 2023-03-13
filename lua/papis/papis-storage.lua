@@ -79,13 +79,13 @@ local function is_valid_entry(entry, path)
 	if entry["ref"] then
 		return true
 	else
-		log:info(string.format("The entry at '%s' is missing a reference and is not added to the database.", path))
+		log.info(string.format("The entry at '%s' is missing a reference and is not added to the database.", path))
 		return false
 	end
 end
 
 local function read_yaml(path)
-	log:trace("Reading path: " .. path)
+	log.trace("Reading path: " .. path)
 	local filepath = Path:new(path)
 	local entry = lyaml.load(filepath:read())
 	return entry
@@ -108,7 +108,7 @@ local function make_full_paths(filenames, path)
 
 	local full_paths = {}
 	for _, filename in ipairs(filenames) do
-		local full_path = Path:new(path, filename):absolute()
+		local full_path = Path:new(path, filename):expand()
 		table.insert(full_paths, full_path)
 	end
 	return full_paths
@@ -126,7 +126,7 @@ end
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
-	paths = paths or Scan.scan_dir(library_dir:absolute(), { depth = 2, search_pattern = info_name })
+	paths = paths or Scan.scan_dir(library_dir:expand(), { depth = 2, search_pattern = info_name })
 	local metadata = {}
 	for _, path in ipairs(paths) do
 		local mtime = fs_stat(path).mtime.sec
@@ -139,7 +139,7 @@ end
 
 ---This function is used to get info for some or all papis entries. Only valid entries are returned.
 ---@param metadata? table #A list with { path = path, mtime = mtime } values
----@return table #A list of {{ ref = ref, entry = entry}, { path = path, mtime = mtime }} values.
+---@return table #A list of {{ ref = ref, key = val, ...}, { path = path, mtime = mtime }} values.
 function M.get_data_full(metadata)
 	metadata = metadata or M.get_metadata()
 	local data_complete = {}
@@ -179,7 +179,7 @@ function M.get_data_full(metadata)
 						if type(entry[key]) == "table" then
 							data[key] = entry[key]
 						else
-							log:warn(
+							log.warn(
 								"Wanted to add `"
 									.. key
 									.. "` of `"
