@@ -50,8 +50,7 @@ function M.do_split_str(inputstr, sep)
 	return t
 end
 
--- open file outside neovim
----OPen file with os default application
+-- Open file outside neovim
 ---@param path string #Path to the file
 function M.do_open_file_external(path)
 	if is_linux then
