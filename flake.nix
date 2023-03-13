@@ -22,22 +22,16 @@
               inherit inputs pkgs;
               modules = [
                 {
-                  # https://devenv.sh/reference/options/
                   languages.lua = {
                     enable = true;
                     package = pkgs.luajit;
                   };
                   scripts.run-tests.exec = ''
-                    ${pkgs.neovim}/bin/nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedDirectory tests/spec'
+                    nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedDirectory tests/spec'
                   '';
                   scripts.run-app.exec = ''
-                    ${pkgs.neovim}/bin/nvim -u tests/minimal_init.lua -c 'lua __load_papis()'
+                    nvim -u tests/minimal_init.lua -c 'lua __load_papis()'
                   '';
-                  # packages = [ pkgs.hello ];
-                  #
-                  # enterShell = ''
-                  #   hello
-                  # '';
                 }
               ];
             };
