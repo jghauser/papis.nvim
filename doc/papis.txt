@@ -1,19 +1,19 @@
-*papis.txt*            For NVIM v0.5.0            Last change: 2022 October 14
+*papis.txt*             For NVIM v0.8.0             Last change: 2023 March 13
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
 
 1. 📚 papis.nvim                                     |papis-📚-papis.nvim|
-  - Features                                                  |papis-features|
-  - The database                                          |papis-the-database|
-  - Installation                                          |papis-installation|
-  - Setup                                                        |papis-setup|
-  - Usage                                                        |papis-usage|
-  - Keymaps                                                    |papis-keymaps|
-  - Highlights                                              |papis-highlights|
-  - Issues/Troubleshooting                      |papis-issues/troubleshooting|
-  - Contributing                                          |papis-contributing|
-  - Planned features and improvements|papis-planned-features-and-improvements|
+  - Features                                  |papis-📚-papis.nvim-features|
+  - The database                          |papis-📚-papis.nvim-the-database|
+  - Installation                          |papis-📚-papis.nvim-installation|
+  - Setup                                        |papis-📚-papis.nvim-setup|
+  - Usage                                        |papis-📚-papis.nvim-usage|
+  - Keymaps                                    |papis-📚-papis.nvim-keymaps|
+  - Highlights                              |papis-📚-papis.nvim-highlights|
+  - Issues/Troubleshooting      |papis-📚-papis.nvim-issues/troubleshooting|
+  - Contributing                          |papis-📚-papis.nvim-contributing|
+  - Planned features and improvements|papis-📚-papis.nvim-planned-features-and-improvements|
 
 ==============================================================================
 1. 📚 papis.nvim                                     *papis-📚-papis.nvim*
@@ -23,17 +23,11 @@ the bibliography manager papis <https://github.com/papis/papis>. It’s meant
 for all those who do academic and other writing in neovim and who want quick
 access to their bibliography from within the comfort of their editor.
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg" title="fig:"/>
-<p class="caption">20221002_18h39m59s_grim</p>
-</div>
-
 
 - Search your bibliography with telescope <https://github.com/nvim-telescope/telescope.nvim>
 - Get information about the entry behind the citation key under the cursor
 - Automatically format new notes
 - Tag completion in `info.yaml` files
-
 
 And this is just the beginning! With its fast and always up-to-date sqlite
 database (courtesy of sqlite.lua <https://github.com/tami5/sqlite.lua>), a host
@@ -55,17 +49,14 @@ gremlins waiting to pounce are not my responsibility). In the future,
 papis.nvim might directly edit `info.yaml` files, but if and when that happens,
 this will be clearly communicated as a breaking change.
 
-FEATURES                                                      *papis-features*
+
+FEATURES                                      *papis-📚-papis.nvim-features*
 
 A number of features (bundled into `modules`) are shipped with papis.nvim.
 These can be (de)activated as desired.
 
-'SEARCH' MODULE ~
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif" title="fig:"/>
-<p class="caption">search (trimmed)</p>
-</div>
+‘SEARCH’ MODULE ~
 
 Papis.nvim integrates with telescope to easily and quickly search one’s
 bibliography. Open the picker and enter the title (or author, year, etc.) of
@@ -82,23 +73,15 @@ available: - `o` (normal) / `c-o` (insert): Opens files attached to the entry -
 creation of a new one if none exists) - `e` (normal) / `c-e` (insert): Opens
 the `info.yaml` file
 
-'COMPLETION' MODULE ~
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif" title="fig:"/>
-<p class="caption">completion (trimmed)</p>
-</div>
+‘COMPLETION’ MODULE ~
 
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in
 the database. This module is implemented as a cmp
 <https://github.com/hrsh7th/nvim-cmp> source.
 
-'CURSOR-ACTIONS' MODULE ~
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif" title="fig:"/>
-<p class="caption">cursor-actions (trimmed)</p>
-</div>
+‘CURSOR-ACTIONS’ MODULE ~
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
 papis.nvim allows you to interact with the bibliography item referenced by it.
@@ -108,12 +91,8 @@ the entry - `:PapisOpenFile`: Opens files attached to the entry -
 `:PapisOpenNote`: Opens notes attached to the entry (asks for the creation of a
 new one if none exist) - `:PapisEditEntry`: Opens the `info.yaml` file
 
-'FORMATTER' MODULE ~
 
-<div class="figure">
-<img src="https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif" title="fig:"/>
-<p class="caption">formatter_trimmed</p>
-</div>
+‘FORMATTER’ MODULE ~
 
 When creating new notes (via `:Telescope papis` or `:PapisOpenNote`),
 papis.nvim can be set up to format the new note with a custom function. You
@@ -121,12 +100,13 @@ can, for example, give the note a title that corresponds to the entry’s title
 or provide it with a skeleton structure. Below, in the setup section, there’s
 an example suitable for the `.norg` format.
 
-THE DATABASE                                              *papis-the-database*
+
+THE DATABASE                              *papis-📚-papis.nvim-the-database*
 
 All of papis.nvim’s features are made possible by a sqlite database that is
 created when the plugin is first started. This might take a while, so be
 patient. From then on, the database is automatically (and very quickly) updated
-whenever `info.yaml` files are added, changed, or deleted.The database is
+whenever `info.yaml` files are added, changed, or deleted. The database is
 synchronised when papis.nvim is started and is then kept up-to-date
 continuously while at least one neovim instance with a running papis.nvim
 session exists.
@@ -135,11 +115,12 @@ Note that fiddling with the plugin’s options can leave the database in a
 messy state. If strange errors appear, use `:PapisReInitData` to re-initialise
 the database.
 
-INSTALLATION                                              *papis-installation*
+
+INSTALLATION                              *papis-📚-papis.nvim-installation*
 
 With packer:
 
->
+>lua
     use({
       "jghauser/papis.nvim",
       after = { "telescope.nvim", "nvim-cmp" },
@@ -166,7 +147,6 @@ With packer:
     })
 <
 
-
 _Papis version_: papis.nvim is meant to be used in conjunction with papis and
 won’t run if it doesn’t find the `papis` executable. Note that for the note
 creation feature to work, it is currently required to use the git version (with
@@ -178,7 +158,8 @@ _Operating system_: papis.nvim has only been tested on Linux – but will
 hopefully also work on other operating systems (if you run into problems,
 please open an issue).
 
-SETUP                                                            *papis-setup*
+
+SETUP                                            *papis-📚-papis.nvim-setup*
 
 Papis.nvim exposes a rather large number of configuration options, most of
 which can be left alone – and quite a few of which probably _should_ be left
@@ -192,7 +173,7 @@ considerably and should be replaced with a proper configuration.
 
 Minimal setup:
 
->
+>lua
     require("papis").setup({
       -- These are configuration options of the `papis` program relevant to papis.nvim.
       -- Papis.nvim can get them automatically from papis, but this is very slow. It is
@@ -208,10 +189,9 @@ Minimal setup:
     })
 <
 
-
 Full list of configuration options (with defaults):
 
->
+>lua
     -- List of enabled papis.nvim modules.
     enable_modules = {
       ["search"] = true,          -- Enables/disables the search module
@@ -417,11 +397,10 @@ Full list of configuration options (with defaults):
     },
 <
 
-
 In order to use the cmp source, you need to add it to the sources loaded by
 cmp.
 
->
+>lua
     cmp.setup({
       sources = cmp.config.sources({
       -- your other source
@@ -430,12 +409,11 @@ cmp.
     })
 <
 
-
 Unfortunately, treesitter indenting for `yaml` files is currently very buggy,
 and this sometimes messes with the papis.nvim completion module. I suggest
 disabling treesitter indenting for this filetype.
 
->
+>lua
     require("nvim-treesitter.configs").setup({
       indent = {
         enable = true,
@@ -445,14 +423,15 @@ disabling treesitter indenting for this filetype.
 <
 
 
-USAGE                                                            *papis-usage*
+USAGE                                            *papis-📚-papis.nvim-usage*
 
 Papis will start automatically according to the filename patterns defined in
 `init_filenames` (see the |papis-setup-section|). Additionally, it can also be
 started with `:PapisStart`. The rest of the functionality is covered in the
 |papis-features-section|.
 
-KEYMAPS                                                        *papis-keymaps*
+
+KEYMAPS                                        *papis-📚-papis.nvim-keymaps*
 
 By default, papis.nvim doesn’t set any keymaps (except in Telescope). You
 can, however, enable them by setting `enable_keymaps` to true. This provides
@@ -466,7 +445,7 @@ you with the following:
 - `<leader>pi` (normal): Show entry info popup
 
 
-HIGHLIGHTS                                                  *papis-highlights*
+HIGHLIGHTS                                  *papis-📚-papis.nvim-highlights*
 
 Papis.nvim defines and links the following default highlight groups:
 
@@ -483,10 +462,10 @@ Papis.nvim defines and links the following default highlight groups:
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
 
-
 In order to change the colours, simply override them with whatever you desire.
 
-ISSUES/TROUBLESHOOTING                          *papis-issues/troubleshooting*
+
+ISSUES/TROUBLESHOOTING          *papis-📚-papis.nvim-issues/troubleshooting*
 
 You can use `:checkhealth papis` for some basic troubleshooting. In addition,
 you can enable the `debug` module, which exposes the following commands and a
@@ -497,10 +476,10 @@ log:
 - `PapisDebugFWStop`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
 - `PapisDebugFWStart`: Starts file watching for the current neovim instance
 
-
 Please open an issue when you find bugs!
 
-CONTRIBUTING                                              *papis-contributing*
+
+CONTRIBUTING                              *papis-📚-papis.nvim-contributing*
 
 I am quite new to programming and there’s a million things that I want to
 improve and probably another million things that I _should_ improve but don’t
@@ -510,7 +489,8 @@ cool idea for a new functionality you want to implement, I’d be happy to
 guide you through the process of creating a new module. PRs should be formatted
 with stylua and have emmydoc comments.
 
-PLANNED FEATURES AND IMPROVEMENTS    *papis-planned-features-and-improvements*
+
+PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-improvements*
 
 I’m open to suggestions and PRs. Here are some things I’ve thought of:
 
@@ -527,6 +507,14 @@ I’m open to suggestions and PRs. Here are some things I’ve thought of:
 - ☐ tests
 - ☐ make more modular
 
+==============================================================================
+2. Links                                                         *papis-links*
+
+1. *20221002_18h39m59s_grim*: https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg
+2. *search (trimmed)*: https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif
+3. *completion (trimmed)*: https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif
+4. *cursor-actions (trimmed)*: https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif
+5. *formatter_trimmed*: https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif
 
 Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
 
