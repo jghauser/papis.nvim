@@ -63,25 +63,27 @@ function M:is_available()
 		end
 		local node_text
 
-		log.trace("tag_delimiter: " .. tag_delimiter)
-		if tag_delimiter == "- " then
-			local cursor_position = api.nvim_win_get_cursor(0)
-			cmd("normal ^")
-			local node_at_cursor = ts_utils.get_node_at_cursor()
-			api.nvim_win_set_cursor(0, cursor_position)
-			if node_at_cursor then
-				if node_at_cursor:type() == "block_sequence_item" then
-					local key_node = ts_utils.get_previous_node(node_at_cursor:parent():parent())
-					node_text = query.get_node_text(key_node, 0)
+		if tag_delimiter then
+			log.trace("tag_delimiter: " .. tag_delimiter)
+			if tag_delimiter == "- " then
+				local cursor_position = api.nvim_win_get_cursor(0)
+				cmd("normal ^")
+				local node_at_cursor = ts_utils.get_node_at_cursor()
+				api.nvim_win_set_cursor(0, cursor_position)
+				if node_at_cursor then
+					if node_at_cursor:type() == "block_sequence_item" then
+						local key_node = ts_utils.get_previous_node(node_at_cursor:parent():parent())
+						node_text = query.get_node_text(key_node, 0)
+					end
 				end
-			end
-		elseif tag_delimiter then
-			local cursor_position = api.nvim_win_get_cursor(0)
-			api.nvim_win_set_cursor(0, { cursor_position[1], 1 })
-			local node_at_cursor = ts_utils.get_node_at_cursor()
-			api.nvim_win_set_cursor(0, cursor_position)
-			if node_at_cursor then
-				node_text = query.get_node_text(node_at_cursor, 0)
+			else
+				local cursor_position = api.nvim_win_get_cursor(0)
+				api.nvim_win_set_cursor(0, { cursor_position[1], 1 })
+				local node_at_cursor = ts_utils.get_node_at_cursor()
+				api.nvim_win_set_cursor(0, cursor_position)
+				if node_at_cursor then
+					node_text = query.get_node_text(node_at_cursor, 0)
+				end
 			end
 		end
 
