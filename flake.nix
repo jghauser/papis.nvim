@@ -1,4 +1,6 @@
 {
+  description = "Papis.nvim development environment";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
     devenv.url = "github:cachix/devenv";
@@ -27,7 +29,8 @@
                     package = pkgs.luajit;
                   };
                   scripts.run-tests.exec = ''
-                    nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedDirectory tests/spec'
+                    # nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedDirectory tests/spec'
+                    find tests/spec -type f -exec nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedFile {}' \;
                   '';
                   scripts.run-app.exec = ''
                     nvim -u tests/minimal_init.lua -c 'lua __load_papis()'
