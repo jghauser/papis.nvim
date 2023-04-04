@@ -9,7 +9,7 @@ local action_state = require("telescope.actions.state")
 
 local utils = require("papis.utils")
 
-M = {}
+local M = {}
 
 ---This function inserts a formatted reference string at the cursor
 ---@param format_string string @The string to be inserted

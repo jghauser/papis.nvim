@@ -186,7 +186,7 @@ local function start_fs_watch_active_timer()
 	)
 end
 
-M = {}
+local M = {}
 
 ---Sets up the fs-watcher module
 function M:init()

@@ -13,7 +13,7 @@ if not has_cmp then
 	return nil
 end
 
-M = {}
+local M = {}
 
 ---Sets up the papis.nvim cmp completion source
 function M.setup()

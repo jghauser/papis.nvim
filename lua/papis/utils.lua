@@ -21,7 +21,7 @@ local is_windows = os_name == "Windows"
 local is_macos = os_name == "Darwin"
 local is_linux = os_name == "Linux"
 
-M = {}
+local M = {}
 
 ---Get the cite_format for the current filetype
 ---@param filetype string #Filetype for which we need a cite_format
