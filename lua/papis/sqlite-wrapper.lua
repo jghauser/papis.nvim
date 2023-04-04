@@ -71,7 +71,7 @@ function tbl_methods.update(tbl, where, new_values)
 	})
 end
 
-M = sqlite({
+local M = sqlite({
 	uri = db_uri:absolute(),
 	opts = { busy_timeout = 30000 },
 })
