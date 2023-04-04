@@ -1,4 +1,4 @@
-*papis.txt*             For NVIM v0.8.0             Last change: 2023 March 18
+*papis.txt*             For NVIM v0.8.0             Last change: 2023 April 04
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
