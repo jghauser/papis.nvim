@@ -3,4 +3,3 @@ doc/tags
 .devenv/
 .direnv/
 .envrc
-flake.lock
