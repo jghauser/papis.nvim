@@ -69,15 +69,13 @@ function M.start()
 	local does_pid_exist = require("papis.utils").does_pid_exist
 
 	-- get all functions that we need to run the various commands
-	for module_name, is_enabled in pairs(config["enable_modules"]) do
-		if is_enabled then
-			log.trace(module_name .. " is enabled")
-			local has_module, module = pcall(require, "papis." .. module_name)
-			-- local module = require("papis." .. module_name)
-			if has_module then
-				if module["setup"] then
-					module.setup()
-				end
+	for module_name, _ in pairs(config["enable_modules"]) do
+		log.trace(module_name .. " is enabled")
+		local has_module, module = pcall(require, "papis." .. module_name)
+		-- local module = require("papis." .. module_name)
+		if has_module then
+			if module["setup"] then
+				module.setup()
 			end
 		end
 	end

@@ -157,6 +157,13 @@ function M:update(opts)
 		newconf["papis_python"] = get_papis_py_conf()
 	end
 
+	-- set disabled modules to nil if false
+	for module_name, is_enabled in pairs(newconf["enable_modules"]) do
+		if is_enabled == false then
+			newconf.enable_modules[module_name] = nil
+		end
+	end
+
 	-- replace %info_name% with actual value
 	if newconf["init_filenames"][1] == "%info_name%" then
 		table.remove(newconf["init_filenames"], 1)
