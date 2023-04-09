@@ -29,11 +29,14 @@
                     package = pkgs.luajit;
                   };
                   scripts.run-tests.exec = ''
-                    # nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedDirectory tests/spec'
-                    find tests/spec -type f -exec nvim --headless -u tests/minimal_init.lua -c 'PlenaryBustedFile {}' \;
+                    # nvim --headless -u tests/minimal_init.lua -c "PlenaryBustedDirectory tests/spec"
+                    find tests/spec -type f -exec nvim --headless -u tests/minimal_init.lua -c "PlenaryBustedFile {}" \;
+                  '';
+                  scripts.run-test.exec = ''
+                    nvim --headless -u tests/minimal_init.lua -c "PlenaryBustedFile $1" \;
                   '';
                   scripts.run-app.exec = ''
-                    nvim -u tests/minimal_init.lua -c 'lua __load_papis()'
+                    nvim -u tests/minimal_init.lua -c "lua _Load_papis()"
                   '';
                 }
               ];
