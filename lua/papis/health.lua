@@ -82,7 +82,7 @@ local M = {}
 ---Main function called by checkhealth
 M.check = function()
 	if not health then
-		health = vim.health or require("health")
+		health = vim.health
 	end
 
 	reports["sqlite-wrapper"]()
