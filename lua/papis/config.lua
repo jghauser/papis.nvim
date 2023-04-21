@@ -45,6 +45,7 @@ local default_config = {
 		rmd = "@%s",
 		plain = "%s",
 		org = { "[cite:@%s]", "%[cite:@%s]" },
+		norg = "{= %s}",
 	},
 	cite_formats_fallback = "plain",
 	always_use_plain = false,
