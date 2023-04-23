@@ -97,7 +97,6 @@ end
 ---@param request table
 ---@param callback function
 function M:complete(request, callback)
-  vim.print(request)
   local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
   log.debug("Request prefix: " .. prefix)
 
