@@ -24,6 +24,9 @@
               inherit inputs pkgs;
               modules = [
                 {
+                  packages = [
+                    pkgs.sqlitebrowser
+                  ];
                   languages.lua = {
                     enable = true;
                     package = pkgs.luajit;
