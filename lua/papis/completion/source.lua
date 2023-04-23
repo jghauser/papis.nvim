@@ -6,8 +6,7 @@
 --
 
 local Path = require("plenary.path")
-local ts_utils = require("nvim-treesitter.ts_utils")
-local query = require("vim.treesitter.query")
+local ts = vim.treesitter
 local cmd = vim.cmd
 local api = vim.api
 
@@ -58,38 +57,35 @@ function M:is_available()
 	local filename = current_filepath:_split()[#split_path]
 
 	if filename == config["papis_python"]["info_name"] then
+		log.trace("we are in a papis info file")
 		if not tag_delimiter then
 			tag_delimiter = get_tag_delimiter()
 		end
-		local node_text
 
 		if tag_delimiter then
-			log.trace("tag_delimiter: " .. tag_delimiter)
-			if tag_delimiter == "- " then
-				local cursor_position = api.nvim_win_get_cursor(0)
-				cmd("normal ^")
-				local node_at_cursor = ts_utils.get_node_at_cursor()
-				api.nvim_win_set_cursor(0, cursor_position)
-				if node_at_cursor then
-					if node_at_cursor:type() == "block_sequence_item" then
-						local key_node = ts_utils.get_previous_node(node_at_cursor:parent():parent())
-						node_text = query.get_node_text(key_node, 0)
+			local parser = ts.get_parser(0, "yaml")
+			local root = parser:parse()[1]:root()
+			local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
+			local parse_query = ts.query.parse(
+				"yaml",
+				[[
+        (block_mapping_pair
+          key: (flow_node) @name (#eq? @name "tags")
+        ) @capture
+        ]]
+			)
+			local cur_row, _ = unpack(api.nvim_win_get_cursor(0))
+			for id, node, _ in parse_query:iter_captures(root, 0, start_row, end_row) do
+				local name = parse_query.captures[id]
+				if name == "capture" then
+					local node_start, _, _, node_end, _, _ = unpack(ts.get_range(node))
+					log.trace("start_line: " .. node_start .. "; cur_line: " .. cur_row .. "; end_line: " .. node_end)
+					if node_start <= cur_row and (node_end + 1) >= cur_row then
+						log.trace("completion is available")
+						is_available = true
 					end
 				end
-			else
-				local cursor_position = api.nvim_win_get_cursor(0)
-				api.nvim_win_set_cursor(0, { cursor_position[1], 1 })
-				local node_at_cursor = ts_utils.get_node_at_cursor()
-				api.nvim_win_set_cursor(0, cursor_position)
-				if node_at_cursor then
-					node_text = query.get_node_text(node_at_cursor, 0)
-				end
 			end
-		end
-
-		if node_text == "tags" then
-			is_available = true
-			log.debug("cmp source is available")
 		end
 	end
 	return is_available
@@ -99,10 +95,6 @@ end
 ---@param request table
 ---@param callback function
 function M:complete(request, callback)
-	if not tag_delimiter then
-		tag_delimiter = get_tag_delimiter()
-	end
-
 	local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
 	log.debug("Request prefix: " .. prefix)
 
