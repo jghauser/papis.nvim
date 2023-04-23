@@ -18,7 +18,7 @@ local links = {
   PopupTitle = "Normal",
   ResultsAuthor = "PreProc",
   ResultsYear = "Statement",
-  ResultsTitle = "TelescopeResultsNormal",
+  ResultsTitle = "Struct",
 }
 
 ---Sets up all the default highlight groups
