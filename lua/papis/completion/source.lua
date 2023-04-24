@@ -100,7 +100,12 @@ function M:complete(request, callback)
   local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
   log.debug("Request prefix: " .. prefix)
 
-  if prefix == "tags: " or vim.endswith(prefix, tag_delimiter) then
+  -- complete if after tag_delimiter
+  local comp_after_tag_delimiter = vim.endswith(prefix, tag_delimiter)
+  -- complete if after 'tags: ' keyword and not table tag format
+  local comp_after_keyword = (prefix == "tags: ") and not (tag_delimiter == "- ")
+
+  if comp_after_tag_delimiter or comp_after_keyword then
     log.debug("Running cmp `complete()` function.")
     self.items = db.completion:get()[1]["tag_strings"]
     callback(self.items)
