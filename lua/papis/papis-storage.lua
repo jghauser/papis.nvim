@@ -7,7 +7,6 @@
 
 local Path = require("plenary.path")
 local Scan = require("plenary.scandir")
-local lyaml = require("lyaml")
 
 local fs_stat = vim.loop.fs_stat
 
@@ -24,6 +23,7 @@ local data_tbl_schema = config["data_tbl_schema"]
 local key_name_conversions = config["papis-storage"]["key_name_conversions"]
 local tag_format = config["papis-storage"]["tag_format"]
 local have_determined_tag_format = false
+local yq_bin = config["yq_bin"]
 
 --- This function determines if tag format is list, space separated, or comma separated
 ---@param tags any #Either a table or a string with tag(s)
@@ -59,22 +59,6 @@ local function ensure_tags_are_tbl(tags)
 	return tags
 end
 
--- Replace "LYAML null" values with "nil"
--- see: https://github.com/gvvaughan/lyaml/issues/31
-local function do_clean_lyaml_tbl(tbl)
-	local result = {}
-	for k, v in pairs(tbl) do
-		if (getmetatable(v) or {})._type == "LYAML null" then
-			result[k] = nil
-		elseif type(v) == "table" then
-			result[k] = do_clean_lyaml_tbl(v)
-		else
-			result[k] = v
-		end
-	end
-	return result
-end
-
 local function is_valid_entry(entry, path)
 	if entry["ref"] then
 		return true
@@ -87,7 +71,8 @@ end
 local function read_yaml(path)
 	log.trace("Reading path: " .. path)
 	local filepath = Path:new(path)
-	local entry = lyaml.load(filepath:read())
+    local as_json = io.popen(yq_bin..' -oj "' .. filepath:absolute()..'"'):read("*all")
+	local entry = vim.json.decode(as_json)
 	return entry
 end
 
@@ -147,9 +132,6 @@ function M.get_data_full(metadata)
 		local path = metadata_v["path"]
 		local mtime = metadata_v["mtime"]
 		local entry = read_yaml(path)
-		if entry then
-			entry = do_clean_lyaml_tbl(entry)
-		end
 		if is_valid_entry(entry, path) then
 			entry = do_convert_entry_keys(entry)
 			local data = {}
