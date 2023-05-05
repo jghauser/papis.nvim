@@ -26,6 +26,7 @@
                 {
                   packages = [
                     pkgs.sqlitebrowser
+                    pkgs.yq-go
                   ];
                   languages.lua = {
                     enable = true;

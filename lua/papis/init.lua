@@ -31,13 +31,18 @@ function M.setup(opts)
   config:update(opts)
 
   log = require("papis.logger")
+  log.debug("_________________________SETTING UP PAPIS.NVIM_________________________")
 
-  if not vim.fn.executable("papis") then
-    log.error("The command 'papis' could not be found. Papis must be installed to run papis.nvim")
-    return nil
+  local dependencies = { "papis", config["yq_bin"] }
+  for _, dependency in ipairs(dependencies) do
+    if vim.fn.executable(dependency) == 0 then
+      log.error(
+        string.format("The executable '%s' could not be found. Please install it to use papis.nvim", dependency)
+      )
+      return nil
+    end
   end
 
-  log.debug("_________________________SETTING UP PAPIS.NVIM_________________________")
   log.debug("Creating `PapisStart` command")
   require("papis.commands").setup("init")
   -- make_papis_start()

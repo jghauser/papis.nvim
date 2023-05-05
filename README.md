@@ -77,16 +77,6 @@ use({
     "MunifTanjim/nui.nvim",
     "nvim-treesitter/nvim-treesitter",
   },
-  rocks = {
-    {
-      "lyaml" 
-      -- If using macOS or Linux, you may need to install the `libyaml` (and
-      -- possibly the `libyaml-devel`) package.
-      -- If you install libyaml with homebrew you will need to set the YAML_DIR
-      -- to the location of the homebrew installation of libyaml e.g.
-      -- env = { YAML_DIR = '/opt/homebrew/Cellar/libyaml/0.2.5/' },
-    }
-  },
   config = function()
     require("papis").setup(
     -- Your configuration goes here
@@ -95,9 +85,31 @@ use({
 })
 ```
 
+With lazy.nvim:
+
+```lua
+{
+  "jghauser/papis.nvim",
+  dependencies = {
+    "kkharji/sqlite.lua",
+    "nvim-lua/plenary.nvim",
+    "MunifTanjim/nui.nvim",
+    "nvim-treesitter/nvim-treesitter",
+  },
+  config = function()
+    require("papis").setup({
+    -- Your configuration goes here
+    })
+  end,
+}
+```
+
 With lazy.nvim: because lua rocks are currently unsupported, installation is a bit more fiddly. See [this issue](https://github.com/jghauser/papis.nvim/issues/18) for some hints.
 
-*Papis version*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff99`).
+Additional dependencies:
+
+- *papis*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff99`).
+- *yq*: papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 
 *Neovim version*: papis.nvim is being tested on the latest stable version.
 
@@ -193,6 +205,9 @@ data_tbl_schema = {
 
 -- Path to the papis.nvim database.
 db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
+
+-- Name of the `yq` executable.
+yq_bin = "yq",
 
 -- The papis options relevant for papis.nvim (see above minimal config). By
 -- default it is unset, which prompts papis.nvim to call `papis config` to 
