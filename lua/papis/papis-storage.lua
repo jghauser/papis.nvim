@@ -72,7 +72,7 @@ local function read_yaml(path)
   log.trace("Reading path: " .. path)
   local filepath = Path:new(path)
   local as_json = io.popen(yq_bin .. ' -oj "' .. filepath:absolute() .. '"'):read("*all")
-  local entry = vim.json.decode(as_json)
+  local entry = vim.json.decode(as_json, { luanil = { object = true, array = true } })
   return entry
 end
 
