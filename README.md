@@ -104,8 +104,6 @@ With lazy.nvim:
 }
 ```
 
-With lazy.nvim: because lua rocks are currently unsupported, installation is a bit more fiddly. See [this issue](https://github.com/jghauser/papis.nvim/issues/18) for some hints.
-
 Additional dependencies:
 
 - *papis*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff99`).
