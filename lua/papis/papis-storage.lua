@@ -21,6 +21,7 @@ local library_dir = (Path:new(config["papis_python"]["dir"]))
 local info_name = config["papis_python"]["info_name"]
 local data_tbl_schema = config["data_tbl_schema"]
 local key_name_conversions = config["papis-storage"]["key_name_conversions"]
+local required_keys = config["papis-storage"]["required_keys"]
 local tag_format = config["papis-storage"]["tag_format"]
 local have_determined_tag_format = false
 local yq_bin = config["yq_bin"]
@@ -66,10 +67,13 @@ end
 local function is_valid_entry(entry, path)
   local is_valid = false
   if entry then
-    if entry["ref"] then
-      is_valid = true
-    else
-      log.info(string.format("The entry at '%s' is missing a reference and will not be added.", path))
+    for _, key in ipairs(required_keys) do
+      if entry[key] then
+        is_valid = true
+      else
+        log.info(string.format("The entry at '%s' is missing the key '%s' and will not be added.", path, key))
+        break
+      end
     end
   else
     log.info(string.format("The entry at '%s' is faulty and will not be added.", path))
@@ -153,7 +157,7 @@ end
 
 ---This function is used to get info for some or all papis entries. Only valid entries are returned.
 ---@param metadata? table #A list with { path = path, mtime = mtime } values
----@return table #A list of {{ ref = ref, key = val, ...}, { path = path, mtime = mtime }} values.
+---@return table #A list of {{ papis_id = papis_id, key = val, ...}, { path = path, mtime = mtime }} values.
 function M.get_data_full(metadata)
   metadata = metadata or M.get_metadata()
   local data_complete = {}

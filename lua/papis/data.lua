@@ -57,10 +57,10 @@ local function update_main_tbls(metadata)
     local entry_full_data = papis_storage.get_data_full({ metadata })[1]
     log.debug("Update/Add entry with following data: " .. vim.inspect(entry_full_data))
     if entry_full_data then
-      local ref = entry_full_data[1]["ref"]
+      local papis_id = entry_full_data[1]["papis_id"]
       local data_row = entry_full_data[1]
       local metadata_row = entry_full_data[2]
-      local id = db.data:get({ ref = ref }, { "id" })
+      local id = db.data:get({ papis_id = papis_id }, { "id" })
       if not vim.tbl_isempty(id) then
         log.debug("Changing an existing entry")
         id = id[1]["id"]

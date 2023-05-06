@@ -50,17 +50,18 @@ local function get_ref_under_cursor()
 end
 
 ---Runs function if there is a valid ref under cursor which exists in the database
----@param fun function #The function to be run with the ref
+---@param fun function #The function to be run with the papis_id
 ---@param self? table #Self argument to be passed to fun
 ---@param type? string #Type argument to be passed to fun
 local function if_ref_valid_run_fun(fun, self, type)
   local ref = get_ref_under_cursor()
-  local entry = db.data:get({ ref = ref }, { "id" })
+  local entry = db.data:get({ ref = ref }, { "papis_id" })
   if not vim.tbl_isempty(entry) then
+    local papis_id = entry[1]["papis_id"]
     if self then
-      fun(self, ref, type)
+      fun(self, papis_id, type)
     else
-      fun(ref, type)
+      fun(papis_id, type)
     end
   else
     log.info(string.format("No entry in database corresponds to '%s'", ref))
@@ -68,9 +69,9 @@ local function if_ref_valid_run_fun(fun, self, type)
 end
 
 ---Creates a popup with information regarding the entry specified by `ref`
----@param ref string #The `ref` of the entry
-local function create_hover_popup(ref)
-  local entry = db.data:get({ ref = ref }, hover_required_db_keys)[1]
+---@param papis_id string #The `papis_id` of the entry
+local function create_hover_popup(papis_id)
+  local entry = db.data:get({ papis_id = papis_id }, hover_required_db_keys)[1]
   local clean_popup_format = utils.do_clean_format_tbl(popup_format, entry)
   local popup_lines, width = utils.make_nui_lines(clean_popup_format, entry)
 

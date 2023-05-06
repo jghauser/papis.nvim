@@ -26,9 +26,9 @@ end
 ---@return function
 M.open_file = function()
   return function(prompt_bufnr)
-    local ref = action_state.get_selected_entry().id.ref
+    local papis_id = action_state.get_selected_entry().id.papis_id
     actions.close(prompt_bufnr)
-    utils:do_open_attached_files(ref)
+    utils:do_open_attached_files(papis_id)
   end
 end
 
@@ -36,9 +36,9 @@ end
 ---@return function
 M.open_note = function()
   return function(prompt_bufnr)
-    local ref = action_state.get_selected_entry().id.ref
+    local papis_id = action_state.get_selected_entry().id.papis_id
     actions.close(prompt_bufnr)
-    utils:do_open_text_file(ref, "note")
+    utils:do_open_text_file(papis_id, "note")
   end
 end
 
@@ -46,9 +46,9 @@ end
 ---@return function
 M.open_info = function()
   return function(prompt_bufnr)
-    local ref = action_state.get_selected_entry().id.ref
+    local papis_id = action_state.get_selected_entry().id.papis_id
     actions.close(prompt_bufnr)
-    utils:do_open_text_file(ref, "info")
+    utils:do_open_text_file(papis_id, "info")
   end
 end
 

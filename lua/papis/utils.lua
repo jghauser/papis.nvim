@@ -92,13 +92,13 @@ function M.get_filenames(full_paths)
 end
 
 ---Open an entry's attached files
----@param ref string #The `ref` of the entry
-function M:do_open_attached_files(ref)
+---@param papis_id string #The `papis_id` of the entry
+function M:do_open_attached_files(papis_id)
   local db = require("papis.sqlite-wrapper")
   if not db then
     return nil
   end
-  local entry = db.data:get({ ref = ref }, { "files", "id" })[1]
+  local entry = db.data:get({ papis_id = papis_id }, { "files", "id" })[1]
   local filenames = self.get_filenames(entry["files"])
   local lookup_tbl = {}
   for k, filename in ipairs(filenames) do
@@ -124,16 +124,16 @@ function M:do_open_attached_files(ref)
 end
 
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
----@param ref string #The `ref` of the entry
+---@param papis_id string #The `papis_id` of the entry
 ---@param type string #Either "note" or "info", specifying the type of file
-function M:do_open_text_file(ref, type)
+function M:do_open_text_file(papis_id, type)
   local db = require("papis.sqlite-wrapper")
   if not db then
     log.warn("Sqlite-wrapper has not been initialised properly. Aborting...")
     return nil
   end
   log.debug("Opening a text file")
-  local entry = db.data:get({ ref = ref }, { "notes", "id" })[1]
+  local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
   local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, "path"))
   log.debug("Text file in folder: " .. info_path:absolute())
   local cmd = ""
@@ -164,9 +164,9 @@ function M:do_open_text_file(ref, type)
         local create_new_note_fn = config["create_new_note_fn"]
         local notes_name = config["papis_python"]["notes_name"]
         local enable_modules = config["enable_modules"]
-        create_new_note_fn(ref, notes_name)
+        create_new_note_fn(papis_id, notes_name)
         if enable_modules["formatter"] then
-          entry = db.data:get({ ref = ref })[1]
+          entry = db.data:get({ papis_id = papis_id })[1]
           local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
           log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
           local callback = config["formatter"]["format_notes_fn"]
@@ -178,10 +178,10 @@ function M:do_open_text_file(ref, type)
           0,
           5,
           vim.schedule_wrap(function()
-            entry = db.data:get({ ref = ref }, { "notes" })[1]
+            entry = db.data:get({ papis_id = papis_id }, { "notes" })[1]
             if entry["notes"] and not file_opened then
               log.debug("Opening newly created notes file")
-              self:do_open_text_file(ref, type)
+              self:do_open_text_file(papis_id, type)
               file_opened = true
               entry_has_note:stop()
               entry_has_note:close()
