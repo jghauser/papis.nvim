@@ -106,7 +106,7 @@ With lazy.nvim:
 
 Additional dependencies:
 
-- *papis*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with commit `d11ff99`).
+- *papis*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. Note that for the note creation feature to work, it is currently required to use the git version (with at least commit `40802f0`).
 - *yq*: papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 - *treesitter yaml parser*: Required by the completion module.
 
