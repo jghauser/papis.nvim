@@ -113,7 +113,7 @@ return telescope.register_extension({
     preview_format = opts["preview_format"]
     local search_keys = opts["search_keys"]
     local results_format = opts["results_format"]
-    required_db_keys = utils:get_required_db_keys({ search_keys, preview_format, results_format })
+    required_db_keys = utils:get_required_db_keys({ { "papis_id" }, search_keys, preview_format, results_format })
   end,
   exports = {
     papis = papis_picker,

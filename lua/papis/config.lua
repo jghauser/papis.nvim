@@ -54,6 +54,7 @@ local default_config = {
   enable_fs_watcher = true,
   data_tbl_schema = { -- only "text" and "luatable" are allowed
     id = { "integer", pk = true },
+    papis_id = { "text", required = true, unique = true },
     ref = { "text", required = true, unique = true },
     author = "text",
     editor = "text",
@@ -71,9 +72,13 @@ local default_config = {
   db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
   yq_bin = "yq",
   papis_python = nil,
-  create_new_note_fn = function(ref, notes_name)
+  create_new_note_fn = function(papis_id, notes_name)
     vim.fn.system(
-      string.format("papis update --set notes %s ref:%s", vim.fn.shellescape(notes_name), vim.fn.shellescape(ref))
+      string.format(
+        "papis update --set notes %s papis_id:%s",
+        vim.fn.shellescape(notes_name),
+        vim.fn.shellescape(papis_id)
+      )
     )
   end,
   init_filenames = { "%info_name%", "*.md", "*.norg" }, -- if %info_name%, then needs to be at first position
@@ -140,6 +145,7 @@ local default_config = {
       time_added = "time-added",
     },
     tag_format = nil,
+    required_keys = { "papis_id", "ref" },
   },
   log = {
     level = "off", -- off turns it off

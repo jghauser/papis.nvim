@@ -186,6 +186,7 @@ enable_fs_watcher = true,
 -- types are allowed.
 data_tbl_schema = {
   id = { "integer", pk = true },
+  papis_id = { "text", required = true, unique = true },
   ref = { "text", required = true, unique = true },
   author = "text",
   editor = "text",
@@ -214,9 +215,13 @@ papis_python = nil,
 
 -- Function to execute when adding a new note. `ref` is the citation key of the
 -- relevant entry and `notes_name` is defined in `papis_python` above.
-create_new_note_fn = function(ref, notes_name)
+create_new_note_fn = function(papis_id, notes_name)
   vim.fn.system(
-    string.format("papis update --set notes %s ref:%s", vim.fn.shellescape(notes_name), vim.fn.shellescape(ref))
+    string.format(
+      "papis update --set notes %s papis_id:%s",
+      vim.fn.shellescape(notes_name),
+      vim.fn.shellescape(papis_id)
+    )
   )
 end,
 
@@ -334,6 +339,11 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
   -- Can be set to `tbl` (if a lua table), `,` (if comma-separated), `:` (if
   -- semi-colon separated), ` ` (if space separated).
   tag_format = nil,
+
+  -- The keys which `.yaml` files are expected to always define. Files that are
+  -- missing these keys will cause an error message and will not be added to
+  -- the database.
+  required_keys = { "papis_id", "ref" },
 },
 
 -- Configuration of logging.
