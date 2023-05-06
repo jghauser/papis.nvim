@@ -25,7 +25,7 @@ local tag_format = config["papis-storage"]["tag_format"]
 local have_determined_tag_format = false
 local yq_bin = config["yq_bin"]
 
---- This function determines if tag format is list, space separated, or comma separated
+---Determines if tag format is list, space separated, or comma separated
 ---@param tags any #Either a table or a string with tag(s)
 local function do_determine_tag_format(tags)
   if type(tags) == "table" then
@@ -43,7 +43,7 @@ local function do_determine_tag_format(tags)
   end
 end
 
----This function converts, if necessary, the tags into a table.
+---Converts, if necessary, the tags into a table.
 ---@param tags any #Either a table or a string with tag(s)
 ---@return table #A table with tags
 local function ensure_tags_are_tbl(tags)
@@ -59,6 +59,10 @@ local function ensure_tags_are_tbl(tags)
   return tags
 end
 
+---Checks if a decoded entry is valid
+---@param entry table|nil #The entry as a table or nil if entry wasn't read properly before
+---@param path string #The path to the info file
+---@return boolean #True if valid entry, false otherwise
 local function is_valid_entry(entry, path)
   local is_valid = false
   if entry then
@@ -73,6 +77,9 @@ local function is_valid_entry(entry, path)
   return is_valid
 end
 
+---Reads the info file at the path, converts it to json and decodes that
+---@param path string #The path to the info file
+---@return table|nil #The entry as a table, or nil if something goes wrong
 local function read_yaml(path)
   log.trace("Reading path: " .. path)
   local entry
@@ -90,6 +97,10 @@ local function read_yaml(path)
   return entry
 end
 
+---Converts the names of certain keys in an entry to the format expected
+---by papis.nvim
+---@param entry table #The entry as read from the info file
+---@return table #The entry with converted key names
 local function do_convert_entry_keys(entry)
   for key_tbl, key_storage in pairs(key_name_conversions) do
     if entry[key_storage] then
@@ -100,6 +111,10 @@ local function do_convert_entry_keys(entry)
   return entry
 end
 
+---Creates full paths from filenames and a path
+---@param filenames string|table #Filename as string if single path, otherwise table of filename strings
+---@param path string #Path to files
+---@return table #Table of string with full paths
 local function make_full_paths(filenames, path)
   if type(filenames) == "string" then
     filenames = { filenames }
