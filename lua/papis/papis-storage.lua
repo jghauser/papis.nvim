@@ -60,19 +60,33 @@ local function ensure_tags_are_tbl(tags)
 end
 
 local function is_valid_entry(entry, path)
-  if entry["ref"] then
-    return true
+  local is_valid = false
+  if entry then
+    if entry["ref"] then
+      is_valid = true
+    else
+      log.info(string.format("The entry at '%s' is missing a reference and will not be added.", path))
+    end
   else
-    log.info(string.format("The entry at '%s' is missing a reference and is not added to the database.", path))
-    return false
+    log.info(string.format("The entry at '%s' is faulty and will not be added.", path))
   end
+  return is_valid
 end
 
 local function read_yaml(path)
   log.trace("Reading path: " .. path)
+  local entry
   local filepath = Path:new(path)
-  local as_json = io.popen(yq_bin .. ' -oj "' .. filepath:absolute() .. '"'):read("*all")
-  local entry = vim.json.decode(as_json, { luanil = { object = true, array = true } })
+  local handler = io.popen(yq_bin .. ' -oj "' .. filepath:absolute() .. '" 2>/dev/null')
+  if handler then
+    local as_json = handler:read("*all")
+    handler:close()
+    local ok, decoded_entry = pcall(vim.json.decode, as_json, { luanil = { object = true, array = true } })
+    -- only add an entry if the yaml file could be decoded without issues
+    if ok then
+      entry = decoded_entry
+    end
+  end
   return entry
 end
 

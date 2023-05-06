@@ -35,7 +35,10 @@ local function update_module_tbls(metadata)
           -- we're adding or editing an entry (deletions cascade)
           if metadata["mtime"] then
             local id = db.metadata:get_value({ path = metadata["path"] }, "entry")
-            db[module_name]:update(id)
+            -- check if metadata exists (which it might not if the .yaml couldnt be read and wasn't added to db)
+            if id then
+              db[module_name]:update(id)
+            end
           end
         end
       else
