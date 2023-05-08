@@ -115,7 +115,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
       log.debug("Updating: " .. vim.inspect({ path = info_path:absolute(), mtime = mtime }))
       vim.defer_fn(function()
         data.update_db({ path = info_path:absolute(), mtime = mtime })
-      end, 100)
+      end, 200)
     elseif do_unwatch then
       log.debug("Removing watcher")
       unwatch_cb()
