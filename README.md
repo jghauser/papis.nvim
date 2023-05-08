@@ -5,7 +5,7 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 ![20221002_18h39m59s_grim](https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg)
 
 - Search your bibliography with [telescope](https://github.com/nvim-telescope/telescope.nvim)
-- Get information about the entry behind the citation key under the cursor
+- Place your cursor over a citation key and get information about the entry
 - Automatically format new notes
 - Tag completion in `info.yaml` files
 
@@ -48,7 +48,7 @@ When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), pap
 Commands:
 - `:PapisShowPopup`: Opens a floating window with information about the entry
 - `:PapisOpenFile`: Opens files attached to the entry
-- `:PapisOpenNote`: Opens notes attached to the entry (asks for the creation of a new one if none exist)
+- `:PapisOpenNote`: Opens notes attached to the entry (asks for the creation of a new one if none exists)
 - `:PapisEditEntry`: Opens the `info.yaml` file
 
 ### 'formatter' module
@@ -116,7 +116,7 @@ Additional dependencies:
 
 ## Setup
 
-Papis.nvim exposes a rather large number of configuration options, most of which can be left alone -- and quite a few of which probably *should* be left alone (or not if you're feeling brave). Currently, papis.nvim doesn't check whether you've managed to set incompatible options, and weird failures will likely occur in such instances.
+Papis.nvim exposes a rather large number of configuration options, most of which can be left alone -- and quite a few of which probably *should* be left alone (or not, if you're feeling brave). Currently, papis.nvim doesn't check whether you've managed to set incompatible options, and weird failures will likely occur in such instances.
 
 Note that an empty setup function should work reasonably well when just test-driving the plugin. It will, however, slow neovim startup down considerably and should be replaced with a proper configuration.
 
@@ -167,6 +167,7 @@ cite_formats = {
   rmd = "@%s",
   plain = "%s",
   org = { "[cite:@%s]", "%[cite:@%s]" },
+  norg = "{= %s}",
 },
 
 -- What citation format to use when none is defined for the current filetype.
