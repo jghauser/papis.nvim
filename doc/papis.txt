@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0              Last change: 2023 May 07
+*papis.txt*              For NVIM v0.8.0              Last change: 2023 May 08
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -25,7 +25,7 @@ access to their bibliography from within the comfort of their editor.
 
 
 - Search your bibliography with telescope <https://github.com/nvim-telescope/telescope.nvim>
-- Get information about the entry behind the citation key under the cursor
+- Place your cursor over a citation key and get information about the entry
 - Automatically format new notes
 - Tag completion in `info.yaml` files
 
@@ -89,7 +89,7 @@ papis.nvim allows you to interact with the bibliography item referenced by it.
 Commands: - `:PapisShowPopup`: Opens a floating window with information about
 the entry - `:PapisOpenFile`: Opens files attached to the entry -
 `:PapisOpenNote`: Opens notes attached to the entry (asks for the creation of a
-new one if none exist) - `:PapisEditEntry`: Opens the `info.yaml` file
+new one if none exists) - `:PapisEditEntry`: Opens the `info.yaml` file
 
 
 ‘FORMATTER’ MODULE ~
@@ -175,9 +175,9 @@ SETUP                                            *papis-📚-papis.nvim-setup*
 
 Papis.nvim exposes a rather large number of configuration options, most of
 which can be left alone – and quite a few of which probably _should_ be left
-alone (or not if you’re feeling brave). Currently, papis.nvim doesn’t check
-whether you’ve managed to set incompatible options, and weird failures will
-likely occur in such instances.
+alone (or not, if you’re feeling brave). Currently, papis.nvim doesn’t
+check whether you’ve managed to set incompatible options, and weird failures
+will likely occur in such instances.
 
 Note that an empty setup function should work reasonably well when just
 test-driving the plugin. It will, however, slow neovim startup down
@@ -230,6 +230,7 @@ Full list of configuration options (with defaults):
       rmd = "@%s",
       plain = "%s",
       org = { "[cite:@%s]", "%[cite:@%s]" },
+      norg = "{= %s}",
     },
     
     -- What citation format to use when none is defined for the current filetype.
