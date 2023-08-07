@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0              Last change: 2023 May 08
+*papis.txt*             For NVIM v0.8.0            Last change: 2023 August 07
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -22,7 +22,6 @@ Papis.nvim is a neovim <https://github.com/neovim/neovim> companion plugin for
 the bibliography manager papis <https://github.com/papis/papis>. It’s meant
 for all those who do academic and other writing in neovim and who want quick
 access to their bibliography from within the comfort of their editor.
-
 
 - Search your bibliography with telescope <https://github.com/nvim-telescope/telescope.nvim>
 - Place your cursor over a citation key and get information about the entry
@@ -158,7 +157,6 @@ With lazy.nvim:
 <
 
 Additional dependencies:
-
 
 - _papis_: papis.nvim is meant to be used in conjunction with papis and won’t run if it doesn’t find the `papis` executable. You’ll need at least v0.13.
 - _yq_: papis.nvim requires the yq <https://github.com/mikefarah/yq> utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn’t (currently) support the python yq <https://github.com/kislyuk/yq>.
@@ -463,7 +461,6 @@ By default, papis.nvim doesn’t set any keymaps (except in Telescope). You
 can, however, enable them by setting `enable_keymaps` to true. This provides
 you with the following:
 
-
 - `<leader>pp` (normal) / `<c-p>p` (insert): Open the telescope picker
 - `<leader>po` (normal): Open file under cursor
 - `<leader>pe` (normal): Edit entry under cursor
@@ -474,7 +471,6 @@ you with the following:
 HIGHLIGHTS                                  *papis-📚-papis.nvim-highlights*
 
 Papis.nvim defines and links the following default highlight groups:
-
 
 - `PapisPreviewAuthor`: The author field in the Telescope previewer
 - `PapisPreviewYear`: The year field in the Telescope previewer
@@ -497,7 +493,6 @@ You can use `:checkhealth papis` for some basic troubleshooting. In addition,
 you can enable the `debug` module, which exposes the following commands and a
 log:
 
-
 - `PapisDebugGetLogPath`: Get the path to the log file
 - `PapisDebugFWStop`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
 - `PapisDebugFWStart`: Starts file watching for the current neovim instance
@@ -519,7 +514,6 @@ with stylua and have emmydoc comments.
 PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-improvements*
 
 I’m open to suggestions and PRs. Here are some things I’ve thought of:
-
 
 - ☐ better search
     - by entry keys (e.g. tags)
