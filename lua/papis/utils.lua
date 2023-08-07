@@ -304,7 +304,7 @@ function M.does_pid_exist(pid)
   local pid_exists = false
   if pid then
     if is_linux or is_macos then
-      cmd = "ps -q " .. pid
+      cmd = "ps -p " .. pid
     elseif is_windows then
       cmd = 'tasklist /FI "PID eq ' .. pid .. '"'
     end
