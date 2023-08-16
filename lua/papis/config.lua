@@ -96,14 +96,14 @@ local default_config = {
       local lines = {
         "@document.meta",
         "title: " .. table.concat(title),
-        "description: ",
         "categories: [",
         "  notes",
         "  academia",
         "  readings",
         "]",
         "created: " .. os.date("%Y-%m-%d"),
-        "version: " .. require("neorg.config").version,
+        "updated: " .. os.date("%Y-%m-%d"),
+        "version: " .. require("neorg.core.config").norg_version,
         "@end",
         "",
       }
