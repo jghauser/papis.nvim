@@ -69,11 +69,19 @@ local keybinds = {
 function M.setup()
   for module_name, module_keybinds in pairs(keybinds) do
     if config["enable_modules"][module_name] then
-      for _, keybind in pairs(module_keybinds) do
-        local opts = vim.deepcopy(keybind["opts"])
-        opts["silent"] = true
-        vim.keymap.set(keybind["mode"], keybind["lhs"], keybind["rhs"], opts)
-      end
+      vim.api.nvim_create_autocmd({ "BufEnter" }, {
+        pattern = config["init_filenames"],
+        callback = function()
+          for _, keybind in pairs(module_keybinds) do
+            local opts = vim.deepcopy(keybind["opts"])
+            opts["silent"] = true
+            opts["buffer"] = true
+            vim.keymap.set(keybind["mode"], keybind["lhs"], keybind["rhs"], opts)
+          end
+        end,
+        group = vim.api.nvim_create_augroup("setPapisKeymaps_" .. module_name, { clear = true }),
+        desc = "Set Papis keymaps",
+      })
     end
   end
 end
