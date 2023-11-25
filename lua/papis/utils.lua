@@ -232,7 +232,7 @@ function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
     -- format table or the value in the format table is "empty_line"
     if entry[v[1]] or v[1] == "empty_line" then
       table.insert(clean_format_table, v)
-    -- don't add editor if there is author and use_author_if_editor is true
+      -- don't add editor if there is author and use_author_if_editor is true
     elseif remove_editor_if_author and v[1] == "author" and entry["editor"] then
       table.insert(clean_format_table, v)
     end
