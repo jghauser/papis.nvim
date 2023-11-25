@@ -17,9 +17,16 @@ local os_name = vim.loop.os_uname().sysname
 
 local log = require("papis.logger")
 
-local is_windows = os_name == "Windows"
-local is_macos = os_name == "Darwin"
-local is_linux = os_name == "Linux"
+local is_windows
+local is_macos
+local is_linux
+if os_name == "Linux" then
+  is_linux = true
+elseif os_name == "Darwin" then
+  is_macos = true
+elseif os_name:match("Windows") then
+  is_windows = true
+end
 
 local M = {}
 
@@ -225,7 +232,7 @@ function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
     -- format table or the value in the format table is "empty_line"
     if entry[v[1]] or v[1] == "empty_line" then
       table.insert(clean_format_table, v)
-    -- don't add editor if there is author and use_author_if_editor is true
+      -- don't add editor if there is author and use_author_if_editor is true
     elseif remove_editor_if_author and v[1] == "author" and entry["editor"] then
       table.insert(clean_format_table, v)
     end
