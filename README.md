@@ -29,8 +29,8 @@ Commands:
 - `:Telescope papis`: Opens the papis.nvim telescope picker
 
 With the picker open, the following (currently hardcoded) keymaps become available:
-- `o` (normal) / `c-o` (insert): Opens files attached to the entry 
-- `n` (normal) / `c-n` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
+- `of` (normal) / `<c-o>f` (insert): Opens files attached to the entry
+- `on` (normal) / `<c-o>n` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
 - `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
 
 ### 'completion' module
@@ -391,9 +391,9 @@ Papis will start automatically according to the filename patterns defined in `in
 By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
 
 - `<leader>pp` (normal) / `<c-p>p` (insert): Open the telescope picker
-- `<leader>po` (normal): Open file under cursor
+- `<leader>pof` (normal): Open file under cursor
 - `<leader>pe` (normal): Edit entry under cursor
-- `<leader>pn` (normal): Open note under cursor
+- `<leader>pon` (normal): Open note under cursor
 - `<leader>pi` (normal): Show entry info popup
 
 ## Highlights
