@@ -82,6 +82,7 @@ function M.setup()
         group = vim.api.nvim_create_augroup("setPapisKeymaps_" .. module_name, { clear = true }),
         desc = "Set Papis keymaps",
       })
+      vim.api.nvim_exec_autocmds("BufEnter", { group = "setPapisKeymaps_" .. module_name, buffer = 0 })
     end
   end
 end
