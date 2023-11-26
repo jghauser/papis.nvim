@@ -32,7 +32,7 @@ local keybinds = {
   ["cursor-actions"] = {
     open_file = {
       mode = "n",
-      lhs = "<leader>po",
+      lhs = "<leader>pof",
       rhs = function()
         return require("papis.cursor-actions").open_file()
       end,
@@ -48,7 +48,7 @@ local keybinds = {
     },
     open_note = {
       mode = "n",
-      lhs = "<leader>pn",
+      lhs = "<leader>pon",
       rhs = function()
         return require("papis.cursor-actions").open_note()
       end,
