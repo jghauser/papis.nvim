@@ -77,7 +77,6 @@ function M.start()
   for module_name, _ in pairs(config["enable_modules"]) do
     log.trace(module_name .. " is enabled")
     local has_module, module = pcall(require, "papis." .. module_name)
-    -- local module = require("papis." .. module_name)
     if has_module then
       if module["setup"] then
         module.setup()
