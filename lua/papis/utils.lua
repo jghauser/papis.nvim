@@ -13,18 +13,18 @@ local strdisplaywidth = require("plenary.strings").strdisplaywidth
 local job = require("plenary.job")
 
 local new_timer = vim.loop.new_timer
-local os_name = vim.loop.os_uname().sysname
+local os_name = vim.loop.os_uname()
 
 local log = require("papis.logger")
 
 local is_windows
 local is_macos
 local is_linux
-if os_name == "Linux" then
+if os_name.sysname == "Linux" then
   is_linux = true
-elseif os_name == "Darwin" then
+elseif os_name.sysname == "Darwin" then
   is_macos = true
-elseif os_name:match("Windows") then
+elseif os_name.version:match("Windows") then
   is_windows = true
 end
 
