@@ -23,7 +23,11 @@ local keybinds = {
       mode = "i",
       lhs = "<c-p>p",
       rhs = function()
-        require("telescope").extensions.papis.papis()
+        if vim.fn.pumvisible() == 0 then
+          require("telescope").extensions.papis.papis()
+        else
+          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<c-p>p", true, true, true), "n", true)
+        end
       end,
       opts = { desc = "Papis: search library" },
     },
