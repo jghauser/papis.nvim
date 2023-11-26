@@ -426,7 +426,7 @@ Please open an issue when you find bugs!
 
 ## Contributing
 
-I am quite new to programming and there's a million things that I want to improve and probably another million things that I *should* improve but don't yet know about. I'm more than happy about any contributions, ideas for improvements, ideas for new features, bug reports, and so on. If you have a cool idea for a new functionality you want to implement, I'd be happy to guide you through the process of creating a new module. PRs should be formatted with stylua and have emmydoc comments.
+I am quite new to programming and there's a million things that I want to improve and probably another million things that I *should* improve but don't yet know about. I'm more than happy about any contributions, ideas for improvements, ideas for new features, bug reports, and so on. If you have a cool idea for a new functionality you want to implement, I'd be happy to guide you through the process of creating a new module. PRs should be formatted to have indents of 2 spaces and have emmydoc comments.
 
 ## Planned features and improvements
 
