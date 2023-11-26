@@ -508,7 +508,7 @@ yet know about. I’m more than happy about any contributions, ideas for
 improvements, ideas for new features, bug reports, and so on. If you have a
 cool idea for a new functionality you want to implement, I’d be happy to
 guide you through the process of creating a new module. PRs should be formatted
-with stylua and have emmydoc comments.
+to have indents of 2 spaces and have emmydoc comments.
 
 
 PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-improvements*
