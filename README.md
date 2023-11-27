@@ -390,7 +390,7 @@ Papis will start automatically according to the filename patterns defined in `in
 
 By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
 
-- `<leader>pp` (normal) / `<c-p>p` (insert): Open the telescope picker
+- `<leader>pp` (normal) / `<c-o>p` (insert): Open the telescope picker
 - `<leader>pof` (normal): Open file under cursor
 - `<leader>pe` (normal): Edit entry under cursor
 - `<leader>pon` (normal): Open note under cursor
