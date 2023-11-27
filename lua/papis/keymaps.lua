@@ -21,13 +21,9 @@ local keybinds = {
     },
     open_search_insert = {
       mode = "i",
-      lhs = "<c-p>p",
+      lhs = "<c-o>p",
       rhs = function()
-        if vim.fn.pumvisible() == 0 then
-          require("telescope").extensions.papis.papis()
-        else
-          vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<c-p>p", true, true, true), "n", true)
-        end
+        require("telescope").extensions.papis.papis()
       end,
       opts = { desc = "Papis: search library" },
     },
