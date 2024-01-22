@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.8.0           Last change: 2023 November 27
+*papis.txt*            For NVIM v0.8.0            Last change: 2024 January 22
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -116,6 +116,12 @@ the database.
 
 
 INSTALLATION                              *papis-📚-papis.nvim-installation*
+
+With rocks.nvim:
+
+>vim
+    :Rocks install papis.nvim
+<
 
 With packer:
 
