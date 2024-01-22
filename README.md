@@ -65,6 +65,12 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 
 ## Installation
 
+With rocks.nvim:
+
+```vim
+:Rocks install papis.nvim
+```
+
 With packer:
 
 ```lua
