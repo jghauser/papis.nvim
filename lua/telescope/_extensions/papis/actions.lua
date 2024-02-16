@@ -22,6 +22,36 @@ M.ref_insert = function(format_string)
   end
 end
 
+M.ref_insert_formatted = function()
+  return function(prompt_bufnr)
+    actions.close(prompt_bufnr)
+    local entry_id = action_state.get_selected_entry().id
+    local author = entry_id.author
+    local title = entry_id.title
+    if title ~= nil then
+      title = '"'..title..'"'
+    end
+    local journal = entry_id.journal
+    local volume = entry_id.volume
+    if volume ~= nil then
+      volume = "vol. "..volume
+    end
+    local year = entry_id.year
+    local list = {author, title, journal, volume, year}
+
+    local output_fields = {}
+    for _, v in pairs(list) do
+      if v ~= nil then
+        table.insert(output_fields, v)
+      end
+    end
+
+    local output = table.concat(output_fields, ", ")
+
+    vim.api.nvim_put({output}, "", false, true)
+  end
+end
+
 ---This function opens the files attached to the current entry
 ---@return function
 M.open_file = function()
