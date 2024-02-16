@@ -100,6 +100,8 @@ local function papis_picker(opts)
         map("n", "on", papis_actions.open_note())
         map("i", "<c-e>", papis_actions.open_info())
         map("n", "e", papis_actions.open_info())
+        map("n", "f", papis_actions.ref_insert_formatted(), {desc="insert formatted reference"})
+        map("i", "<c-f>", papis_actions.ref_insert_formatted(), {desc="insert formatted reference"})
         -- Makes sure that the other defaults are still applied
         return true
       end,
