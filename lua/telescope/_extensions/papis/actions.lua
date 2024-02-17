@@ -22,30 +22,23 @@ M.ref_insert = function(format_string)
   end
 end
 
+local insert_format = {
+      { "author", "%s ", "" },
+      { "title", '"%s"', "" },
+      { "journal", "%s", "" },
+      { "volume", 'vol. %s', "" },
+      { "year", "(%s) ", "" },
+    }
+
 M.ref_insert_formatted = function()
   return function(prompt_bufnr)
     actions.close(prompt_bufnr)
     local entry_id = action_state.get_selected_entry().id
-    local author = entry_id.author
-    local title = entry_id.title
-    if title ~= nil then
-      title = '"'..title..'"'
-    end
-    local journal = entry_id.journal
-    local volume = entry_id.volume
-    if volume ~= nil then
-      volume = "vol. "..volume
-    end
-    local year = entry_id.year
-    local list = {author, title, journal, volume, year}
-
+    local clean_format = utils.do_clean_format_tbl(insert_format, entry_id)
     local output_fields = {}
-    for _, v in pairs(list) do
-      if v ~= nil then
-        table.insert(output_fields, v)
-      end
+    for _, field in ipairs(utils:format_display_strings(entry_id, clean_format)) do
+    table.insert(output_fields, field[1])
     end
-
     local output = table.concat(output_fields, ", ")
 
     vim.api.nvim_put({output}, "", false, true)
