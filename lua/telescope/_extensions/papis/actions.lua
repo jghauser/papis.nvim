@@ -6,6 +6,8 @@
 
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
+local config = require("papis.config")
+local db = require("papis.sqlite-wrapper")
 
 local utils = require("papis.utils")
 
@@ -22,26 +24,15 @@ M.ref_insert = function(format_string)
   end
 end
 
-local insert_format = {
-      { "author", "%s ", "" },
-      { "title", '"%s"', "" },
-      { "journal", "%s", "" },
-      { "volume", 'vol. %s', "" },
-      { "year", "(%s) ", "" },
-    }
-
 M.ref_insert_formatted = function()
   return function(prompt_bufnr)
     actions.close(prompt_bufnr)
-    local entry_id = action_state.get_selected_entry().id
-    local clean_format = utils.do_clean_format_tbl(insert_format, entry_id)
-    local output_fields = {}
-    for _, field in ipairs(utils:format_display_strings(entry_id, clean_format)) do
-    table.insert(output_fields, field[1])
-    end
-    local output = table.concat(output_fields, ", ")
+    local papis_id = action_state.get_selected_entry().id.papis_id
+    local entry = db.data:get({ papis_id = papis_id })[1]
+    vim.print(entry)
+    local reference = config["formatter"]["format_references_fn"](entry)
 
-    vim.api.nvim_put({output}, "", false, true)
+    vim.api.nvim_put({ reference }, "", false, true)
   end
 end
 
