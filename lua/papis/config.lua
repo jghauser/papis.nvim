@@ -65,6 +65,8 @@ local default_config = {
     time_added = "text",
     notes = "luatable",
     journal = "text",
+    volume = "text",
+    number = "text",
     author_list = "luatable",
     tags = "luatable",
     files = "luatable",
@@ -109,6 +111,21 @@ local default_config = {
       }
       vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
       vim.cmd("normal G")
+    end,
+    format_references_fn = function(entry)
+      local reference_format = {
+        { "author",  "%s ",   "" },
+        { "year",    "(%s). ", "" },
+        { "title",   "%s. ",  "" },
+        { "journal", "%s. ",    "" },   -- TODO: italicize
+        { "volume",  "%s",    "" },   -- TODO: italicize
+        { "number",  "(%s)",  "" },
+      }
+      local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
+      for k, v in ipairs(reference_data) do
+        reference_data[k] = v[1]
+      end
+      return table.concat(reference_data)
     end,
   },
   ["cursor-actions"] = {
