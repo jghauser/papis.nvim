@@ -117,8 +117,8 @@ local default_config = {
         { "author",  "%s ",   "" },
         { "year",    "(%s). ", "" },
         { "title",   "%s. ",  "" },
-        { "journal", "%s. ",    "" },   -- TODO: italicize
-        { "volume",  "%s",    "" },   -- TODO: italicize
+        { "journal", "%s. ",    "" },
+        { "volume",  "%s",    "" },
         { "number",  "(%s)",  "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
