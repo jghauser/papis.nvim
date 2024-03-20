@@ -6,6 +6,8 @@
 
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
+local config = require("papis.config")
+local db = require("papis.sqlite-wrapper")
 
 local utils = require("papis.utils")
 
@@ -19,6 +21,18 @@ M.ref_insert = function(format_string)
     local entry = string.format(format_string, action_state.get_selected_entry().id.ref)
     actions.close(prompt_bufnr)
     vim.api.nvim_put({ entry }, "", false, true)
+  end
+end
+
+M.ref_insert_formatted = function()
+  return function(prompt_bufnr)
+    actions.close(prompt_bufnr)
+    local papis_id = action_state.get_selected_entry().id.papis_id
+    local entry = db.data:get({ papis_id = papis_id })[1]
+    vim.print(entry)
+    local reference = config["formatter"]["format_references_fn"](entry)
+
+    vim.api.nvim_put({ reference }, "", false, true)
   end
 end
 
