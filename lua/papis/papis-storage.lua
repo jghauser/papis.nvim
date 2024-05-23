@@ -182,7 +182,7 @@ function M.get_data_full(metadata)
             end
             entry[key] = ensure_tags_are_tbl(entry[key])
           end
-          if (key == "files") or (key == "notes") then
+          if key == "files" then
             local entry_path = Path:new(path):parent()
             entry[key] = make_full_paths(entry[key], entry_path)
           end
