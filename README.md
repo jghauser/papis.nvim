@@ -32,7 +32,7 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 - `of` (normal) / `<c-o>f` (insert): Opens files attached to the entry
 - `on` (normal) / `<c-o>n` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
 - `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
-- `f` (normal) / `c-f` (insert): Insert a formatter reference
+- `f` (normal) / `c-f` (insert): Insert a formatted reference
 
 ### 'completion' module
 
@@ -67,6 +67,8 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 ## Installation
 
 Note that papis.nvim is only tested with the latest stable version of Neovim. It should work across various OSs, but most development has been done on Linux (do feel free to open issues if you run into trouble on non-Linux systems). An installation of Papis is required.
+
+To run, papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 
 ### Package managers
 
@@ -111,7 +113,6 @@ With lazy.nvim:
 
 Additional dependencies:
 
-- *yq*: papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 - *treesitter yaml parser*: Required by the completion module.
 
 ### Nix
@@ -135,6 +136,9 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
           home-manager.users.myuser = {
             programs.neovim = {
               enable = true;
+              extraPackages = [
+                pkgs.yq-go
+              ];
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
               ]
@@ -246,7 +250,7 @@ db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
 yq_bin = "yq",
 
 -- The papis options relevant for papis.nvim (see above minimal config). By
--- default it is unset, which prompts papis.nvim to call `papis config` to 
+-- default it is unset, which prompts papis.nvim to call `papis config` to
 -- get the values.
 papis_python = nil,
 
@@ -276,7 +280,7 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
   search_keys = { "author", "editor", "year", "title", "tags" },
 
   -- The format for the previewer. Each line in the config represents a line in
-  -- the preview. For each line, we define: 
+  -- the preview. For each line, we define:
   --   1. The key whose value is shown
   --   2. How it is formatted (here, each is just given as is)
   --   3. The highlight group
@@ -299,7 +303,7 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
     { "journal", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
     { "abstract", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
   },
-  
+
   -- The format of each line in the the results window. Here, everything is show on
   -- one line (otherwise equivalent to points 1-3 of `preview_format`).
   results_format = {

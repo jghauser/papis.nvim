@@ -18,22 +18,31 @@
         })
         systems);
   in {
-    overlays.default = final: prev: {
-      vimPlugins = prev.vimPlugins.extend (f: p: {
-        papis-nvim = final.vimUtils.buildVimPlugin {
+    packages =
+      forAllSystems
+      (system: let
+        pkgs = import nixpkgs {
+          inherit system;
+        };
+      in {
+        papis-nvim = pkgs.vimUtils.buildVimPlugin {
           pname = "papis.nvim";
           version = toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown");
           src = self;
           dependencies = [
-            f.telescope-nvim
-            f.sqlite-lua
-            f.plenary-nvim
-            f.nui-nvim
-            f.nvim-treesitter
-            f.nvim-treesitter-grammar-yaml
-            final.yq-go
+            pkgs.vimPlugins.telescope-nvim
+            pkgs.vimPlugins.sqlite-lua
+            pkgs.vimPlugins.plenary-nvim
+            pkgs.vimPlugins.nui-nvim
+            pkgs.vimPlugins.nvim-treesitter
+            pkgs.vimPlugins.nvim-treesitter-parsers.yaml
           ];
         };
+      });
+
+    overlays.default = final: prev: {
+      vimPlugins = prev.vimPlugins.extend (f: p: {
+        papis-nvim = self.packages.${final.system}.papis-nvim;
       });
     };
     devShells =
@@ -73,8 +82,10 @@
                 '';
             };
           in [
+            self.packages.${system}.papis-nvim
             pkgs.sqlitebrowser
             pkgs.yq-go
+            pkgs.vimPlugins.nvim-nio
             run-tests
             run-test
             run-app
