@@ -94,12 +94,14 @@ local function papis_picker(opts)
       sorter = telescope_config.generic_sorter(opts),
       attach_mappings = function(_, map)
         actions.select_default:replace(papis_actions.ref_insert(format_string))
-        map("i", "<c-o>f", papis_actions.open_file())
-        map("n", "of", papis_actions.open_file())
-        map("i", "<c-o>n", papis_actions.open_note())
-        map("n", "on", papis_actions.open_note())
-        map("i", "<c-e>", papis_actions.open_info())
-        map("n", "e", papis_actions.open_info())
+        map("i", "<c-o>f", papis_actions.open_file(), { desc="Open file" })
+        map("n", "of", papis_actions.open_file(), { desc="Open file" })
+        map("i", "<c-o>n", papis_actions.open_note(), { desc="Open note" })
+        map("n", "on", papis_actions.open_note(), { desc="Open note" })
+        map("i", "<c-e>", papis_actions.open_info(), { desc="Open info.yaml file" })
+        map("n", "e", papis_actions.open_info(), { desc="Open info.yaml file" })
+        map("n", "f", papis_actions.ref_insert_formatted(), { desc="Insert formatted reference" })
+        map("i", "<c-f>", papis_actions.ref_insert_formatted(), { desc="Insert formatted reference" })
         -- Makes sure that the other defaults are still applied
         return true
       end,
