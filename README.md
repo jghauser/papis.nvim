@@ -32,6 +32,7 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 - `of` (normal) / `<c-o>f` (insert): Opens files attached to the entry
 - `on` (normal) / `<c-o>n` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
 - `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
+- `f` (normal) / `c-f` (insert): Insert a formatter reference
 
 ### 'completion' module
 
@@ -231,6 +232,8 @@ data_tbl_schema = {
   time_added = "text",
   notes = "luatable",
   journal = "text",
+  volume = "text",
+  number = "text",
   author_list = "luatable",
   tags = "luatable",
   files = "luatable",
@@ -357,6 +360,23 @@ init_filenames = { "%info_name%", "*.md", "*.norg" },
     vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
     -- Move cursor to the bottom
     vim.cmd("normal G")
+  end,
+  -- This function runs when inserting a formatted reference (currently by `f/c-f` in
+  -- Telescope). It works similarly to the `format_notes_fn` above.
+  format_references_fn = function(entry)
+    local reference_format = {
+      { "author",  "%s ",   "" },
+      { "year",    "(%s). ", "" },
+      { "title",   "%s. ",  "" },
+      { "journal", "%s. ",    "" },
+      { "volume",  "%s",    "" },
+      { "number",  "(%s)",  "" },
+    }
+    local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
+    for k, v in ipairs(reference_data) do
+      reference_data[k] = v[1]
+    end
+    return table.concat(reference_data)
   end,
 },
 
