@@ -136,6 +136,9 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
           home-manager.users.myuser = {
             programs.neovim = {
               enable = true;
+              extraPackages = [
+                pkgs.yq-go
+              ];
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
               ]
