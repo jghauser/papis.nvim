@@ -65,6 +65,10 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 
 ## Installation
 
+Note that papis.nvim is only tested with the latest stable version of Neovim. It should work across various OSs, but most development has been done on Linux (do feel free to open issues if you run into trouble on non-Linux systems). An installation of Papis is required.
+
+### Package managers
+
 With packer:
 
 ```lua
@@ -106,13 +110,41 @@ With lazy.nvim:
 
 Additional dependencies:
 
-- *papis*: papis.nvim is meant to be used in conjunction with papis and won't run if it doesn't find the `papis` executable. You'll need at least v0.13.
 - *yq*: papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 - *treesitter yaml parser*: Required by the completion module.
 
-*Neovim version*: papis.nvim is being tested on the latest stable version.
+### Nix
 
-*Operating system*: papis.nvim has only been tested on Linux -- but will hopefully also work on other operating systems (if you run into problems, please open an issue).
+The `flake.nix` provides an overlay that can be used to install `papis.nvim`. With `home-manager`, this can be achieved with something along the following lines:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    home-manager.url = "github:nix-community/home-manager";
+    papis-nvim.url = "github:jghauser/papis.nvim";
+  };
+  outputs = { self, nixpkgs, home-manager, neorg, ... }: {
+    nixosConfigurations.machine = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        home-manager.nixosModules.home-manager
+        {
+          nixpkgs.overlays = [ papis-nvim.overlays.default ];
+          home-manager.users.myuser = {
+            programs.neovim = {
+              enable = true;
+              plugins = with pkgs.vimPlugins; [
+                papis-nvim
+              ]
+            };
+          };
+        }
+      ];
+    };
+  };
+}
+```
 
 ## Setup
 

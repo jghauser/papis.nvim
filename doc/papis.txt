@@ -1,4 +1,4 @@
-*papis.txt*             For NVIM v0.8.0             Last change: 2024 March 18
+*papis.txt*              For NVIM v0.8.0              Last change: 2024 May 30
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -14,6 +14,7 @@ Table of Contents                                    *papis-table-of-contents*
   - Issues/Troubleshooting      |papis-📚-papis.nvim-issues/troubleshooting|
   - Contributing                          |papis-📚-papis.nvim-contributing|
   - Planned features and improvements|papis-📚-papis.nvim-planned-features-and-improvements|
+2. Links                                                         |papis-links|
 
 ==============================================================================
 1. 📚 papis.nvim                                     *papis-📚-papis.nvim*
@@ -117,6 +118,14 @@ the database.
 
 INSTALLATION                              *papis-📚-papis.nvim-installation*
 
+Note that papis.nvim is only tested with the latest stable version of Neovim.
+It should work across various OSs, but most development has been done on Linux
+(do feel free to open issues if you run into trouble on non-Linux systems). An
+installation of Papis is required.
+
+
+PACKAGE MANAGERS ~
+
 With packer:
 
 >lua
@@ -158,15 +167,44 @@ With lazy.nvim:
 
 Additional dependencies:
 
-- _papis_: papis.nvim is meant to be used in conjunction with papis and won’t run if it doesn’t find the `papis` executable. You’ll need at least v0.13.
 - _yq_: papis.nvim requires the yq <https://github.com/mikefarah/yq> utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn’t (currently) support the python yq <https://github.com/kislyuk/yq>.
 - _treesitter yaml parser_: Required by the completion module.
 
-_Neovim version_: papis.nvim is being tested on the latest stable version.
 
-_Operating system_: papis.nvim has only been tested on Linux – but will
-hopefully also work on other operating systems (if you run into problems,
-please open an issue).
+NIX ~
+
+The `flake.nix` provides an overlay that can be used to install `papis.nvim`.
+With `home-manager`, this can be achieved with something along the following
+lines:
+
+>nix
+    {
+      inputs = {
+        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+        home-manager.url = "github:nix-community/home-manager";
+        papis-nvim.url = "github:jghauser/papis.nvim";
+      };
+      outputs = { self, nixpkgs, home-manager, neorg, ... }: {
+        nixosConfigurations.machine = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            home-manager.nixosModules.home-manager
+            {
+              nixpkgs.overlays = [ papis-nvim.overlays.default ];
+              home-manager.users.myuser = {
+                programs.neovim = {
+                  enable = true;
+                  plugins = with pkgs.vimPlugins; [
+                    papis-nvim
+                  ]
+                };
+              };
+            }
+          ];
+        };
+      };
+    }
+<
 
 
 SETUP                                            *papis-📚-papis.nvim-setup*

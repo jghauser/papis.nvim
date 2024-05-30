@@ -5,7 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
   };
 
-  outputs = {nixpkgs, ...}: let
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  }: let
     systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
     forAllSystems = f:
       builtins.listToAttrs (map (name: {
@@ -14,6 +18,24 @@
         })
         systems);
   in {
+    overlays.default = final: prev: {
+      vimPlugins = prev.vimPlugins.extend (f: p: {
+        papis-nvim = final.vimUtils.buildVimPlugin {
+          pname = "papis.nvim";
+          version = toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown");
+          src = self;
+          dependencies = [
+            f.telescope-nvim
+            f.sqlite-lua
+            f.plenary-nvim
+            f.nui-nvim
+            f.nvim-treesitter
+            f.nvim-treesitter-grammar-yaml
+            final.yq-go
+          ];
+        };
+      });
+    };
     devShells =
       forAllSystems
       (system: let
