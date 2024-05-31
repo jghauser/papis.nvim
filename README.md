@@ -427,17 +427,6 @@ cmp.setup({
 })
 ```
 
-Unfortunately, treesitter indenting for `yaml` files is currently very buggy, and this sometimes messes with the papis.nvim completion module. I suggest disabling treesitter indenting for this filetype.
-
-```lua
-require("nvim-treesitter.configs").setup({
-  indent = {
-    enable = true,
-    disable = { "yaml" },
-  },
-})
-```
-
 ## Usage
 
 Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
