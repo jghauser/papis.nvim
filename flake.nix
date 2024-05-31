@@ -54,41 +54,31 @@
       in {
         default = pkgs.mkShell {
           buildInputs = let
-            run-tests = pkgs.writeShellApplication {
-              name = "run-tests";
-              text =
-                # bash
-                ''
-                  # nvim --headless -u tools/minimal_init.lua -c "PlenaryBustedDirectory tests/spec"
-                  find tests/spec -type f -exec nvim --headless -u tools/minimal_init.lua -c "PlenaryBustedFile {}" \;
+            custom-nvim = pkgs.neovim.override {
+              configure = {
+                customRC = ''
+                  luafile ./tests/minimal_init.lua
                 '';
+                packages.myVimPackage.start =
+                  self.packages.${system}.papis-nvim.dependencies
+                  ++ [
+                    pkgs.vimPlugins.nvim-cmp
+                  ];
+              };
             };
 
-            run-test = pkgs.writeShellApplication {
-              name = "run-test";
+            nvim-test = pkgs.writeShellApplication {
+              name = "nvim-test";
               text =
                 # bash
                 ''
-                  nvim --headless -u tools/minimal_init.lua -c "PlenaryBustedFile $1" \;
-                '';
-            };
-
-            run-app = pkgs.writeShellApplication {
-              name = "run-app";
-              text =
-                # bash
-                ''
-                  nvim -u tools/minimal_init.lua -c "lua _Load_papis()" -c "e test.md"
+                  ${custom-nvim}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
                 '';
             };
           in [
-            self.packages.${system}.papis-nvim
             pkgs.sqlitebrowser
             pkgs.yq-go
-            pkgs.vimPlugins.nvim-nio
-            run-tests
-            run-test
-            run-app
+            nvim-test
           ];
         };
       });
