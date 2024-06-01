@@ -20,7 +20,7 @@ Table of Contents                                    *papis-table-of-contents*
 1. 📚 papis.nvim                                     *papis-📚-papis.nvim*
 
 Papis.nvim is a neovim <https://github.com/neovim/neovim> companion plugin for
-the bibliography manager papis <https://github.com/papis/papis>. It’s meant
+the bibliography manager Papis <https://github.com/papis/papis>. It’s meant
 for all those who do academic and other writing in neovim and who want quick
 access to their bibliography from within the comfort of their editor.
 
@@ -41,7 +41,7 @@ This plugin is currently in early beta. Bugs and breaking changes are expected.
 Breaking changes are communicated in a pinned issue and commit messages.
 
 While papis.nvim is likely buggy, it is equally likely unable to mess with your
-precious bibliography. First, it doesn’t by itself alter your papis
+precious bibliography. First, it doesn’t by itself alter your Papis
 `info.yaml` files; it always uses the `papis` command to do so. Second, this
 command is currently only invoked when adding new notes to an item. Your
 database should therefore be safe from corruption (**however**: have backups,
@@ -78,7 +78,7 @@ formatted reference
 ‘COMPLETION’ MODULE ~
 
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in
-the database. This module is implemented as a cmp
+the database. This module is implemented as a nvim-cmp
 <https://github.com/hrsh7th/nvim-cmp> source.
 
 
@@ -128,6 +128,9 @@ To run, papis.nvim requires the yq <https://github.com/mikefarah/yq> utility to
 convert `.yaml` files to `.json` (which can then be read by neovim). Note that
 papis.nvim doesn’t (currently) support the python yq
 <https://github.com/kislyuk/yq>.
+
+You’ll need the nvim-cmp <https://github.com/hrsh7th/nvim-cmp> plugin if you
+intend to use the completion module.
 
 
 PACKAGE MANAGERS ~
@@ -507,9 +510,9 @@ cmp.
 
 USAGE                                            *papis-📚-papis.nvim-usage*
 
-Papis will start automatically according to the filename patterns defined in
-`init_filenames` (see the |papis-setup-section|). Additionally, it can also be
-started with `:PapisStart`. The rest of the functionality is covered in the
+Papis.nvim will start automatically according to the filename patterns defined
+in `init_filenames` (see the |papis-setup-section|). Additionally, it can also
+be started with `:PapisStart`. The rest of the functionality is covered in the
 |papis-features-section|.
 
 
@@ -578,7 +581,7 @@ I’m open to suggestions and PRs. Here are some things I’ve thought of:
     - full text (with rga?)
     - faster!
 - ☐ adding new entries (both automatic and manual)
-- ☐ bib(la)tex backend (in addition to papis)
+- ☐ bib(la)tex backend (in addition to Papis)
     - I’m unlikely to do this myself as I don’t need it. I’d be more than happy to help with the implemention however!
 - ☐ sharing functionality
 - ☐ insert formatted references and bibliographies (using .csl)
