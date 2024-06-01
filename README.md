@@ -1,6 +1,6 @@
 # 📚 papis.nvim
 
-Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
+Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
 ![20221002_18h39m59s_grim](https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg)
 
@@ -13,7 +13,7 @@ And this is just the beginning! With its fast and always up-to-date sqlite datab
 
 This plugin is currently in early beta. Bugs and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
 
-While papis.nvim is likely buggy, it is equally likely unable to mess with your precious bibliography. First, it doesn't by itself alter your papis `info.yaml` files; it always uses the `papis` command to do so. Second, this command is currently only invoked when adding new notes to an item. Your database should therefore be safe from corruption (**however**: have backups, gremlins waiting to pounce are not my responsibility). In the future, papis.nvim might directly edit `info.yaml` files, but if and when that happens, this will be clearly communicated as a breaking change.
+While papis.nvim is likely buggy, it is equally likely unable to mess with your precious bibliography. First, it doesn't by itself alter your Papis `info.yaml` files; it always uses the `papis` command to do so. Second, this command is currently only invoked when adding new notes to an item. Your database should therefore be safe from corruption (**however**: have backups, gremlins waiting to pounce are not my responsibility). In the future, papis.nvim might directly edit `info.yaml` files, but if and when that happens, this will be clearly communicated as a breaking change.
 
 ## Features
 
@@ -38,7 +38,7 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 
 ![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
 
-When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [cmp](https://github.com/hrsh7th/nvim-cmp) source.
+When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) source.
 
 ### 'cursor-actions' module
 
@@ -69,6 +69,8 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 Note that papis.nvim is only tested with the latest stable version of Neovim. It should work across various OSs, but most development has been done on Linux (do feel free to open issues if you run into trouble on non-Linux systems). An installation of Papis is required.
 
 To run, papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
+
+You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you intend to use the completion module.
 
 ### Package managers
 
@@ -435,7 +437,7 @@ cmp.setup({
 
 ## Usage
 
-Papis will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
+Papis.nvim will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
 
 ## Keymaps
 
@@ -488,7 +490,7 @@ I'm open to suggestions and PRs. Here are some things I've thought of:
   - full text (with rga?)
   - faster!
 - [ ] adding new entries (both automatic and manual)
-- [ ] bib(la)tex backend (in addition to papis)
+- [ ] bib(la)tex backend (in addition to Papis)
   - I'm unlikely to do this myself as I don't need it. I'd be more than happy to help with the implemention however!
 - [ ] sharing functionality
 - [ ] insert formatted references and bibliographies (using .csl)
