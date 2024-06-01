@@ -72,6 +72,12 @@ To run, papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to
 
 ### Package managers
 
+With rocks.nvim:
+
+```vim
+:Rocks install papis.nvim
+```
+
 With packer:
 
 ```lua
