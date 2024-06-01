@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0              Last change: 2024 May 31
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 01
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -131,6 +131,12 @@ papis.nvim doesn’t (currently) support the python yq
 
 
 PACKAGE MANAGERS ~
+
+With rocks.nvim:
+
+>vim
+    :Rocks install papis.nvim
+<
 
 With packer:
 
