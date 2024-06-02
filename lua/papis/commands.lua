@@ -10,7 +10,7 @@ local api = vim.api
 
 local commands = {
   ["base"] = {
-    reset_db = {
+    reinit_data = {
       name = "PapisReInitData",
       command = function()
         require("papis.data"):reset_db()
