@@ -9,16 +9,16 @@ local M = {}
 
 local links = {
   PreviewAuthor = "Title",
-  PreviewYear = "Statement",
+  PreviewYear = "@diff.plus",
   PreviewTitle = "Normal",
-  PreviewKey = "Conditional",
+  PreviewKey = "@diff.plus",
   PreviewValue = "Normal",
   PopupAuthor = "Title",
-  PopupYear = "Statement",
+  PopupYear = "@diff.plus",
   PopupTitle = "Normal",
-  ResultsAuthor = "PreProc",
-  ResultsYear = "Statement",
-  ResultsTitle = "Struct",
+  ResultsAuthor = "@tag",
+  ResultsYear = "@diff.plus",
+  ResultsTitle = "Normal",
 }
 
 ---Sets up all the default highlight groups
