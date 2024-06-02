@@ -83,7 +83,7 @@ local default_config = {
       )
     )
   end,
-  init_filenames = { "%info_name%", "*.md", "*.norg" }, -- if %info_name%, then needs to be at first position
+  init_filetypes = { "markdown", "norg", "yaml" },
   ["formatter"] = {
     format_notes_fn = function(entry)
       local title_format = {
@@ -187,12 +187,6 @@ function M:update(opts)
     if is_enabled == false then
       newconf.enable_modules[module_name] = nil
     end
-  end
-
-  -- replace %info_name% with actual value
-  if newconf["init_filenames"][1] == "%info_name%" then
-    table.remove(newconf["init_filenames"], 1)
-    table.insert(newconf["init_filenames"], newconf["papis_python"]["info_name"])
   end
 
   -- if debug mode is on, log level should be at least debug

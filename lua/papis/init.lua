@@ -13,11 +13,11 @@ local log
 ---Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
 local function make_start_autocmd()
   local load_papis = api.nvim_create_augroup("loadPapis", { clear = true })
-  api.nvim_create_autocmd("BufEnter", {
-    pattern = config["init_filenames"],
+  api.nvim_create_autocmd("FileType", {
+    pattern = config["init_filetypes"],
     callback = require("papis").start,
     group = load_papis,
-    desc = "Load papis.nvim for defined filenames",
+    desc = "Load papis.nvim for defined filetypes",
   })
 end
 
