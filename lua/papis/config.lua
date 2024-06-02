@@ -180,21 +180,15 @@ end
 ---if possible.
 ---@param papis_py_conf_new table #A table with new (read from Papis) config entries
 function M:compare_papis_py_conf(papis_py_conf_new)
-  local config_changed = false
   local db = require("papis.sqlite-wrapper")
   if not db then
     return
   end
 
   local papis_py_conf_old = db.config:get()[1]
-  for key, new_value in pairs(papis_py_conf_new) do
-    local old_value = papis_py_conf_old[key]
-    if old_value ~= new_value then
-      config_changed = true
-    end
-  end
+  papis_py_conf_old["id"] = nil
 
-  if config_changed then
+  if not vim.deep_equal(papis_py_conf_new, papis_py_conf_old) then
     db.config:drop()
     db.config:update({ id = 1 }, papis_py_conf_new)
     local log = require("papis.logger")
