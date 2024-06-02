@@ -38,6 +38,7 @@ local default_config = {
     ["colors"] = true,
     ["base"] = true,
     ["debug"] = false,
+    ["testing"] = false,
   }, -- can be set to nil or false or left out
   cite_formats = {
     tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
