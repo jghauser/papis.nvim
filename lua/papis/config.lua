@@ -88,9 +88,9 @@ local default_config = {
   ["formatter"] = {
     format_notes_fn = function(entry)
       local title_format = {
-        { "author", "%s ", "" },
-        { "year", "(%s) ", "" },
-        { "title", "%s", "" },
+        { "author", "%s ",   "" },
+        { "year",   "(%s) ", "" },
+        { "title",  "%s",    "" },
       }
       local title = require("papis.utils"):format_display_strings(entry, title_format)
       for k, v in ipairs(title) do
@@ -115,12 +115,12 @@ local default_config = {
     end,
     format_references_fn = function(entry)
       local reference_format = {
-        { "author",  "%s ",   "" },
+        { "author",  "%s ",    "" },
         { "year",    "(%s). ", "" },
-        { "title",   "%s. ",  "" },
-        { "journal", "%s. ",    "" },
-        { "volume",  "%s",    "" },
-        { "number",  "(%s)",  "" },
+        { "title",   "%s. ",   "" },
+        { "journal", "%s. ",   "" },
+        { "volume",  "%s",     "" },
+        { "number",  "(%s)",   "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
       for k, v in ipairs(reference_data) do
@@ -132,30 +132,30 @@ local default_config = {
   ["cursor-actions"] = {
     popup_format = {
       { "author", "%s", "PapisPopupAuthor" },
-      { "year", "%s", "PapisPopupYear" },
-      { "title", "%s", "PapisPopupTitle" },
+      { "year",   "%s", "PapisPopupYear" },
+      { "title",  "%s", "PapisPopupTitle" },
     },
   },
   ["search"] = {
     wrap = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
     preview_format = {
-      { "author", "%s", "PapisPreviewAuthor" },
-      { "year", "%s", "PapisPreviewYear" },
-      { "title", "%s", "PapisPreviewTitle" },
+      { "author",    "%s", "PapisPreviewAuthor" },
+      { "year",      "%s", "PapisPreviewYear" },
+      { "title",     "%s", "PapisPreviewTitle" },
       { "empty_line" },
-      { "ref", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "type", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "tags", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "files", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "notes", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "journal", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "abstract", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "ref",       "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "type",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "tags",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "files",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "notes",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "journal",   "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "abstract",  "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
     },
     results_format = {
-      { "author", "%s ", "PapisResultsAuthor" },
-      { "year", "(%s) ", "PapisResultsYear" },
-      { "title", "%s", "PapisResultsTitle" },
+      { "author", "%s ",   "PapisResultsAuthor" },
+      { "year",   "(%s) ", "PapisResultsYear" },
+      { "title",  "%s",    "PapisResultsTitle" },
     },
   },
   ["papis-storage"] = {
