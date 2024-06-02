@@ -78,6 +78,7 @@
           in [
             pkgs.sqlitebrowser
             pkgs.yq-go
+            pkgs.luajit
             nvim-test
           ];
         };

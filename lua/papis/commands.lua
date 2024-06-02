@@ -9,22 +9,22 @@ local config = require("papis.config")
 local api = vim.api
 
 local commands = {
-  ["init"] = {
-    papis_start = {
-      name = "PapisStart",
-      command = function()
-        require("papis").start()
-      end,
-      opts = { desc = "Start papis.nvim" },
-    },
-  },
   ["base"] = {
-    reset_db = {
+    reinit_data = {
       name = "PapisReInitData",
       command = function()
         require("papis.data"):reset_db()
       end,
       opts = { desc = "Papis: empty and repopulate the sqlite database from disk" },
+    },
+    reinit_papis_py_config = {
+      name = "PapisReInitConfig",
+      command = function()
+        local testing_session = config["enable_modules"]["testing"]
+        local papis_py_conf_new = config:get_papis_py_conf(testing_session)
+        config:compare_papis_py_conf(papis_py_conf_new)
+      end,
+      opts = { desc = "Papis: import configuration from Papis" },
     },
   },
   ["debug"] = {
@@ -91,13 +91,13 @@ function M.setup(module)
     for module_name, module_commands in pairs(commands) do
       if config["enable_modules"][module_name] then
         for _, command in pairs(module_commands) do
-          api.nvim_create_user_command(command["name"], command["command"], command["opts"])
+          api.nvim_buf_create_user_command(0, command["name"], command["command"], command["opts"])
         end
       end
     end
   else
     for _, command in pairs(commands[module]) do
-      api.nvim_create_user_command(command["name"], command["command"], command["opts"])
+      api.nvim_buf_create_user_command(0, command["name"], command["command"], command["opts"])
     end
   end
 end

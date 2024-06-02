@@ -99,6 +99,13 @@ M.state = M:tbl("state", {
   tag_format = { "text", default = nil },
 })
 
+M.config = M:tbl("config", {
+  id = true,
+  info_name = { "text", default = nil },
+  notes_name = { "text", default = nil },
+  dir = { "text", default = nil },
+})
+
 ---Adds common methods to tbls
 ---@param tbls table #Set of tables that should have methods added
 function M.add_tbl_methods(tbls)
@@ -109,7 +116,7 @@ function M.add_tbl_methods(tbls)
   end
 end
 
-M.add_tbl_methods({ M.data, M.metadata, M.state })
+M.add_tbl_methods({ M.data, M.metadata, M.state, M.config })
 
 ---Updates a row, deleting fields that don't exist in `new_row`
 ---@param tbl_name string #The table to update
@@ -156,6 +163,21 @@ end
 function M.state:set_fw_running(pid)
   pid = pid or 0
   tbl_methods.update(self, { id = 1 }, { fw_running = pid })
+end
+
+---Checks if the config database is setup
+function M.config:is_setup()
+  local papis_py_conf = M.config:get()
+  if vim.tbl_isempty(papis_py_conf) then
+    return false
+  else
+    for _, value in pairs(papis_py_conf[1]) do
+      if value == nil or value == '' then
+        return false
+      end
+    end
+  end
+  return true
 end
 
 return M

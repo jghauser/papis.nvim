@@ -14,16 +14,12 @@ local uv = vim.loop
 local fs_stat = uv.fs_stat
 local new_timer = uv.new_timer
 local api = vim.api
-
-local log = require("papis.logger")
-local config = require("papis.config")
-local library_dir = Path:new(config["papis_python"]["dir"]):expand()
-local info_name = config["papis_python"]["info_name"]
-local does_pid_exist = require("papis.utils").does_pid_exist
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
+local log = require("papis.logger")
+local does_pid_exist = require("papis.utils").does_pid_exist
 local data = require("papis.data")
 if not data then
   return nil
@@ -56,6 +52,7 @@ end
 ---Gets all directories in the library_dir
 ---@return table #A list of all directories in library_dir
 local function get_library_dirs()
+  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir")):expand()
   local library_dirs = Scan.scan_dir(library_dir, { depth = 1, only_dirs = true })
   return library_dirs
 end
@@ -70,6 +67,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
   ---@param filename string #The name of the file that triggered the event
   ---@param unwatch_cb function #The callback that stops a watcher
   local function do_handle_event(filename, unwatch_cb)
+    local info_name = db.config:get_value({ id = 1 }, "info_name")
     local mtime
     local entry_dir
     local info_path
@@ -153,6 +151,7 @@ end
 ---Starts file system watchers for root dir and all entry dirs
 local function start_fs_watchers()
   log.debug("Set db state to indicate fswatcher is active")
+  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir")):expand()
   db.state:set_fw_running(uv.os_getpid())
 
   log.debug("Setting up fswatcher for library root directory")

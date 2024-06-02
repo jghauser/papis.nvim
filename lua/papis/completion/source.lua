@@ -55,7 +55,8 @@ function M:is_available()
   local split_path = current_filepath:_split()
   local filename = current_filepath:_split()[#split_path]
 
-  if filename == config["papis_python"]["info_name"] then
+  local info_name = db.config:get_value({ id = 1 }, "info_name")
+  if filename == info_name then
     log.trace("we are in a papis info file")
     if not tag_delimiter then
       tag_delimiter = get_tag_delimiter()

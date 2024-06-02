@@ -5,29 +5,6 @@
 -- Defines all the default configuration values.
 --
 
----Queries papis to get info-name and dir settings. It is very slow and shouldn't be used
----if possible.
----@return table #A table { info_name = val, dir = val }
-local function get_papis_py_conf()
-  local keys_to_get = { "info-name", "notes-name", "dir" }
-  local papis_py_conf = {}
-  for _, key in ipairs(keys_to_get) do
-    local handle = io.popen("papis config " .. key)
-    if handle then
-      papis_py_conf[string.gsub(key, "-", "_")] = string.gsub(handle:read("*a"), "\n", "")
-      handle:close()
-    end
-    if papis_py_conf["dir"] then
-      local dir = papis_py_conf["dir"]
-      if string.sub(dir, 1, 1) == "~" then
-        dir = os.getenv("HOME") .. string.sub(dir, 2, #dir)
-      end
-      papis_py_conf["dir"] = dir
-    end
-  end
-  return papis_py_conf
-end
-
 -- default configuration values
 local default_config = {
   enable_modules = {
@@ -38,6 +15,7 @@ local default_config = {
     ["colors"] = true,
     ["base"] = true,
     ["debug"] = false,
+    ["testing"] = false,
   }, -- can be set to nil or false or left out
   cite_formats = {
     tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
@@ -73,7 +51,6 @@ local default_config = {
   },
   db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
   yq_bin = "yq",
-  papis_python = nil,
   create_new_note_fn = function(papis_id, notes_name)
     vim.fn.system(
       string.format(
@@ -83,13 +60,13 @@ local default_config = {
       )
     )
   end,
-  init_filenames = { "%info_name%", "*.md", "*.norg" }, -- if %info_name%, then needs to be at first position
+  init_filetypes = { "markdown", "norg", "yaml" },
   ["formatter"] = {
     format_notes_fn = function(entry)
       local title_format = {
-        { "author", "%s ", "" },
-        { "year", "(%s) ", "" },
-        { "title", "%s", "" },
+        { "author", "%s ",   "" },
+        { "year",   "(%s) ", "" },
+        { "title",  "%s",    "" },
       }
       local title = require("papis.utils"):format_display_strings(entry, title_format)
       for k, v in ipairs(title) do
@@ -114,12 +91,12 @@ local default_config = {
     end,
     format_references_fn = function(entry)
       local reference_format = {
-        { "author",  "%s ",   "" },
+        { "author",  "%s ",    "" },
         { "year",    "(%s). ", "" },
-        { "title",   "%s. ",  "" },
-        { "journal", "%s. ",    "" },
-        { "volume",  "%s",    "" },
-        { "number",  "(%s)",  "" },
+        { "title",   "%s. ",   "" },
+        { "journal", "%s. ",   "" },
+        { "volume",  "%s",     "" },
+        { "number",  "(%s)",   "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
       for k, v in ipairs(reference_data) do
@@ -131,30 +108,30 @@ local default_config = {
   ["cursor-actions"] = {
     popup_format = {
       { "author", "%s", "PapisPopupAuthor" },
-      { "year", "%s", "PapisPopupYear" },
-      { "title", "%s", "PapisPopupTitle" },
+      { "year",   "%s", "PapisPopupYear" },
+      { "title",  "%s", "PapisPopupTitle" },
     },
   },
   ["search"] = {
     wrap = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
     preview_format = {
-      { "author", "%s", "PapisPreviewAuthor" },
-      { "year", "%s", "PapisPreviewYear" },
-      { "title", "%s", "PapisPreviewTitle" },
+      { "author",    "%s", "PapisPreviewAuthor" },
+      { "year",      "%s", "PapisPreviewYear" },
+      { "title",     "%s", "PapisPreviewTitle" },
       { "empty_line" },
-      { "ref", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "type", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "tags", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "files", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "notes", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "journal", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "abstract", "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "ref",       "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "type",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "tags",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "files",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "notes",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "journal",   "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "abstract",  "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
     },
     results_format = {
-      { "author", "%s ", "PapisResultsAuthor" },
-      { "year", "(%s) ", "PapisResultsYear" },
-      { "title", "%s", "PapisResultsTitle" },
+      { "author", "%s ",   "PapisResultsAuthor" },
+      { "year",   "(%s) ", "PapisResultsYear" },
+      { "title",  "%s",    "PapisResultsTitle" },
     },
   },
   ["papis-storage"] = {
@@ -172,27 +149,63 @@ local default_config = {
 
 local M = vim.deepcopy(default_config)
 
----Updates the default configuration with user supplied options
+---Queries papis to get info-name and dir settings.
+---@param testing_session boolean #If true, will use testing papis conf
+---@return table #A table { info_name = val, dir = val }
+function M:get_papis_py_conf(testing_session)
+  local papis_conf_keys = { "info-name", "notes-name", "dir" }
+  local papis_py_conf_new = {}
+  local testing_conf_path
+  if testing_session then
+    testing_conf_path = "-c ./tests/papis_config "
+  end
+  for _, key in ipairs(papis_conf_keys) do
+    local handle = io.popen("papis " .. testing_conf_path .. "config " .. key)
+    if handle then
+      papis_py_conf_new[string.gsub(key, "-", "_")] = string.gsub(handle:read("*a"), "\n", "")
+      handle:close()
+    end
+  end
+  if papis_py_conf_new["dir"] then
+    local dir = papis_py_conf_new["dir"]
+    if string.sub(dir, 1, 1) == "~" then
+      dir = os.getenv("HOME") .. string.sub(dir, 2, #dir)
+    end
+    papis_py_conf_new["dir"] = dir
+  end
+  return papis_py_conf_new
+end
+
+---Compares and updates Queries papis to get info-name and dir settings. It is very slow and shouldn't be used
+---if possible.
+---@param papis_py_conf_new table #A table with new (read from Papis) config entries
+function M:compare_papis_py_conf(papis_py_conf_new)
+  local db = require("papis.sqlite-wrapper")
+  if not db then
+    return
+  end
+
+  local papis_py_conf_old = db.config:get()[1]
+  papis_py_conf_old["id"] = nil
+
+  if not vim.deep_equal(papis_py_conf_new, papis_py_conf_old) then
+    db.config:drop()
+    db.config:update({ id = 1 }, papis_py_conf_new)
+    local log = require("papis.logger")
+    log.info("Configuration has changed. Please close all instances of neovim and run `:PapisReInitData`")
+  end
+end
+
+---Updates the default configuration with user supplied options and gets conf from Papis
 ---@param opts table #Same format as default_config and contains user config
 function M:update(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
-
-  -- get papis options if not explicitly given in setup
-  if not newconf["papis_python"] then
-    newconf["papis_python"] = get_papis_py_conf()
-  end
 
   -- set disabled modules to nil if false
   for module_name, is_enabled in pairs(newconf["enable_modules"]) do
     if is_enabled == false then
       newconf.enable_modules[module_name] = nil
     end
-  end
-
-  -- replace %info_name% with actual value
-  if newconf["init_filenames"][1] == "%info_name%" then
-    table.remove(newconf["init_filenames"], 1)
-    table.insert(newconf["init_filenames"], newconf["papis_python"]["info_name"])
   end
 
   -- if debug mode is on, log level should be at least debug
@@ -202,8 +215,29 @@ function M:update(opts)
     end
   end
 
+  -- set main config table
   for k, v in pairs(newconf) do
     self[k] = v
+  end
+
+  local db = require("papis.sqlite-wrapper")
+  if not db then
+    return
+  end
+  local log = require("papis.logger")
+  if not log then
+    return
+  end
+
+  -- get config from Papis if not already in db
+  if not db.config:is_setup() then
+    log.info("Papis.nvim configuration not setup, importing values from Papis now")
+    local testing_session = self["enable_modules"]["testing"]
+    local papis_py_conf_new = self:get_papis_py_conf(testing_session)
+    db:clean_update("config", { id = 1 }, papis_py_conf_new)
+    -- for k, v in pairs(papis_py_conf_new) do
+    --   db.config:update({ id = 1 }, { [k] = v })
+    -- end
   end
 end
 
