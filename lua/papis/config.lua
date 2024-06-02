@@ -155,7 +155,7 @@ local M = vim.deepcopy(default_config)
 function M:get_papis_py_conf(testing_session)
   local papis_conf_keys = { "info-name", "notes-name", "dir" }
   local papis_py_conf_new = {}
-  local testing_conf_path
+  local testing_conf_path = ""
   if testing_session then
     testing_conf_path = "-c ./tests/papis_config "
   end
