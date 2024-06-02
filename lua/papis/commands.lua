@@ -17,6 +17,15 @@ local commands = {
       end,
       opts = { desc = "Papis: empty and repopulate the sqlite database from disk" },
     },
+    reinit_papis_py_config = {
+      name = "PapisReInitConfig",
+      command = function()
+        local testing_session = config["enable_modules"]["testing"]
+        local papis_py_conf_new = config:get_papis_py_conf(testing_session)
+        config:compare_papis_py_conf(papis_py_conf_new)
+      end,
+      opts = { desc = "Papis: import configuration from Papis" },
+    },
   },
   ["debug"] = {
     stop_fw = {

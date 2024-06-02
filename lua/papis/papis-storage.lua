@@ -17,8 +17,6 @@ end
 local utils = require("papis.utils")
 local log = require("papis.logger")
 local config = require("papis.config")
-local library_dir = (Path:new(config["papis_python"]["dir"]))
-local info_name = config["papis_python"]["info_name"]
 local data_tbl_schema = config["data_tbl_schema"]
 local key_name_conversions = config["papis-storage"]["key_name_conversions"]
 local required_keys = config["papis-storage"]["required_keys"]
@@ -51,9 +49,9 @@ local function ensure_tags_are_tbl(tags)
   -- we haven't determined it, it must be a single string tag
   if not have_determined_tag_format then
     tags = { tags }
-  -- if it's a table we don't need to do anything
+    -- if it's a table we don't need to do anything
   elseif tag_format == "tbl" then
-  -- otherwise split the string
+    -- otherwise split the string
   else
     tags = utils.do_split_str(tags, tag_format)
   end
@@ -144,6 +142,8 @@ end
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
+  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir"))
+  local info_name = db.config:get_value({ id = 1 }, "info_name")
   paths = paths or Scan.scan_dir(library_dir:expand(), { depth = 2, search_pattern = info_name })
   local metadata = {}
   for _, path in ipairs(paths) do

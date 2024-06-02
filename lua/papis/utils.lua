@@ -169,7 +169,7 @@ function M:do_open_text_file(papis_id, type)
         popup:unmount()
         local config = require("papis.config")
         local create_new_note_fn = config["create_new_note_fn"]
-        local notes_name = config["papis_python"]["notes_name"]
+        local notes_name = db.config:get_value({ id = 1 }, "notes_name")
         local enable_modules = config["enable_modules"]
         create_new_note_fn(papis_id, notes_name)
         if enable_modules["formatter"] then
