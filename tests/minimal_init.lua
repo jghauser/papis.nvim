@@ -26,22 +26,16 @@ cmp.setup({
 -- remap leader
 vim.g.mapleader = " "
 
-
 ---Sets up papis
 ---@param opts table? Custom configuration options
----@param no_autostart boolean? Disable autostart
-function _Load_papis(opts, no_autostart)
+---@param autostart? boolean? Enable autostart (defaults to `true`)
+---@param rm_db? boolean? Delete db (defaults to `false`)
+function _Load_papis(opts, rm_db)
   local db_path = vim.fn.stdpath("cache") .. "/papis_db/papis-nvim-test.sqlite3"
   local default_config = {
-    papis_python = {
-      dir = fn.getcwd() .. "/tests/files/library",
-      info_name = "info.yaml",
-      notes_name =
-      [[{{(doc["author_list"][0].get('surname','') or doc["author_list"][0].get('family','') ) if doc["author_list"] else doc["author"].split()[0] or doc["editor"].split()[0]}}_{{doc["year"]}}_{{'-'.join(doc["title"].split()[0:4])}}.norg]],
-      opentool = "okular",
-    },
     enable_modules = {
       ["debug"] = true,
+      ["testing"] = true,
     },
     enable_keymaps = true,
     db_path = vim.fn.stdpath("cache") .. "/papis_db/papis-nvim-test.sqlite3",
@@ -53,11 +47,8 @@ function _Load_papis(opts, no_autostart)
   local init_result = require("papis").setup(new_config)
 
   -- remove previous db
-  os.remove(db_path)
-
-  -- start papis.nvim
-  if not no_autostart then
-    cmd.PapisStart()
+  if rm_db then
+    os.remove(db_path)
   end
 
   return init_result
