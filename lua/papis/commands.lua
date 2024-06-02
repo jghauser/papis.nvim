@@ -9,15 +9,6 @@ local config = require("papis.config")
 local api = vim.api
 
 local commands = {
-  ["init"] = {
-    papis_start = {
-      name = "PapisStart",
-      command = function()
-        require("papis").start()
-      end,
-      opts = { desc = "Start papis.nvim" },
-    },
-  },
   ["base"] = {
     reset_db = {
       name = "PapisReInitData",
