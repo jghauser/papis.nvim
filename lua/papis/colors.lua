@@ -9,15 +9,15 @@ local M = {}
 
 local links = {
   PreviewAuthor = "Title",
-  PreviewYear = "@diff.plus",
+  PreviewYear = "@string",
   PreviewTitle = "Normal",
-  PreviewKey = "@diff.plus",
+  PreviewKey = "@string",
   PreviewValue = "Normal",
   PopupAuthor = "Title",
-  PopupYear = "@diff.plus",
+  PopupYear = "@string",
   PopupTitle = "Normal",
   ResultsAuthor = "@tag",
-  ResultsYear = "@diff.plus",
+  ResultsYear = "@string",
   ResultsTitle = "Normal",
 }
 
