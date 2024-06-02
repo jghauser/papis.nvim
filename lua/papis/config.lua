@@ -234,10 +234,8 @@ function M:update(opts)
     log.info("Papis.nvim configuration not setup, importing values from Papis now")
     local testing_session = self["enable_modules"]["testing"]
     local papis_py_conf_new = self:get_papis_py_conf(testing_session)
-    db:clean_update("config", { id = 1 }, papis_py_conf_new)
-    -- for k, v in pairs(papis_py_conf_new) do
-    --   db.config:update({ id = 1 }, { [k] = v })
-    -- end
+    db.config:drop()
+    db.config:update({ id = 1 }, papis_py_conf_new)
   end
 end
 
