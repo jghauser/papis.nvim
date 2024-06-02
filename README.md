@@ -8,10 +8,11 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 - Place your cursor over a citation key and get information about the entry
 - Automatically format new notes
 - Tag completion in `info.yaml` files
+- Insert formatted references
 
 And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
 
-This plugin is currently in early beta. Bugs and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
+This plugin is currently in beta. Bugs and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
 
 While papis.nvim is likely buggy, it is equally likely unable to mess with your precious bibliography. First, it doesn't by itself alter your Papis `info.yaml` files; it always uses the `papis` command to do so. Second, this command is currently only invoked when adding new notes to an item. Your database should therefore be safe from corruption (**however**: have backups, gremlins waiting to pounce are not my responsibility). In the future, papis.nvim might directly edit `info.yaml` files, but if and when that happens, this will be clearly communicated as a breaking change.
 
@@ -163,27 +164,17 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
 
 Papis.nvim exposes a rather large number of configuration options, most of which can be left alone -- and quite a few of which probably *should* be left alone (or not, if you're feeling brave). Currently, papis.nvim doesn't check whether you've managed to set incompatible options, and weird failures will likely occur in such instances.
 
-Note that an empty setup function should work reasonably well when just test-driving the plugin. It will, however, slow neovim startup down considerably and should be replaced with a proper configuration.
-
 Minimal setup:
 
 ```lua
 require("papis").setup({
-  -- These are configuration options of the `papis` program relevant to papis.nvim.
-  -- Papis.nvim can get them automatically from papis, but this is very slow. It is
-  -- recommended to copy the relevant settings from your papis configuration file.
-  papis_python = {
-    dir = "/path/to/my/library",
-    info_name = "info.yaml", -- (when setting papis options `-` is replaced with `_`
-                             -- in the keys names)
-    notes_name = [[notes.norg]],
-  },
   -- Enable the default keymaps
   enable_keymaps = true,
 })
 ```
 
-Full list of configuration options (with defaults):
+<details>
+  <summary>All configuration options (with defaults)</summary>
 
 ```lua
 -- List of enabled papis.nvim modules.
@@ -257,11 +248,6 @@ db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
 -- Name of the `yq` executable.
 yq_bin = "yq",
 
--- The papis options relevant for papis.nvim (see above minimal config). By
--- default it is unset, which prompts papis.nvim to call `papis config` to
--- get the values.
-papis_python = nil,
-
 -- Function to execute when adding a new note. `ref` is the citation key of the
 -- relevant entry and `notes_name` is defined in `papis_python` above.
 create_new_note_fn = function(papis_id, notes_name)
@@ -274,9 +260,8 @@ create_new_note_fn = function(papis_id, notes_name)
   )
 end,
 
--- Filename patterns that trigger papis.nvim to start. `%info_name%` needs to be
--- first item; it is replaced with `info_name` as defined in `papis_python`.
-init_filenames = { "%info_name%", "*.md", "*.norg" },
+-- Filetypes that start papis.nvim.
+init_filetypes = { "markdown", "norg", "yaml" },
 
 -- Configuration of the search module.
 ["search"] = {
@@ -435,9 +420,11 @@ cmp.setup({
 })
 ```
 
+</details>
+
 ## Usage
 
-Papis.nvim will start automatically according to the filename patterns defined in `init_filenames` (see the [setup section](#setup)). Additionally, it can also be started with `:PapisStart`. The rest of the functionality is covered in the [features section](#features).
+Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:PapisReInitConfig`.
 
 ## Keymaps
 
