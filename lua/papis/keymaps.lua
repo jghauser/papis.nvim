@@ -9,7 +9,7 @@ local config = require("papis.config")
 
 local M = {}
 
-local keybinds = {
+local keymaps = {
   ["search"] = {
     open_search_normal = {
       mode = "n",
@@ -67,22 +67,14 @@ local keybinds = {
 
 ---Sets up the keymaps for all enabled modules
 function M.setup()
-  for module_name, module_keybinds in pairs(keybinds) do
+  for module_name, module_keymaps in pairs(keymaps) do
     if config["enable_modules"][module_name] then
-      vim.api.nvim_create_autocmd({ "BufEnter" }, {
-        pattern = config["init_filenames"],
-        callback = function()
-          for _, keybind in pairs(module_keybinds) do
-            local opts = vim.deepcopy(keybind["opts"])
-            opts["silent"] = true
-            opts["buffer"] = true
-            vim.keymap.set(keybind["mode"], keybind["lhs"], keybind["rhs"], opts)
-          end
-        end,
-        group = vim.api.nvim_create_augroup("setPapisKeymaps_" .. module_name, { clear = true }),
-        desc = "Set Papis keymaps",
-      })
-      vim.api.nvim_exec_autocmds("BufEnter", { group = "setPapisKeymaps_" .. module_name, buffer = 0 })
+      for _, keymap in pairs(module_keymaps) do
+        local opts = vim.deepcopy(keymap["opts"])
+        opts["silent"] = true
+        opts["buffer"] = true
+        vim.keymap.set(keymap["mode"], keymap["lhs"], keymap["rhs"], opts)
+      end
     end
   end
 end
