@@ -91,7 +91,6 @@ use({
     "kkharji/sqlite.lua",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    "nvim-treesitter/nvim-treesitter",
   },
   config = function()
     require("papis").setup(
@@ -110,7 +109,6 @@ With lazy.nvim:
     "kkharji/sqlite.lua",
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
-    "nvim-treesitter/nvim-treesitter",
   },
   config = function()
     require("papis").setup({

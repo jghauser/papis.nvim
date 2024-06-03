@@ -34,7 +34,6 @@
             pkgs.vimPlugins.sqlite-lua
             pkgs.vimPlugins.plenary-nvim
             pkgs.vimPlugins.nui-nvim
-            pkgs.vimPlugins.nvim-treesitter
             pkgs.vimPlugins.nvim-treesitter-parsers.yaml
           ];
         };
