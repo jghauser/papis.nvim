@@ -1,11 +1,9 @@
 name: Release Please
-
 on:
   push:
     branches:
       - main
       - master
-
 jobs:
   release:
     name: release
@@ -17,3 +15,4 @@ jobs:
         with:
           release-type: simple
           package-name: papis.nvim
+          config-file: release-please-config.json
