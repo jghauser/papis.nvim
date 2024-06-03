@@ -1,7 +1,5 @@
 name: panvimdoc
-
 on: [push]
-
 jobs:
   docs:
     runs-on: ubuntu-latest
