@@ -356,7 +356,7 @@ init_filetypes = { "markdown", "norg", "yaml" },
     -- Define all the lines to be inserted
     local lines = {
       "---",
-      "title: Notes -- " .. table.concat(title),
+      'title: "Notes -- ' .. table.concat(title) .. '"',
       "---",
       "",
     }

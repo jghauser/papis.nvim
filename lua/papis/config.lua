@@ -79,7 +79,7 @@ local default_config = {
       end
       local lines = {
         "---",
-        [[title: "Notes -- ]] .. table.concat(title) .. [["]],
+        'title: "Notes -- ' .. table.concat(title) .. '"',
         "---",
         "",
       }
