@@ -78,17 +78,9 @@ local default_config = {
         title[k] = v[1]
       end
       local lines = {
-        "@document.meta",
-        "title: " .. table.concat(title),
-        "categories: [",
-        "  notes",
-        "  academia",
-        "  readings",
-        "]",
-        "created: " .. os.date("%Y-%m-%d"),
-        "updated: " .. os.date("%Y-%m-%d"),
-        "version: " .. require("neorg.core.config").norg_version,
-        "@end",
+        "---",
+        [[title: "Notes -- ]] .. table.concat(title) .. [["]],
+        "---",
         "",
       }
       vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)

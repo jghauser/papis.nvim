@@ -57,7 +57,7 @@ Commands:
 
 ![formatter_trimmed](https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif)
 
-When creating new notes (via `:Telescope papis` or `:PapisOpenNote`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `.norg` format.
+When creating new notes (via `:Telescope papis` or `:PapisOpenNote`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
 
 ## The database
 
@@ -338,7 +338,7 @@ init_filetypes = { "markdown", "norg", "yaml" },
 
   -- This function runs when first opening a new note. The `entry` arg is a table
   -- containing all the information about the entry (see above `data_tbl_schema`).
-  -- This example is meant to be used with the `.norg` filetype.
+  -- This example is meant to be used with the `markdown` filetype.
   format_notes_fn = function(entry)
     -- Some string formatting templates (see above `results_format` option for
     -- more details)
@@ -348,24 +348,16 @@ init_filetypes = { "markdown", "norg", "yaml" },
       { "title", "%s", "" },
     }
     -- Format the strings with information in the entry
-    local title = require("papis.utils"):format_display_strings(entry, title_format)
+    local title = require("papis.utils"):format_display_strings(entry, title_format, true)
     -- Grab only the strings (and disregard highlight groups)
     for k, v in ipairs(title) do
       title[k] = v[1]
     end
     -- Define all the lines to be inserted
     local lines = {
-      "@document.meta",
-      "title: " .. table.concat(title),
-      "description: ",
-      "categories: [",
-      "  notes",
-      "  academia",
-      "  readings",
-      "]",
-      "created: " .. os.date("%Y-%m-%d"),
-      "version: " .. require("neorg.config").version,
-      "@end",
+      "---",
+      "title: Notes -- " .. table.concat(title),
+      "---",
       "",
     }
     -- Insert the lines
