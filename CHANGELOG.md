@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://github.com/jghauser/papis.nvim/compare/v0.2.0...v0.3.0) (2024-06-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* replace plenary.path with pathlib
+
+### Bug Fixes
+
+* **colors:** use a default hl without bg ([e3f0ec3](https://github.com/jghauser/papis.nvim/commit/e3f0ec344b46760fac4e3a3d6e3141106749f76b))
+* remove nvim-treesitter dependency ([cbed835](https://github.com/jghauser/papis.nvim/commit/cbed835b771d71a7b70383f3f17515cc8b3a82d1))
+
+
+### Miscellaneous Chores
+
+* release 0.3.0 ([917e9ae](https://github.com/jghauser/papis.nvim/commit/917e9aee8dd5d990020501ef41caacbaa186d0b8))
+
+
+### Code Refactoring
+
+* replace plenary.path with pathlib ([50c7057](https://github.com/jghauser/papis.nvim/commit/50c7057ad6365342621ef77cedfbd2135f173896))
+
 ## [0.2.0](https://github.com/jghauser/papis.nvim/compare/v0.1.0...v0.2.0) (2024-06-03)
 
 
