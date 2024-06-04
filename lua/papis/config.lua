@@ -73,7 +73,7 @@ local default_config = {
         { "year",   "(%s) ", "" },
         { "title",  "%s",    "" },
       }
-      local title = require("papis.utils"):format_display_strings(entry, title_format)
+      local title = require("papis.utils"):format_display_strings(entry, title_format, true)
       for k, v in ipairs(title) do
         title[k] = v[1]
       end

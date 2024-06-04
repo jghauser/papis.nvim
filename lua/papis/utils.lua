@@ -333,8 +333,9 @@ end
 
 ---Creates a table of formatted strings to be displayed in a line (e.g. Telescope results pane)
 ---@param entry table #A papis entry
+---@param use_shortitle? boolean #If true, use short titles
 ---@return table #A list of strings
-function M:format_display_strings(entry, format_table)
+function M:format_display_strings(entry, format_table, use_shortitle)
   local clean_results_format = self.do_clean_format_tbl(format_table, entry, true)
 
   local str_elements = {}
@@ -370,6 +371,9 @@ function M:format_display_strings(entry, format_table)
         end
         table.insert(str_elements, table.concat(authors, ", ") .. " (eds.)")
       end
+    elseif v[1] == "title" and use_shortitle then
+      local shortitle = entry["title"]:match("([^:]+)")
+      table.insert(str_elements, shortitle)
     else
       table.insert(str_elements, entry[v[1]])
     end
