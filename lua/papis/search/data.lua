@@ -5,8 +5,6 @@
 -- Defines the sqlite table and associated methods for the search module.
 --
 
-local strdisplaywidth = require("plenary.strings").strdisplaywidth
-
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
@@ -95,7 +93,7 @@ local function init_tbl()
     local items = {}
     local displayer_tbl = {}
     for _, vv in ipairs(display_strings) do
-      table.insert(items, { width = strdisplaywidth(vv[1], 1) })
+      table.insert(items, { width = vim.fn.strdisplaywidth(vv[1], 1) })
       table.insert(displayer_tbl, { vv[1], vv[2] })
     end
     table.insert(items, { remaining = true })

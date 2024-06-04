@@ -8,7 +8,6 @@
 local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local nuiEvent = require("nui.utils.autocmd").event
-local strdisplaywidth = require("plenary.strings").strdisplaywidth
 local Path = require("pathlib")
 
 local new_timer = vim.loop.new_timer
@@ -116,7 +115,7 @@ function M:do_open_attached_files(papis_id)
     lookup_tbl[filename] = entry["files"][k]
   end
   if vim.tbl_isempty(filenames) then
-    log.debug("This item has no attached files.")
+    log.info("This item has no attached files.")
   elseif #filenames == 1 then
     log.info("Opening file '" .. filenames[1] .. "' ")
     local path = lookup_tbl[filenames[1]]
@@ -263,20 +262,20 @@ function M.make_nui_lines(clean_format_tbl, entry)
         local str = v[1]
         str = string.format(v[5], str)
         str = string.gsub(str, "\n", "")
-        width1 = strdisplaywidth(str, 1)
+        width1 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[6])
       end
       if type(entry[v[1]]) ~= "table" then
         local str = tostring(entry[v[1]])
         str = string.format(v[2], str)
         str = string.gsub(str, "\n", "")
-        width2 = strdisplaywidth(str, 1)
+        width2 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[3])
       else
         local str = table.concat(entry[v[1]], ", ")
         str = string.format(v[2], str)
         str = string.gsub(str, "\n", "")
-        width2 = strdisplaywidth(str, 1)
+        width2 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[3])
       end
     end
