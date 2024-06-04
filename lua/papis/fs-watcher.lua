@@ -78,15 +78,15 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     if is_library_root then
       log.debug("Filesystem event in the library root directory")
       entry_dir = Path(dir_to_watch, filename)
-      info_path = entry_dir:joinpath(info_name)
+      info_path = entry_dir / info_name
       if entry_dir:exists() and entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '%s' added", entry_dir:absolute()))
-        init_fs_watcher(entry_dir:absolute())
+        log.debug(string.format("Filesystem event: path '%s' added", tostring(entry_dir)))
+        init_fs_watcher(tostring(entry_dir))
         if info_path:exists() then
-          mtime = fs_stat(info_path:absolute()).mtime.sec
+          mtime = fs_stat(tostring(info_path)).mtime.sec
         end
       elseif entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '' removed", entry_dir:absolute()))
+        log.debug(string.format("Filesystem event: path '' removed", tostring(entry_dir)))
         -- don't update here, because we'll catch it below under entry events
         do_update = false
       else
@@ -96,25 +96,25 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     else
       log.debug("Filesystem event in entry directory")
       entry_dir = Path(dir_to_watch)
-      info_path = entry_dir:joinpath(info_name)
+      info_path = entry_dir / info_name
       if info_path:exists() then
         -- info file exists, update with new info
-        log.debug(string.format("Filesystem event: '%s' changed", info_path:absolute()))
-        mtime = fs_stat(info_path:absolute()).mtime.sec
+        log.debug(string.format("Filesystem event: '%s' changed", tostring(info_path)))
+        mtime = fs_stat(tostring(info_path)).mtime.sec
       elseif not entry_dir:exists() then
         -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
-        log.debug(string.format("Filesystem event: '%s' removed", info_path:absolute()))
+        log.debug(string.format("Filesystem event: '%s' removed", tostring(info_path)))
         do_unwatch = true
       else
         -- info file doesn't exist but entry dir does. delete entry but keep watcher
-        log.debug(string.format("Filesystem event: '%s' removed", info_path:absolute()))
+        log.debug(string.format("Filesystem event: '%s' removed", tostring(info_path)))
       end
     end
     if do_update then
       log.debug("Update database for this fs event...")
-      log.debug("Updating: " .. vim.inspect({ path = info_path:absolute(), mtime = mtime }))
+      log.debug("Updating: " .. vim.inspect({ path = tostring(info_path), mtime = mtime }))
       vim.defer_fn(function()
-        data.update_db({ path = info_path:absolute(), mtime = mtime })
+        data.update_db({ path = tostring(info_path), mtime = mtime })
       end, 200)
     elseif do_unwatch then
       log.debug("Removing watcher")

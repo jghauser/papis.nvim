@@ -145,7 +145,7 @@ function M:do_open_text_file(papis_id, type)
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
   local info_path = Path(db.metadata:get_value({ entry = entry["id"] }, "path"))
-  log.debug("Text file in folder: " .. info_path:absolute())
+  log.debug("Text file in folder: " .. tostring(info_path))
   local cmd = ""
   if type == "note" then
     log.debug("Opening a note")
