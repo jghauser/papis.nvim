@@ -73,41 +73,28 @@ To run, papis.nvim requires the [yq](https://github.com/mikefarah/yq) utility to
 
 You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you intend to use the completion module.
 
-### Package managers
+### Neovim package managers
 
-With rocks.nvim:
+In addition to the below snippets, make sure to also install the *treesitter yaml parser* if you intend to use the completion module.
+
+<details>
+  <summary>rocks.nvim configuration</summary>
 
 ```vim
 :Rocks install papis.nvim
 ```
 
-With packer:
+</details>
 
-```lua
-use({
-  "jghauser/papis.nvim",
-  after = { "telescope.nvim", "nvim-cmp" },
-  requires = {
-    "kkharji/sqlite.lua",
-    "nvim-lua/plenary.nvim",
-    "MunifTanjim/nui.nvim",
-  },
-  config = function()
-    require("papis").setup(
-    -- Your configuration goes here
-    )
-  end,
-})
-```
-
-With lazy.nvim:
+<details>
+  <summary>lazy.nvim configuration</summary>
 
 ```lua
 {
   "jghauser/papis.nvim",
   dependencies = {
     "kkharji/sqlite.lua",
-    "nvim-lua/plenary.nvim",
+	  "pysan3/pathlib.nvim"
     "MunifTanjim/nui.nvim",
   },
   config = function()
@@ -118,13 +105,36 @@ With lazy.nvim:
 }
 ```
 
-Additional dependencies:
+</details>
 
-- *treesitter yaml parser*: Required by the completion module.
+<details>
+  <summary>packer configuration</summary>
+
+```lua
+use({
+  "jghauser/papis.nvim",
+  after = { "telescope.nvim", "nvim-cmp" },
+  requires = {
+    "kkharji/sqlite.lua",
+	  "pysan3/pathlib.nvim"
+    "MunifTanjim/nui.nvim",
+  },
+  config = function()
+    require("papis").setup(
+    -- Your configuration goes here
+    )
+  end,
+})
+```
+
+</details>
 
 ### Nix
 
 The `flake.nix` provides an overlay that can be used to install `papis.nvim`. With `home-manager`, this can be achieved with something along the following lines:
+
+<details>
+  <summary>Nix configuration</summary>
 
 ```nix
 {
@@ -157,6 +167,8 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
   };
 }
 ```
+
+</details>
 
 ## Setup
 
@@ -398,12 +410,9 @@ init_filetypes = { "markdown", "norg", "yaml" },
 -- Configuration of logging.
 log = {
 
-  -- What levels to log (`off` to disable). Debug mode is more conveniently
+  -- What levels to log. Debug mode is more conveniently
   -- enabled in `enable_modules`.
-  level = "off",
-
-  -- How to format log strings.
-  notify_format = "%s",
+  level = "info",
 },
 ```
 
