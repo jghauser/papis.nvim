@@ -52,9 +52,14 @@ local default_config = {
   db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
   yq_bin = "yq",
   create_new_note_fn = function(papis_id, notes_name)
+    local testing_session = require("papis.config")["enable_modules"]["testing"]
+    local testing_conf_path = ""
+    if testing_session then
+      testing_conf_path = "-c ./tests/papis_config "
+    end
     vim.fn.system(
       string.format(
-        "papis update --set notes %s papis_id:%s",
+        "papis " .. testing_conf_path .. "update --set notes %s papis_id:%s",
         vim.fn.shellescape(notes_name),
         vim.fn.shellescape(papis_id)
       )
