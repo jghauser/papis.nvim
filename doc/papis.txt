@@ -413,7 +413,7 @@ All configuration options (with defaults) ~
         -- Define all the lines to be inserted
         local lines = {
           "---",
-          "title: Notes -- " .. table.concat(title),
+          'title: "Notes -- ' .. table.concat(title) .. '"',
           "---",
           "",
         }
