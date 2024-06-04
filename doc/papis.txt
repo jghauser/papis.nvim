@@ -100,7 +100,7 @@ When creating new notes (via `:Telescope papis` or `:PapisOpenNote`),
 papis.nvim can be set up to format the new note with a custom function. You
 can, for example, give the note a title that corresponds to the entry’s title
 or provide it with a skeleton structure. Below, in the setup section, there’s
-an example suitable for the `.norg` format.
+an example suitable for the `markdown` format.
 
 
 THE DATABASE                              *papis-📚-papis.nvim-the-database*
@@ -318,9 +318,14 @@ All configuration options (with defaults) ~
     -- Function to execute when adding a new note. `ref` is the citation key of the
     -- relevant entry and `notes_name` is defined in `papis_python` above.
     create_new_note_fn = function(papis_id, notes_name)
+      local testing_session = require("papis.config")["enable_modules"]["testing"]
+      local testing_conf_path = ""
+      if testing_session then
+        testing_conf_path = "-c ./tests/papis_config "
+      end
       vim.fn.system(
         string.format(
-          "papis update --set notes %s papis_id:%s",
+          "papis " .. testing_conf_path .. "update --set notes %s papis_id:%s",
           vim.fn.shellescape(notes_name),
           vim.fn.shellescape(papis_id)
         )
@@ -390,7 +395,7 @@ All configuration options (with defaults) ~
     
       -- This function runs when first opening a new note. The `entry` arg is a table
       -- containing all the information about the entry (see above `data_tbl_schema`).
-      -- This example is meant to be used with the `.norg` filetype.
+      -- This example is meant to be used with the `markdown` filetype.
       format_notes_fn = function(entry)
         -- Some string formatting templates (see above `results_format` option for
         -- more details)
@@ -400,24 +405,16 @@ All configuration options (with defaults) ~
           { "title", "%s", "" },
         }
         -- Format the strings with information in the entry
-        local title = require("papis.utils"):format_display_strings(entry, title_format)
+        local title = require("papis.utils"):format_display_strings(entry, title_format, true)
         -- Grab only the strings (and disregard highlight groups)
         for k, v in ipairs(title) do
           title[k] = v[1]
         end
         -- Define all the lines to be inserted
         local lines = {
-          "@document.meta",
-          "title: " .. table.concat(title),
-          "description: ",
-          "categories: [",
-          "  notes",
-          "  academia",
-          "  readings",
-          "]",
-          "created: " .. os.date("%Y-%m-%d"),
-          "version: " .. require("neorg.config").version,
-          "@end",
+          "---",
+          "title: Notes -- " .. table.concat(title),
+          "---",
           "",
         }
         -- Insert the lines
