@@ -9,7 +9,6 @@ local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local nuiEvent = require("nui.utils.autocmd").event
 local strdisplaywidth = require("plenary.strings").strdisplaywidth
-local job = require("plenary.job")
 local Path = require("pathlib")
 
 local new_timer = vim.loop.new_timer
@@ -66,21 +65,27 @@ end
 -- Open file outside neovim
 ---@param path string #Path to the file
 function M.do_open_file_external(path)
-  -- local safe_path = vim.fn.shellescape(path)
-  local o = {}
+  local command
+  local args
   if is_windows then
-    o.command = "rundll32.exe"
-    o.args = { "url.dll,FileProtocolHandler", path }
+    command = "rundll32.exe"
+    args = { "url.dll,FileProtocolHandler", path }
   else
     if is_linux then
-      o.command = "xdg-open"
+      command = "xdg-open"
     elseif is_macos then
-      o.command = "open"
+      command = "open"
     end
-    o.args = { path }
+    args = { path }
   end
 
-  job:new(o):start()
+  local handle
+  handle = vim.loop.spawn(command, {
+    args = args,
+    stdio = { nil, nil, nil }
+  }, vim.schedule_wrap(function()
+    handle:close()
+  end))
 end
 
 ---Gets the file names given a list of full paths
