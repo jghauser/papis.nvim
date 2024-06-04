@@ -184,11 +184,13 @@ function M:compare_papis_py_conf(papis_py_conf_new)
   local papis_py_conf_old = db.config:get()[1]
   papis_py_conf_old["id"] = nil
 
+  local log = require("papis.log")
   if not vim.deep_equal(papis_py_conf_new, papis_py_conf_old) then
     db.config:drop()
     db.config:update({ id = 1 }, papis_py_conf_new)
-    local log = require("papis.log")
     log.info("Configuration has changed. Please close all instances of neovim and run `:PapisReInitData`")
+  else
+    log.info("Configuration hasn't changed. No action required.")
   end
 end
 
