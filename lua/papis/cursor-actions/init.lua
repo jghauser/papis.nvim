@@ -9,10 +9,9 @@ local NuiPopup = require("nui.popup")
 local nuiAutocmd = require("nui.utils.autocmd")
 local nuiEvent = require("nui.utils.autocmd").event
 
-local opt = vim.opt
 local fn = vim.fn
 
-local log = require("papis.logger")
+local log = require("papis.log")
 local config = require("papis.config")
 local popup_format = config["cursor-actions"]["popup_format"]
 local utils = require("papis.utils")

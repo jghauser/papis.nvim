@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 03
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 04
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -134,41 +134,25 @@ You’ll need the nvim-cmp <https://github.com/hrsh7th/nvim-cmp> plugin if you
 intend to use the completion module.
 
 
-PACKAGE MANAGERS ~
+NEOVIM PACKAGE MANAGERS ~
 
-With rocks.nvim:
+In addition to the below snippets, make sure to also install the _treesitter
+yaml parser_ if you intend to use the completion module.
+
+rocks.nvim configuration ~
 
 >vim
     :Rocks install papis.nvim
 <
 
-With packer:
-
->lua
-    use({
-      "jghauser/papis.nvim",
-      after = { "telescope.nvim", "nvim-cmp" },
-      requires = {
-        "kkharji/sqlite.lua",
-        "nvim-lua/plenary.nvim",
-        "MunifTanjim/nui.nvim",
-      },
-      config = function()
-        require("papis").setup(
-        -- Your configuration goes here
-        )
-      end,
-    })
-<
-
-With lazy.nvim:
+lazy.nvim configuration ~
 
 >lua
     {
       "jghauser/papis.nvim",
       dependencies = {
         "kkharji/sqlite.lua",
-        "nvim-lua/plenary.nvim",
+          "pysan3/pathlib.nvim"
         "MunifTanjim/nui.nvim",
       },
       config = function()
@@ -179,9 +163,24 @@ With lazy.nvim:
     }
 <
 
-Additional dependencies:
+packer configuration ~
 
-- _treesitter yaml parser_: Required by the completion module.
+>lua
+    use({
+      "jghauser/papis.nvim",
+      after = { "telescope.nvim", "nvim-cmp" },
+      requires = {
+        "kkharji/sqlite.lua",
+          "pysan3/pathlib.nvim"
+        "MunifTanjim/nui.nvim",
+      },
+      config = function()
+        require("papis").setup(
+        -- Your configuration goes here
+        )
+      end,
+    })
+<
 
 
 NIX ~
@@ -189,6 +188,8 @@ NIX ~
 The `flake.nix` provides an overlay that can be used to install `papis.nvim`.
 With `home-manager`, this can be achieved with something along the following
 lines:
+
+Nix configuration ~
 
 >nix
     {
@@ -466,12 +467,9 @@ All configuration options (with defaults) ~
     -- Configuration of logging.
     log = {
     
-      -- What levels to log (`off` to disable). Debug mode is more conveniently
+      -- What levels to log. Debug mode is more conveniently
       -- enabled in `enable_modules`.
-      level = "off",
-    
-      -- How to format log strings.
-      notify_format = "%s",
+      level = "info",
     },
 <
 

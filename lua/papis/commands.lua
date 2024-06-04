@@ -45,7 +45,7 @@ local commands = {
     get_log_path = {
       name = "PapisDebugGetLogPath",
       command = function()
-        require("papis.logger").get_path()
+        require("papis.log").get_path()
       end,
       opts = { desc = "Papis: get path to the log file" },
     },

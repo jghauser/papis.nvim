@@ -7,8 +7,7 @@
 -- Adapted from: https://github.com/rktjmp/fwatch.nvim
 --
 
-local Path = require("plenary.path")
-local Scan = require("plenary.scandir")
+local Path = require("pathlib")
 
 local uv = vim.loop
 local fs_stat = uv.fs_stat
@@ -18,7 +17,7 @@ local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
-local log = require("papis.logger")
+local log = require("papis.log")
 local does_pid_exist = require("papis.utils").does_pid_exist
 local data = require("papis.data")
 if not data then
@@ -45,15 +44,18 @@ local function do_watch(path, on_event, on_error)
       on_event(filename, unwatch_cb)
     end
   end
-  uv.fs_event_start(handle, path, {}, event_cb)
+  uv.fs_event_start(handle, tostring(path), {}, event_cb)
   table.insert(handles, handle)
 end
 
 ---Gets all directories in the library_dir
 ---@return table #A list of all directories in library_dir
 local function get_library_dirs()
-  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir")):expand()
-  local library_dirs = Scan.scan_dir(library_dir, { depth = 1, only_dirs = true })
+  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
+  local library_dirs = {}
+  for path in library_dir:fs_iterdir() do
+    table.insert(library_dirs, path)
+  end
   return library_dirs
 end
 
@@ -75,7 +77,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     local do_update = true
     if is_library_root then
       log.debug("Filesystem event in the library root directory")
-      entry_dir = Path:new(dir_to_watch, filename)
+      entry_dir = Path(dir_to_watch, filename)
       info_path = entry_dir:joinpath(info_name)
       if entry_dir:exists() and entry_dir:is_dir() then
         log.debug(string.format("Filesystem event: path '%s' added", entry_dir:absolute()))
@@ -93,7 +95,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
       end
     else
       log.debug("Filesystem event in entry directory")
-      entry_dir = Path:new(dir_to_watch)
+      entry_dir = Path(dir_to_watch)
       info_path = entry_dir:joinpath(info_name)
       if info_path:exists() then
         -- info file exists, update with new info
@@ -151,7 +153,7 @@ end
 ---Starts file system watchers for root dir and all entry dirs
 local function start_fs_watchers()
   log.debug("Set db state to indicate fswatcher is active")
-  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir")):expand()
+  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
   db.state:set_fw_running(uv.os_getpid())
 
   log.debug("Setting up fswatcher for library root directory")

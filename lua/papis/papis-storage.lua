@@ -5,8 +5,7 @@
 -- Reads out all the Papis yaml files and creates data ready for db
 --
 
-local Path = require("plenary.path")
-local Scan = require("plenary.scandir")
+local Path = require("pathlib")
 
 local fs_stat = vim.loop.fs_stat
 
@@ -15,7 +14,7 @@ if not db then
   return nil
 end
 local utils = require("papis.utils")
-local log = require("papis.logger")
+local log = require("papis.log")
 local config = require("papis.config")
 local data_tbl_schema = config["data_tbl_schema"]
 local key_name_conversions = config["papis-storage"]["key_name_conversions"]
@@ -85,8 +84,8 @@ end
 local function read_yaml(path)
   log.trace("Reading path: " .. path)
   local entry
-  local filepath = Path:new(path)
-  local handler = io.popen(yq_bin .. ' -oj "' .. filepath:absolute() .. '" 2>/dev/null')
+  local filepath = Path(path)
+  local handler = io.popen(yq_bin .. ' -oj "' .. tostring(filepath) .. '" 2>/dev/null')
   if handler then
     local as_json = handler:read("*all")
     handler:close()
@@ -124,7 +123,7 @@ local function make_full_paths(filenames, path)
 
   local full_paths = {}
   for _, filename in ipairs(filenames) do
-    local full_path = Path:new(path, filename):expand()
+    local full_path = tostring(Path(path, filename))
     table.insert(full_paths, full_path)
   end
   return full_paths
@@ -142,15 +141,20 @@ end
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
-  local library_dir = Path:new(db.config:get_value({ id = 1 }, "dir"))
+  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
   local info_name = db.config:get_value({ id = 1 }, "info_name")
-  paths = paths or Scan.scan_dir(library_dir:expand(), { depth = 2, search_pattern = info_name })
+  if not paths then
+    paths = {}
+    for path in library_dir:fs_iterdir() do
+      if path:basename() == info_name then
+        table.insert(paths, path)
+      end
+    end
+  end
   local metadata = {}
   for _, path in ipairs(paths) do
-    local mtime = fs_stat(path).mtime.sec
-    -- path = Path:new(path)
-    -- path = path:parent():absolute()
-    table.insert(metadata, { path = path, mtime = mtime })
+    local mtime = fs_stat(tostring(path)).mtime.sec
+    table.insert(metadata, { path = tostring(path), mtime = mtime })
   end
   return metadata
 end
@@ -183,7 +187,7 @@ function M.get_data_full(metadata)
             entry[key] = ensure_tags_are_tbl(entry[key])
           end
           if (key == "files") or (key == "notes") then
-            local entry_path = Path:new(path):parent()
+            local entry_path = Path(path):parent()
             entry[key] = make_full_paths(entry[key], entry_path)
           end
 

@@ -5,7 +5,7 @@
 -- This modules formats new notes created by papis.nvim using a template function.
 --
 
-local log = require("papis.logger")
+local log = require("papis.log")
 
 local create_autocmd = vim.api.nvim_create_autocmd
 local create_augroup = vim.api.nvim_create_augroup

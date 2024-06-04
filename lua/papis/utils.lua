@@ -8,14 +8,12 @@
 local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local nuiEvent = require("nui.utils.autocmd").event
-local Path = require("plenary.path")
-local strdisplaywidth = require("plenary.strings").strdisplaywidth
-local job = require("plenary.job")
+local Path = require("pathlib")
 
 local new_timer = vim.loop.new_timer
 local os_name = vim.loop.os_uname()
 
-local log = require("papis.logger")
+local log = require("papis.log")
 
 local is_windows
 local is_macos
@@ -66,21 +64,27 @@ end
 -- Open file outside neovim
 ---@param path string #Path to the file
 function M.do_open_file_external(path)
-  -- local safe_path = vim.fn.shellescape(path)
-  local o = {}
+  local command
+  local args
   if is_windows then
-    o.command = "rundll32.exe"
-    o.args = { "url.dll,FileProtocolHandler", path }
+    command = "rundll32.exe"
+    args = { "url.dll,FileProtocolHandler", path }
   else
     if is_linux then
-      o.command = "xdg-open"
+      command = "xdg-open"
     elseif is_macos then
-      o.command = "open"
+      command = "open"
     end
-    o.args = { path }
+    args = { path }
   end
 
-  job:new(o):start()
+  local handle
+  handle = vim.loop.spawn(command, {
+    args = args,
+    stdio = { nil, nil, nil }
+  }, vim.schedule_wrap(function()
+    handle:close()
+  end))
 end
 
 ---Gets the file names given a list of full paths
@@ -90,8 +94,7 @@ function M.get_filenames(full_paths)
   local filenames = {}
   if full_paths then
     for _, full_path in ipairs(full_paths) do
-      local filename = Path:new(full_path):_split()
-      filename = filename[#filename]
+      local filename = Path(full_path):basename()
       table.insert(filenames, filename)
     end
   end
@@ -112,7 +115,7 @@ function M:do_open_attached_files(papis_id)
     lookup_tbl[filename] = entry["files"][k]
   end
   if vim.tbl_isempty(filenames) then
-    log.debug("This item has no attached files.")
+    log.info("This item has no attached files.")
   elseif #filenames == 1 then
     log.info("Opening file '" .. filenames[1] .. "' ")
     local path = lookup_tbl[filenames[1]]
@@ -141,7 +144,7 @@ function M:do_open_text_file(papis_id, type)
   end
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
-  local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, "path"))
+  local info_path = Path(db.metadata:get_value({ entry = entry["id"] }, "path"))
   log.debug("Text file in folder: " .. info_path:absolute())
   local cmd = ""
   if type == "note" then
@@ -259,20 +262,20 @@ function M.make_nui_lines(clean_format_tbl, entry)
         local str = v[1]
         str = string.format(v[5], str)
         str = string.gsub(str, "\n", "")
-        width1 = strdisplaywidth(str, 1)
+        width1 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[6])
       end
       if type(entry[v[1]]) ~= "table" then
         local str = tostring(entry[v[1]])
         str = string.format(v[2], str)
         str = string.gsub(str, "\n", "")
-        width2 = strdisplaywidth(str, 1)
+        width2 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[3])
       else
         local str = table.concat(entry[v[1]], ", ")
         str = string.format(v[2], str)
         str = string.gsub(str, "\n", "")
-        width2 = strdisplaywidth(str, 1)
+        width2 = vim.fn.strdisplaywidth(str, 1)
         line:append(str, v[3])
       end
     end

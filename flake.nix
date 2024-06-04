@@ -1,77 +1,57 @@
 {
-  description = "Papis.nvim development environment";
+  description = "Papis.nvim flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = {
+  outputs = inputs @ {
     self,
     nixpkgs,
+    flake-parts,
     ...
   }: let
-    systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
-    forAllSystems = f:
-      builtins.listToAttrs (map (name: {
-          inherit name;
-          value = f name;
-        })
-        systems);
-  in {
-    packages =
-      forAllSystems
-      (system: let
+    name = "papis.nvim";
+
+    plugin-overlay = import ./nix/plugin-overlay.nix {
+      inherit name self;
+    };
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "x86_64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
+      perSystem = {
+        config,
+        self',
+        inputs',
+        system,
+        ...
+      }: let
+        ci-overlay = import ./nix/ci-overlay.nix {
+          inherit self name;
+        };
+
         pkgs = import nixpkgs {
           inherit system;
-        };
-      in {
-        papis-nvim = pkgs.vimUtils.buildVimPlugin {
-          pname = "papis.nvim";
-          version = toString (self.shortRev or self.dirtyShortRev or self.lastModified or "unknown");
-          src = self;
-          dependencies = [
-            pkgs.vimPlugins.telescope-nvim
-            pkgs.vimPlugins.sqlite-lua
-            pkgs.vimPlugins.plenary-nvim
-            pkgs.vimPlugins.nui-nvim
-            pkgs.vimPlugins.nvim-treesitter-parsers.yaml
+          overlays = [
+            plugin-overlay
+            ci-overlay
           ];
         };
-      });
 
-    overlays.default = final: prev: {
-      vimPlugins = prev.vimPlugins.extend (f: p: {
-        papis-nvim = self.packages.${final.system}.papis-nvim;
-      });
-    };
-    devShells =
-      forAllSystems
-      (system: let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
-      in {
-        default = pkgs.mkShell {
+        devShell = pkgs.mkShell {
           buildInputs = let
-            custom-nvim = pkgs.neovim.override {
-              configure = {
-                customRC = ''
-                  luafile ./tests/minimal_init.lua
-                '';
-                packages.myVimPackage.start =
-                  self.packages.${system}.papis-nvim.dependencies
-                  ++ [
-                    pkgs.vimPlugins.nvim-cmp
-                  ];
-              };
-            };
-
             nvim-test = pkgs.writeShellApplication {
               name = "nvim-test";
               text =
                 # bash
                 ''
-                  ${custom-nvim}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
+                  ${pkgs.neovim-with-papis}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
                 '';
             };
           in [
@@ -81,6 +61,20 @@
             nvim-test
           ];
         };
-      });
-  };
+      in {
+        devShells = {
+          default = devShell;
+          inherit devShell;
+        };
+
+        packages = rec {
+          default = papis-nvim;
+          inherit (pkgs.luajitPackages) papis-nvim;
+          inherit (pkgs) neovim-with-papis;
+        };
+      };
+      flake = {
+        overlays.default = plugin-overlay;
+      };
+    };
 }

@@ -5,12 +5,11 @@
 -- The cmp source.
 --
 
-local Path = require("plenary.path")
+local Path = require("pathlib")
 local ts = vim.treesitter
 local api = vim.api
 
-local config = require("papis.config")
-local log = require("papis.logger")
+local log = require("papis.log")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
@@ -51,9 +50,8 @@ end
 ---@return boolean #True if info_name file, false otherwise
 function M:is_available()
   local is_available = false
-  local current_filepath = Path:new((api.nvim_buf_get_name(0)))
-  local split_path = current_filepath:_split()
-  local filename = current_filepath:_split()[#split_path]
+  local current_filepath = Path(api.nvim_buf_get_name(0))
+  local filename = current_filepath:basename()
 
   local info_name = db.config:get_value({ id = 1 }, "info_name")
   if filename == info_name then
