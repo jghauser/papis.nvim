@@ -8,9 +8,9 @@
 local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
 local nuiEvent = require("nui.utils.autocmd").event
-local Path = require("plenary.path")
 local strdisplaywidth = require("plenary.strings").strdisplaywidth
 local job = require("plenary.job")
+local Path = require("pathlib")
 
 local new_timer = vim.loop.new_timer
 local os_name = vim.loop.os_uname()
@@ -90,8 +90,7 @@ function M.get_filenames(full_paths)
   local filenames = {}
   if full_paths then
     for _, full_path in ipairs(full_paths) do
-      local filename = Path:new(full_path):_split()
-      filename = filename[#filename]
+      local filename = Path(full_path):basename()
       table.insert(filenames, filename)
     end
   end
@@ -141,7 +140,7 @@ function M:do_open_text_file(papis_id, type)
   end
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
-  local info_path = Path:new(db.metadata:get_value({ entry = entry["id"] }, "path"))
+  local info_path = Path(db.metadata:get_value({ entry = entry["id"] }, "path"))
   log.debug("Text file in folder: " .. info_path:absolute())
   local cmd = ""
   if type == "note" then

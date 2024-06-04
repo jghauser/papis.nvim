@@ -5,7 +5,7 @@
 -- Implements checkhealth funtionality.
 --
 
-local Path = require("plenary.path")
+local Path = require("pathlib")
 
 local uv = vim.loop
 
@@ -22,7 +22,7 @@ local reports = {}
 ---Creates a report for the sqlite database
 reports["sqlite-wrapper"] = function()
   local sqlite_is_executable = vim.fn.executable("sqlite3")
-  local db_exists = Path:new(config["db_path"]):exists()
+  local db_exists = Path(config["db_path"]):exists()
   local db_is_empty = db.data:empty()
 
   health.start("Sqlite database")

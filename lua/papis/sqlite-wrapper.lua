@@ -15,9 +15,9 @@ end
 
 local sqlite = require("sqlite.db") --- for constructing sql databases
 
-local Path = require("plenary.path")
+local Path = require("pathlib")
 local config = require("papis.config")
-local db_uri = Path:new(config["db_path"])
+local db_uri = Path(config["db_path"])
 local data_tbl_schema = config["data_tbl_schema"]
 
 if not db_uri:exists() then
@@ -72,7 +72,7 @@ function tbl_methods.update(tbl, where, new_values)
 end
 
 local M = sqlite({
-  uri = db_uri:absolute(),
+  uri = tostring(db_uri),
   opts = { busy_timeout = 30000 },
 })
 
