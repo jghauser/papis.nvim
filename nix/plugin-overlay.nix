@@ -9,7 +9,6 @@
       luaOlder,
       nui-nvim,
       sqlite,
-      plenary-nvim,
       pathlib-nvim,
     }:
       buildLuarocksPackage {
@@ -20,7 +19,6 @@
         propagatedBuildInputs = [
           nui-nvim
           sqlite
-          plenary-nvim
           pathlib-nvim
         ];
         src = self;
