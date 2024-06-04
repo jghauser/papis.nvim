@@ -10,7 +10,7 @@ if not papis_storage then
   return nil
 end
 local enable_modules = require("papis.config")["enable_modules"]
-local log = require("papis.logger")
+local log = require("papis.log")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
@@ -76,7 +76,7 @@ local function update_main_tbls(metadata)
         end
       end
     end
-  -- we're deleting an entry
+    -- we're deleting an entry
   else
     log.debug("Deleting an entry")
     local id = db.metadata:get_value({ path = metadata["path"] }, "entry")

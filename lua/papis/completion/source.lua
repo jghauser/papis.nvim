@@ -9,8 +9,7 @@ local Path = require("pathlib")
 local ts = vim.treesitter
 local api = vim.api
 
-local config = require("papis.config")
-local log = require("papis.logger")
+local log = require("papis.log")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil

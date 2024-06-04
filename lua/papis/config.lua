@@ -142,8 +142,7 @@ local default_config = {
     required_keys = { "papis_id", "ref" },
   },
   log = {
-    level = "off", -- off turns it off
-    notify_format = "%s",
+    level = "info", -- off turns it off
   },
 }
 
@@ -191,7 +190,7 @@ function M:compare_papis_py_conf(papis_py_conf_new)
   if not vim.deep_equal(papis_py_conf_new, papis_py_conf_old) then
     db.config:drop()
     db.config:update({ id = 1 }, papis_py_conf_new)
-    local log = require("papis.logger")
+    local log = require("papis.log")
     log.info("Configuration has changed. Please close all instances of neovim and run `:PapisReInitData`")
   end
 end
@@ -210,9 +209,11 @@ function M:update(opts)
 
   -- if debug mode is on, log level should be at least debug
   if newconf["enable_modules"]["debug"] == true then
-    if newconf["log"]["level"] ~= "trace" then
-      newconf["log"]["level"] = "debug"
-    end
+    newconf["log"] = {
+      level = "trace",
+      use_console = "false",
+      use_file = "true",
+    }
   end
 
   -- set main config table
@@ -224,7 +225,7 @@ function M:update(opts)
   if not db then
     return
   end
-  local log = require("papis.logger")
+  local log = require("papis.log")
   if not log then
     return
   end

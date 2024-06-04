@@ -30,7 +30,9 @@ function M.setup(opts)
   -- update config with user config
   config:update(opts)
 
-  log = require("papis.logger")
+  log = require("papis.log")
+  log.new(config["log"] or log.get_default_config(), true)
+
   log.debug("_________________________SETTING UP PAPIS.NVIM_________________________")
 
   local dependencies = { "papis", config["yq_bin"] }

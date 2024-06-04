@@ -15,7 +15,7 @@ local Path = require("pathlib")
 local new_timer = vim.loop.new_timer
 local os_name = vim.loop.os_uname()
 
-local log = require("papis.logger")
+local log = require("papis.log")
 
 local is_windows
 local is_macos

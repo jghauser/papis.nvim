@@ -5,7 +5,7 @@
 -- Wrapper around sqlite.lua setting up the main database and associated methods.
 --
 
-local log = require("papis.logger")
+local log = require("papis.log")
 
 local has_sqlite, _ = pcall(require, "sqlite")
 if not has_sqlite then

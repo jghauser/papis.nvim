@@ -17,7 +17,7 @@ local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
-local log = require("papis.logger")
+local log = require("papis.log")
 local does_pid_exist = require("papis.utils").does_pid_exist
 local data = require("papis.data")
 if not data then

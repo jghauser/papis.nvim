@@ -14,7 +14,7 @@ if not db then
   return nil
 end
 local utils = require("papis.utils")
-local log = require("papis.logger")
+local log = require("papis.log")
 local config = require("papis.config")
 local data_tbl_schema = config["data_tbl_schema"]
 local key_name_conversions = config["papis-storage"]["key_name_conversions"]

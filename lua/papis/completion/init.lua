@@ -5,7 +5,7 @@
 -- Initialises the papis.nvim completion module.
 --
 
-local log = require("papis.logger")
+local log = require("papis.log")
 
 local has_cmp, cmp = pcall(require, "cmp")
 if not has_cmp then
