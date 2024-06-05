@@ -152,7 +152,7 @@ lazy.nvim configuration ~
       "jghauser/papis.nvim",
       dependencies = {
         "kkharji/sqlite.lua",
-          "pysan3/pathlib.nvim"
+        "pysan3/pathlib.nvim"
         "MunifTanjim/nui.nvim",
       },
       config = function()
@@ -171,7 +171,7 @@ packer configuration ~
       after = { "telescope.nvim", "nvim-cmp" },
       requires = {
         "kkharji/sqlite.lua",
-          "pysan3/pathlib.nvim"
+        "pysan3/pathlib.nvim"
         "MunifTanjim/nui.nvim",
       },
       config = function()
