@@ -94,8 +94,9 @@ In addition to the below snippets, make sure to also install the *treesitter yam
   "jghauser/papis.nvim",
   dependencies = {
     "kkharji/sqlite.lua",
-    "pysan3/pathlib.nvim"
     "MunifTanjim/nui.nvim",
+    "pysan3/pathlib.nvim"
+    "nvim-neotest/nvim-nio"
   },
   config = function()
     require("papis").setup({
@@ -116,8 +117,9 @@ use({
   after = { "telescope.nvim", "nvim-cmp" },
   requires = {
     "kkharji/sqlite.lua",
-    "pysan3/pathlib.nvim"
     "MunifTanjim/nui.nvim",
+    "pysan3/pathlib.nvim"
+    "nvim-neotest/nvim-nio"
   },
   config = function()
     require("papis").setup(
