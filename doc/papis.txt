@@ -139,21 +139,22 @@ NEOVIM PACKAGE MANAGERS ~
 In addition to the below snippets, make sure to also install the _treesitter
 yaml parser_ if you intend to use the completion module.
 
-rocks.nvim configuration ~
+rocks.nvim ~
 
 >vim
     :Rocks install papis.nvim
 <
 
-lazy.nvim configuration ~
+lazy.nvim ~
 
 >lua
     {
       "jghauser/papis.nvim",
       dependencies = {
         "kkharji/sqlite.lua",
-        "pysan3/pathlib.nvim"
         "MunifTanjim/nui.nvim",
+        "pysan3/pathlib.nvim"
+        "nvim-neotest/nvim-nio"
       },
       config = function()
         require("papis").setup({
@@ -163,7 +164,7 @@ lazy.nvim configuration ~
     }
 <
 
-packer configuration ~
+packer ~
 
 >lua
     use({
@@ -171,8 +172,9 @@ packer configuration ~
       after = { "telescope.nvim", "nvim-cmp" },
       requires = {
         "kkharji/sqlite.lua",
-        "pysan3/pathlib.nvim"
         "MunifTanjim/nui.nvim",
+        "pysan3/pathlib.nvim"
+        "nvim-neotest/nvim-nio"
       },
       config = function()
         require("papis").setup(
