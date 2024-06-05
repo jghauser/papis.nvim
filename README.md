@@ -78,7 +78,7 @@ You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you in
 In addition to the below snippets, make sure to also install the *treesitter yaml parser* if you intend to use the completion module.
 
 <details>
-  <summary>rocks.nvim configuration</summary>
+  <summary>rocks.nvim</summary>
 
 ```vim
 :Rocks install papis.nvim
@@ -87,7 +87,7 @@ In addition to the below snippets, make sure to also install the *treesitter yam
 </details>
 
 <details>
-  <summary>lazy.nvim configuration</summary>
+  <summary>lazy.nvim</summary>
 
 ```lua
 {
@@ -109,7 +109,7 @@ In addition to the below snippets, make sure to also install the *treesitter yam
 </details>
 
 <details>
-  <summary>packer configuration</summary>
+  <summary>packer</summary>
 
 ```lua
 use({
