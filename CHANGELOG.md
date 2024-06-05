@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/jghauser/papis.nvim/compare/v0.3.1...v0.3.2) (2024-06-05)
+
+
+### Bug Fixes
+
+* add pathlib to luarocks dependencies ([4e8b1df](https://github.com/jghauser/papis.nvim/commit/4e8b1dfd3ad803257634f6a54062b4cb82d6963c))
+
 ## [0.3.1](https://github.com/jghauser/papis.nvim/compare/v0.3.0...v0.3.1) (2024-06-05)
 
 
