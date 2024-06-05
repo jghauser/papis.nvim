@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.3.1](https://github.com/jghauser/papis.nvim/compare/v0.3.0...v0.3.1) (2024-06-05)
+
+
+### Features
+
+* **config:** add info msg when Papis config import without changes ([0001954](https://github.com/jghauser/papis.nvim/commit/00019541930c2fa376daa8f11674fd29646b2b3b))
+* default format_function_fn for markdown, not norg ([542eff0](https://github.com/jghauser/papis.nvim/commit/542eff04e021f400157422738138276f739e131e))
+* use short titles when formatting notes ([6234a84](https://github.com/jghauser/papis.nvim/commit/6234a8489788d7f9a295c768e677a096380a15cb))
+
+
+### Bug Fixes
+
+* **config:** use correct config file if testing is enabled ([99aae36](https://github.com/jghauser/papis.nvim/commit/99aae368f277a57aa6a6b9ba28b29b3c0d18f0e6))
+* **log:** add missing module ([a1aff00](https://github.com/jghauser/papis.nvim/commit/a1aff006e21fbd02b2e7e139354310383fdf5cd9))
+* remove remaining plenary.path function calls ([2e8b846](https://github.com/jghauser/papis.nvim/commit/2e8b846e4ba180d1bc1c9893f931393c8f0ada32))
+
+
+### Miscellaneous Chores
+
+* release 0.3.1 ([68f8e79](https://github.com/jghauser/papis.nvim/commit/68f8e79c5b3fb3a294570e5e0c1c5f1ff1e18ee9))
+
 ## [0.3.0](https://github.com/jghauser/papis.nvim/compare/v0.2.0...v0.3.0) (2024-06-04)
 
 
