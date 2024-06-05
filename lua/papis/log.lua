@@ -8,9 +8,6 @@
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
 
-local log_config = require("papis.config")["log"]
-local Path = require("pathlib")
-
 --- @alias LogLevel
 --- | "trace"
 --- | "debug"
