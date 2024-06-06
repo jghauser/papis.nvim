@@ -10,15 +10,15 @@ local M = {}
 local links = {
   PreviewAuthor = "Title",
   PreviewYear = "@string",
-  PreviewTitle = "@character",
+  PreviewTitle = "@variable",
   PreviewKey = "@string",
-  PreviewValue = "@character",
+  PreviewValue = "@variable",
   PopupAuthor = "Title",
   PopupYear = "@string",
-  PopupTitle = "@character",
+  PopupTitle = "@variable",
   ResultsAuthor = "@tag",
   ResultsYear = "@string",
-  ResultsTitle = "@character",
+  ResultsTitle = "@variable",
 }
 
 ---Sets up all the default highlight groups
