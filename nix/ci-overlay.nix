@@ -62,6 +62,13 @@
                   { name = "papis" },
                 }),
               })
+              local telescope = require("telescope")
+              telescope.setup({
+                defaults = {
+                  -- so that I can see the preview even with a split screen
+                  layout_strategy = "vertical",
+                },
+              })
 
               -- remap leader
               vim.g.mapleader = " "
