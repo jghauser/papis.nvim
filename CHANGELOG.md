@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.3](https://github.com/jghauser/papis.nvim/compare/v0.3.2...v0.3.3) (2024-06-06)
+
+
+### Bug Fixes
+
+* **colors:** change hl group for normal text ([b3c8456](https://github.com/jghauser/papis.nvim/commit/b3c8456f796b1042f980d0a25f8a67978f908312))
+
 ## [0.3.2](https://github.com/jghauser/papis.nvim/compare/v0.3.1...v0.3.2) (2024-06-05)
 
 
