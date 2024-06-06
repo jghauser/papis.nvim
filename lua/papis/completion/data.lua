@@ -32,7 +32,7 @@ local function make_completion_items()
   local tags = get_all_tags()
   for _, tag in ipairs(tags) do
     table.insert(completion_items, {
-      word = tag, -- what is inserted?
+      word = tag,  -- what is inserted?
       label = tag, -- what is visible in the completion popup
     })
   end
