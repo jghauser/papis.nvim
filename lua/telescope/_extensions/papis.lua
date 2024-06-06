@@ -88,7 +88,7 @@ local function papis_picker(opts)
               line:render(self.state.bufnr, -1, line_nr)
             end
 
-            vim.api.nvim_win_set_option(status.preview_win, "wrap", wrap)
+            vim.api.nvim_set_option_value("wrap", wrap, { win = status.preview_win })
           end,
         }),
         sorter = telescope_config.generic_sorter(opts),
