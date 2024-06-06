@@ -1,0 +1,11 @@
+[main]
+dir = ~/.cache/papis_test_library
+
+[settings]
+default-library = main
+notes-name = note.md
+; HACK remove this below when papis doesn't load my config.py anymore
+; see https://github.com/papis/papis/issues/865
+formatter=jinja2
+
+; vim: ft=dosini wrap
