@@ -21,7 +21,7 @@ local db_uri = Path(config["db_path"])
 local data_tbl_schema = config["data_tbl_schema"]
 
 if not db_uri:exists() then
-  db_uri:parent():mkdir()
+  db_uri:parent_assert():mkdir(Path.permission("rwxr-xr-x"), true)
 end
 
 local tbl_methods = {}
