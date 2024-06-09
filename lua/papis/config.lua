@@ -231,6 +231,7 @@ function M:update(opts)
 
   -- get config from Papis if not already in db
   if not db.config:is_setup() then
+    log.new(self["log"] or log.get_default_config(), true)
     log.info("Papis.nvim configuration not setup, importing values from Papis now")
     local testing_session = self["enable_modules"]["testing"]
     local papis_py_conf_new = self:get_papis_py_conf(testing_session)
