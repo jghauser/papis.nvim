@@ -48,9 +48,13 @@
           buildInputs = let
             nvim-test = pkgs.writeShellApplication {
               name = "nvim-test";
-              text =
+              text = let
+                test-lib-dir = "~/.cache/papis_test_library";
+              in
                 # bash
                 ''
+                  ${pkgs.coreutils}/bin/rm -rf ${test-lib-dir}
+                  ${pkgs.coreutils}/bin/cp -r -r ./tests/files/library ${test-lib-dir}
                   ${pkgs.neovim-with-papis}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
                 '';
             };
