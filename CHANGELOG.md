@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.3](https://github.com/jghauser/papis.nvim/compare/v0.3.2...v0.3.3) (2024-06-09)
+
+
+### Bug Fixes
+
+* **colors:** change hl group for normal text ([b3c8456](https://github.com/jghauser/papis.nvim/commit/b3c8456f796b1042f980d0a25f8a67978f908312))
+* **config:** create logger early when no Papis config ([33d0dc2](https://github.com/jghauser/papis.nvim/commit/33d0dc21e713298cff88702414b29de335cdf253))
+* **sqlite-wrapper:** create db folder recursively ([e5207e9](https://github.com/jghauser/papis.nvim/commit/e5207e9f17acf00b3582a603693b1b0218771d02)), closes [#67](https://github.com/jghauser/papis.nvim/issues/67)
+
 ## [0.3.2](https://github.com/jghauser/papis.nvim/compare/v0.3.1...v0.3.2) (2024-06-05)
 
 
