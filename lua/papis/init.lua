@@ -23,18 +23,26 @@ end
 
 local M = {}
 
----This function is run when neovim starts. It sets up the `PapisStart` command and autocmd
----to allow lazy-loading of papis.nvim.
+---This function is run when neovim starts and sets up papis.nvim.
 ---@param opts table #User configuration
 function M.setup(opts)
   -- update config with user config
   config:update(opts)
 
+  -- create autocmd that starts papis.nvim for configured filetypes
+  make_start_autocmd()
+end
+
+---This function starts all of papis.nvim.
+function M.start()
   log = require("papis.log")
   log.new(config["log"] or log.get_default_config(), true)
+  log.debug("_________________________STARTING PAPIS.NVIM_________________________")
 
-  log.debug("_________________________SETTING UP PAPIS.NVIM_________________________")
+  -- ensure that config options from Papis (python app) are setup
+  config:setup_papis_py_conf()
 
+  -- checking for dependencies
   local dependencies = { "papis", config["yq_bin"] }
   for _, dependency in ipairs(dependencies) do
     if vim.fn.executable(dependency) == 0 then
@@ -44,14 +52,6 @@ function M.setup(opts)
       return nil
     end
   end
-
-  log.debug("Creating autocmds to lazily load papis.nvim")
-  make_start_autocmd()
-end
-
----This function starts all of papis.nvim.
-function M.start()
-  log.debug("Starting papis.nvim")
 
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
   local db = require("papis.sqlite-wrapper")

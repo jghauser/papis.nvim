@@ -143,12 +143,10 @@ local default_config = {
   },
 }
 
-local M = vim.deepcopy(default_config)
-
----Queries papis to get info-name and dir settings.
+---Queries Papis to get various options.
 ---@param testing_session boolean #If true, will use testing papis conf
 ---@return table #A table { info_name = val, dir = val }
-function M:get_papis_py_conf(testing_session)
+local function get_papis_py_conf(testing_session)
   local papis_conf_keys = { "info-name", "notes-name", "dir" }
   local papis_py_conf_new = {}
   local testing_conf_path = ""
@@ -172,15 +170,18 @@ function M:get_papis_py_conf(testing_session)
   return papis_py_conf_new
 end
 
+local M = vim.deepcopy(default_config)
+
 ---Compares and updates Queries papis to get info-name and dir settings. It is very slow and shouldn't be used
 ---if possible.
----@param papis_py_conf_new table #A table with new (read from Papis) config entries
-function M:compare_papis_py_conf(papis_py_conf_new)
+function M:update_papis_py_conf()
   local db = require("papis.sqlite-wrapper")
   if not db then
     return
   end
 
+  local is_testing_session = self["enable_modules"]["testing"]
+  local papis_py_conf_new = get_papis_py_conf(is_testing_session)
   local papis_py_conf_old = db.config:get()[1]
   papis_py_conf_old["id"] = nil
 
@@ -191,6 +192,24 @@ function M:compare_papis_py_conf(papis_py_conf_new)
     log.info("Configuration has changed. Please close all instances of neovim and run `:PapisReInitData`")
   else
     log.info("Configuration hasn't changed. No action required.")
+  end
+end
+
+---Sets up Papis configuration values if not already done.
+function M:setup_papis_py_conf()
+  local db = require("papis.sqlite-wrapper")
+  if not db then
+    return
+  end
+  local log = require("papis.log")
+
+  -- get config from Papis if not already in db
+  if not db.config:is_setup() then
+    log.info("Papis.nvim configuration not setup, importing values from Papis now")
+    local testing_session = self["enable_modules"]["testing"]
+    local papis_py_conf_new = get_papis_py_conf(testing_session)
+    db.config:drop()
+    db.config:update({ id = 1 }, papis_py_conf_new)
   end
 end
 
@@ -218,25 +237,6 @@ function M:update(opts)
   -- set main config table
   for k, v in pairs(newconf) do
     self[k] = v
-  end
-
-  local db = require("papis.sqlite-wrapper")
-  if not db then
-    return
-  end
-  local log = require("papis.log")
-  if not log then
-    return
-  end
-
-  -- get config from Papis if not already in db
-  if not db.config:is_setup() then
-    log.new(self["log"] or log.get_default_config(), true)
-    log.info("Papis.nvim configuration not setup, importing values from Papis now")
-    local testing_session = self["enable_modules"]["testing"]
-    local papis_py_conf_new = self:get_papis_py_conf(testing_session)
-    db.config:drop()
-    db.config:update({ id = 1 }, papis_py_conf_new)
   end
 end
 
