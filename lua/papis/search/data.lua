@@ -11,10 +11,8 @@ if not db then
 end
 local config = require("papis.config")
 local search_keys = config["search"]["search_keys"]
-local preview_format = config["search"]["preview_format"]
 local results_format = config["search"]["results_format"]
 local utils = require("papis.utils")
-local required_db_keys = utils:get_required_db_keys({ search_keys, preview_format, results_format })
 
 ---Creates a string that is used to search among entries (not displayed)
 ---@param entry table #A papis entry
@@ -50,6 +48,21 @@ local function format_search_string(entry)
   return search_string
 end
 
+---Creates a timestamp (in secs since epoch), which is used for initial sorting
+---@param entry table #A papis entry
+---@return integer #The timestamp (date when entry was added in secs since epoch or 1 if missing)
+local function make_timestamp(entry)
+  local timestamp = entry["time_added"]
+  if timestamp then
+    local year, month, day, hour, min, sec = timestamp:match("(%d+)-(%d+)-(%d+)-(%d+):(%d+):(%d+)")
+    local t = { year = year, month = month, day = day, hour = hour, min = min, sec = sec }
+    timestamp = os.time(t)
+  else
+    timestamp = 1
+  end
+  return timestamp
+end
+
 ---Initialises all the tables and methods used by the papis.nvim search module
 local function init_tbl()
   db.search = db:tbl("search", {
@@ -57,6 +70,7 @@ local function init_tbl()
     items = { "luatable" },
     displayer_tbl = { "luatable" },
     search_string = { "text" },
+    timestamp = { "integer" },
     entry = {
       type = "integer",
       unique = true,
@@ -76,6 +90,7 @@ local function init_tbl()
         "items",
         "displayer_tbl",
         "search_string",
+        "timestamp",
       },
     })
   end
@@ -84,8 +99,7 @@ local function init_tbl()
   ---@param id number #The id of a papis entry
   function db.search:update(id)
     local entry = db["data"]:__get({
-      where = { id = id },
-      select = required_db_keys,
+      where = { id = id }
     })[1]
     local display_strings = utils:format_display_strings(entry, results_format)
     local search_string = format_search_string(entry)
@@ -98,12 +112,15 @@ local function init_tbl()
     end
     table.insert(items, { remaining = true })
 
+    local timestamp = make_timestamp(entry)
+
     self:__update({
       where = { id = id },
       set = {
         displayer_tbl = displayer_tbl,
         items = items,
         search_string = search_string,
+        timestamp = timestamp,
         entry = id,
       },
     })

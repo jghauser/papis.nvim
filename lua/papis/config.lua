@@ -111,6 +111,7 @@ local default_config = {
   },
   ["search"] = {
     wrap = true,
+    initial_sort_by_time_added = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
     preview_format = {
       { "author",    "%s", "PapisPreviewAuthor" },

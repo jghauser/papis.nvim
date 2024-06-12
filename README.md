@@ -283,8 +283,11 @@ init_filetypes = { "markdown", "norg", "yaml" },
 -- Configuration of the search module.
 ["search"] = {
 
-  -- Wether to enable line wrap in the telescope previewer.
+  -- Whether to enable line wrap in the telescope previewer.
   wrap = true,
+
+  -- Whether to initially sort entries by time-added.
+  initial_sort_by_time_added = true,
 
   -- What keys to search for matches.
   search_keys = { "author", "editor", "year", "title", "tags" },
