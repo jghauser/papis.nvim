@@ -21,8 +21,6 @@ if not db then
   return nil
 end
 
-local wrap, preview_format, required_db_keys
-
 ---Gets the cite format for the filetype
 ---@return string #The cite format for the filetype (or fallback if undefined)
 local function parse_format_string()
@@ -33,6 +31,8 @@ local function parse_format_string()
   return cite_format
 end
 
+local wrap, preview_format, required_db_keys, initial_sort_by_time_added
+
 ---Defines the papis.nvim telescope picker
 ---@param opts table #Options for the papis picker
 local function papis_picker(opts)
@@ -40,6 +40,29 @@ local function papis_picker(opts)
 
   local results = db.data:get(nil, required_db_keys)
   local format_string = parse_format_string()
+
+  -- amend the generic_sorter so that we can change initial sorting
+  local generic_sorter = telescope_config.generic_sorter(opts)
+  local papis_sorter = {}
+  setmetatable(papis_sorter, { __index = generic_sorter })
+
+  if initial_sort_by_time_added then
+    ---@param prompt string
+    ---@param line string
+    ---@return number score number from 1 to 0. lower the number the better. -1 will filter out the entry though.
+    function papis_sorter:scoring_function(prompt, line, entry)
+      local score = generic_sorter.scoring_function(self, prompt, line)
+      if #prompt == 0 then
+        local min_timestamp = 0
+        local max_timestamp = os.time()
+        local timestamp = entry["timestamp"]
+
+        score = 1 - (timestamp - min_timestamp) / (max_timestamp - min_timestamp)
+      end
+      return score
+    end
+  end
+
   pickers
       .new(opts, {
         prompt_title = "Papis References",
@@ -47,10 +70,10 @@ local function papis_picker(opts)
           results = results,
           entry_maker = function(entry)
             local entry_pre_calc = db["search"]:get(entry["id"])[1]
+            local timestamp = entry_pre_calc["timestamp"]
             local items = entry_pre_calc["items"]
 
             local displayer_tbl = entry_pre_calc["displayer_tbl"]
-
             local displayer = entry_display.create({
               separator = "",
               items = items,
@@ -65,6 +88,7 @@ local function papis_picker(opts)
               value = search_string,
               ordinal = search_string,
               display = make_display,
+              timestamp = timestamp,
               id = entry,
             }
           end,
@@ -91,7 +115,7 @@ local function papis_picker(opts)
             vim.api.nvim_set_option_value("wrap", wrap, { win = status.preview_win })
           end,
         }),
-        sorter = telescope_config.generic_sorter(opts),
+        sorter = papis_sorter,
         attach_mappings = function(_, map)
           actions.select_default:replace(papis_actions.ref_insert(format_string))
           map("i", "<c-o>f", papis_actions.open_file(), { desc = "Open file" })
@@ -112,6 +136,7 @@ end
 return telescope.register_extension({
   setup = function(opts)
     wrap = opts["wrap"]
+    initial_sort_by_time_added = opts["initial_sort_by_time_added"]
     preview_format = opts["preview_format"]
     local search_keys = opts["search_keys"]
     local results_format = opts["results_format"]
