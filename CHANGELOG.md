@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.0](https://github.com/jghauser/papis.nvim/compare/v0.3.3...v0.4.0) (2024-06-13)
+
+
+### Features
+
+* improve lazy-loading ([b685f69](https://github.com/jghauser/papis.nvim/commit/b685f696b25bd5c6d13a12d67f8a5ee53d9075e1))
+* initially sort telescope entries by time-added ([eae91b8](https://github.com/jghauser/papis.nvim/commit/eae91b8864de336cc0bab044a227fcba6c12acf6))
+
+
+### Miscellaneous Chores
+
+* release 0.4.0 ([0fae1bf](https://github.com/jghauser/papis.nvim/commit/0fae1bf215193fb202eb3f107ed8aeef98033959))
+
 ## [0.3.3](https://github.com/jghauser/papis.nvim/compare/v0.3.2...v0.3.3) (2024-06-09)
 
 
