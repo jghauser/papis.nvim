@@ -42,9 +42,11 @@
               local cmd = vim.cmd
               local fn = vim.fn
 
-              o.termguicolors = true
+              -- disable swap
               o.swapfile = false
 
+              -- add current directory to runtimepath to have papis.nvim
+              -- be loaded from the current directory
               vim.opt.runtimepath:prepend(vim.fn.getcwd())
 
               -- setup dependencies
@@ -58,7 +60,6 @@
                   ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
                 }),
                 sources = cmp.config.sources({
-                  -- your other source
                   { name = "papis" },
                 }),
               })
@@ -75,8 +76,7 @@
 
               ---Sets up papis
               ---@param opts table? Custom configuration options
-              ---@param autostart? boolean? Enable autostart (defaults to `true`)
-              ---@param rm_db? boolean? Delete db (defaults to `false`)
+              ---@param rm_db boolean? Remove db on startup (defaults to `true`)
               function _Load_papis(opts, rm_db)
                 local db_path = vim.fn.stdpath("cache") .. "/papis_db/papis-nvim-test.sqlite3"
                 local default_config = {
