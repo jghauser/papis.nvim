@@ -95,8 +95,8 @@ In addition to the below snippets, make sure to also install the *treesitter yam
   dependencies = {
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
-    "pysan3/pathlib.nvim"
-    "nvim-neotest/nvim-nio"
+    "pysan3/pathlib.nvim",
+    "nvim-neotest/nvim-nio",
   },
   config = function()
     require("papis").setup({
@@ -118,8 +118,8 @@ use({
   requires = {
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
-    "pysan3/pathlib.nvim"
-    "nvim-neotest/nvim-nio"
+    "pysan3/pathlib.nvim",
+    "nvim-neotest/nvim-nio",
   },
   config = function()
     require("papis").setup(
