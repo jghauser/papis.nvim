@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 13
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 14
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -153,8 +153,8 @@ lazy.nvim ~
       dependencies = {
         "kkharji/sqlite.lua",
         "MunifTanjim/nui.nvim",
-        "pysan3/pathlib.nvim"
-        "nvim-neotest/nvim-nio"
+        "pysan3/pathlib.nvim",
+        "nvim-neotest/nvim-nio",
       },
       config = function()
         require("papis").setup({
@@ -173,8 +173,8 @@ packer ~
       requires = {
         "kkharji/sqlite.lua",
         "MunifTanjim/nui.nvim",
-        "pysan3/pathlib.nvim"
-        "nvim-neotest/nvim-nio"
+        "pysan3/pathlib.nvim",
+        "nvim-neotest/nvim-nio",
       },
       config = function()
         require("papis").setup(
