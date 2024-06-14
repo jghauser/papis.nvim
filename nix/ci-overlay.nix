@@ -85,7 +85,7 @@
                     ["testing"] = true,
                   },
                   enable_keymaps = true,
-                  db_path = vim.fn.stdpath("cache") .. "/papis_db/papis-nvim-test.sqlite3",
+                  db_path = db_path,
                 }
                 local new_config = vim.tbl_deep_extend("force", default_config, opts or {})
                 local init_result = require("papis").setup(new_config)
