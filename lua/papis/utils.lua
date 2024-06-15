@@ -47,7 +47,7 @@ end
 
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
----@param sep? string #String giving each character by witch to split
+---@param sep? string #String giving each character by which to split
 ---@return table #List of split elements
 function M.do_split_str(inputstr, sep)
   if sep == nil then
@@ -63,20 +63,15 @@ end
 
 -- Open file outside neovim
 ---@param path string #Path to the file
-function M.do_open_file_external(path)
-  local command
-  local args
-  if is_windows then
-    command = "rundll32.exe"
-    args = { "url.dll,FileProtocolHandler", path }
-  else
-    if is_linux then
-      command = "xdg-open"
-    elseif is_macos then
-      command = "open"
-    end
-    args = { path }
+function M:do_open_file_external(path)
+  local opentool = require("papis.sqlite-wrapper").config:get_value({ id = 1 }, "opentool")
+  local opentool_table = self.do_split_str(opentool, " ")
+  local command = opentool_table[1]
+  local args = {}
+  for i = 2, #opentool_table do
+    table.insert(args, opentool_table[i])
   end
+  table.insert(args, path)
 
   local handle
   handle = vim.loop.spawn(command, {
@@ -119,7 +114,7 @@ function M:do_open_attached_files(papis_id)
   elseif #filenames == 1 then
     log.info("Opening file '" .. filenames[1] .. "' ")
     local path = lookup_tbl[filenames[1]]
-    self.do_open_file_external(path)
+    self:do_open_file_external(path)
   else
     vim.ui.select(filenames, {
       prompt = "Select attachment to open:",
@@ -127,7 +122,7 @@ function M:do_open_attached_files(papis_id)
       if choice then
         log.info("Opening file '" .. choice .. "' ")
         local path = lookup_tbl[choice]
-        self.do_open_file_external(path)
+        self:do_open_file_external(path)
       end
     end)
   end

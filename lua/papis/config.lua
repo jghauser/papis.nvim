@@ -66,6 +66,7 @@ local default_config = {
     )
   end,
   init_filetypes = { "markdown", "norg", "yaml" },
+  papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   ["formatter"] = {
     format_notes_fn = function(entry)
       local title_format = {
@@ -145,13 +146,13 @@ local default_config = {
 }
 
 ---Queries Papis to get various options.
----@param testing_session boolean #If true, will use testing papis conf
+---@param papis_conf_keys table #A table with keys to query from Papis
+---@param is_testing_session boolean #If true, will use testing papis conf
 ---@return table #A table { info_name = val, dir = val }
-local function get_papis_py_conf(testing_session)
-  local papis_conf_keys = { "info-name", "notes-name", "dir" }
+local function get_papis_py_conf(papis_conf_keys, is_testing_session)
   local papis_py_conf_new = {}
   local testing_conf_path = ""
-  if testing_session then
+  if is_testing_session then
     testing_conf_path = "-c ./tests/papis_config "
   end
   for _, key in ipairs(papis_conf_keys) do
@@ -182,7 +183,8 @@ function M:update_papis_py_conf()
   end
 
   local is_testing_session = self["enable_modules"]["testing"]
-  local papis_py_conf_new = get_papis_py_conf(is_testing_session)
+  local papis_conf_keys = self["papis_conf_keys"]
+  local papis_py_conf_new = get_papis_py_conf(papis_conf_keys, is_testing_session)
   local papis_py_conf_old = db.config:get()[1]
   papis_py_conf_old["id"] = nil
 
@@ -207,8 +209,9 @@ function M:setup_papis_py_conf()
   -- get config from Papis if not already in db
   if not db.config:is_setup() then
     log.info("Papis.nvim configuration not setup, importing values from Papis now")
-    local testing_session = self["enable_modules"]["testing"]
-    local papis_py_conf_new = get_papis_py_conf(testing_session)
+    local is_testing_session = self["enable_modules"]["testing"]
+    local papis_conf_keys = self["papis_conf_keys"]
+    local papis_py_conf_new = get_papis_py_conf(papis_conf_keys, is_testing_session)
     db.config:drop()
     db.config:update({ id = 1 }, papis_py_conf_new)
   end

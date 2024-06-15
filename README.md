@@ -282,6 +282,9 @@ end,
 -- Filetypes that start papis.nvim.
 init_filetypes = { "markdown", "norg", "yaml" },
 
+-- Papis options to import into papis.nvim.
+papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
+
 -- Configuration of the search module.
 ["search"] = {
 
