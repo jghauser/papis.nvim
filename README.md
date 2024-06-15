@@ -263,7 +263,7 @@ db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
 yq_bin = "yq",
 
 -- Function to execute when adding a new note. `ref` is the citation key of the
--- relevant entry and `notes_name` is defined in `papis_python` above.
+-- relevant entry and `notes_name` is the name of the notes file.
 create_new_note_fn = function(papis_id, notes_name)
   local testing_session = require("papis.config")["enable_modules"]["testing"]
   local testing_conf_path = ""
