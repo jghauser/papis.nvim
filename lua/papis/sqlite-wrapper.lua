@@ -97,12 +97,19 @@ M.state = M:tbl("state", {
   tag_format = { "text", default = nil },
 })
 
-M.config = M:tbl("config", {
-  id = true,
-  info_name = { "text", default = nil },
-  notes_name = { "text", default = nil },
-  dir = { "text", default = nil },
-})
+
+---Creates the schema of the config table
+---@return table #The config table schema
+local function get_config_tbl_schema()
+  local tbl_schema = { id = true, }
+  for _, key in ipairs(config["papis_conf_keys"]) do
+    local sanitized_key = string.gsub(key, "-", "_")
+    tbl_schema[sanitized_key] = { "text", default = nil }
+  end
+  return tbl_schema
+end
+
+M.config = M:tbl("config", get_config_tbl_schema())
 
 ---Adds common methods to tbls
 ---@param tbls table #Set of tables that should have methods added

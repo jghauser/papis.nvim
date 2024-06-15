@@ -180,8 +180,10 @@ Minimal setup:
 
 ```lua
 require("papis").setup({
-  -- Enable the default keymaps
+  -- Enable the default keymaps (defaults to `false`)
   enable_keymaps = true,
+  -- You might want to change the filetypes activating papis.nvim
+  -- init_filetypes = { "markdown", "norg", "yaml" },
 })
 ```
 
@@ -261,7 +263,7 @@ db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
 yq_bin = "yq",
 
 -- Function to execute when adding a new note. `ref` is the citation key of the
--- relevant entry and `notes_name` is defined in `papis_python` above.
+-- relevant entry and `notes_name` is the name of the notes file.
 create_new_note_fn = function(papis_id, notes_name)
   local testing_session = require("papis.config")["enable_modules"]["testing"]
   local testing_conf_path = ""
@@ -279,6 +281,9 @@ end,
 
 -- Filetypes that start papis.nvim.
 init_filetypes = { "markdown", "norg", "yaml" },
+
+-- Papis options to import into papis.nvim.
+papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
 
 -- Configuration of the search module.
 ["search"] = {
