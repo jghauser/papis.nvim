@@ -136,8 +136,9 @@ intend to use the completion module.
 
 NEOVIM PACKAGE MANAGERS ~
 
-In addition to the below snippets, make sure to also install the _treesitter
-yaml parser_ if you intend to use the completion module.
+In addition to the below snippets, you might also need to install: - `sqlite3`
+(required by `sqlite.lua`) - _treesitter yaml parser_ (if you want the
+completion module)
 
 rocks.nvim ~
 
@@ -155,6 +156,10 @@ lazy.nvim ~
         "MunifTanjim/nui.nvim",
         "pysan3/pathlib.nvim",
         "nvim-neotest/nvim-nio",
+        -- if not already installed, you may also want:
+        -- "nvim-telescope/telescope.nvim",
+        -- "hrsh7th/nvim-cmp",
+    
       },
       config = function()
         require("papis").setup({
@@ -175,6 +180,9 @@ packer ~
         "MunifTanjim/nui.nvim",
         "pysan3/pathlib.nvim",
         "nvim-neotest/nvim-nio",
+        -- if not already installed, you may also want:
+        -- "nvim-telescope/telescope.nvim",
+        -- "hrsh7th/nvim-cmp",
       },
       config = function()
         require("papis").setup(
