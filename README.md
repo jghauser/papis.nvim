@@ -75,7 +75,9 @@ You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you in
 
 ### Neovim package managers
 
-In addition to the below snippets, make sure to also install the *treesitter yaml parser* if you intend to use the completion module.
+In addition to the below snippets, you might also need to install:
+- `sqlite3` (required by `sqlite.lua`)
+- *treesitter yaml parser* (if you want the completion module)
 
 <details>
   <summary>rocks.nvim</summary>
@@ -97,6 +99,10 @@ In addition to the below snippets, make sure to also install the *treesitter yam
     "MunifTanjim/nui.nvim",
     "pysan3/pathlib.nvim",
     "nvim-neotest/nvim-nio",
+    -- if not already installed, you may also want:
+    -- "nvim-telescope/telescope.nvim",
+    -- "hrsh7th/nvim-cmp",
+
   },
   config = function()
     require("papis").setup({
@@ -120,6 +126,9 @@ use({
     "MunifTanjim/nui.nvim",
     "pysan3/pathlib.nvim",
     "nvim-neotest/nvim-nio",
+    -- if not already installed, you may also want:
+    -- "nvim-telescope/telescope.nvim",
+    -- "hrsh7th/nvim-cmp",
   },
   config = function()
     require("papis").setup(
