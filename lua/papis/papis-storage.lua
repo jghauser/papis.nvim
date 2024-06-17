@@ -193,8 +193,8 @@ function M.get_data_full(metadata)
 
           -- ensure that everything is of the correct type
           if type_of_val == "text" then
-            -- convert value to string and remove newline characters
-            data[key] = string.gsub(tostring(entry[key]), "[\n\r]", "")
+            -- convert value to string and remove stray control characters
+            data[key] = string.gsub(tostring(entry[key]), "[%c]", "")
           elseif type_of_val == "luatable" then
             if type(entry[key]) == "table" then
               data[key] = entry[key]
