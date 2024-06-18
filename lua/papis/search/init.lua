@@ -13,6 +13,8 @@ end
 local entry_display = require("telescope.pickers.entry_display")
 entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
 local config = require("papis.config")
+local commands = require("papis.commands")
+local keymaps = require("papis.keymaps")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
@@ -45,6 +47,35 @@ local entry_maker = function(entry)
   }
 end
 
+---@class PapisSubcommand
+local module_subcommands = {
+  search = {
+    impl = function(_, _)
+      vim.cmd("Telescope papis")
+    end,
+  }
+}
+
+---@class PapisKeymaps
+local module_keymaps = {
+  open_search_normal = {
+    mode = "n",
+    lhs = "<leader>pp",
+    rhs = function()
+      vim.cmd("Papis search")
+    end,
+    opts = { desc = "Papis: search library" },
+  },
+  open_search_insert = {
+    mode = "i",
+    lhs = "<c-o>p",
+    rhs = function()
+      vim.cmd("Papis search")
+    end,
+    opts = { desc = "Papis: search library" },
+  },
+}
+
 local M = {}
 
 function M.update_precalc(entry)
@@ -73,6 +104,8 @@ function M.setup()
     },
   })
   telescope.load_extension("papis")
+  commands:add_commands(module_subcommands)
+  keymaps:add_keymaps(module_keymaps)
 end
 
 return M
