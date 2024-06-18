@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 17
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 18
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -125,10 +125,15 @@ It should work across various OSs, but most development has been done on Linux
 (do feel free to open issues if you run into trouble on non-Linux systems). An
 installation of Papis is required.
 
-To run, papis.nvim requires the yq <https://github.com/mikefarah/yq> utility to
-convert `.yaml` files to `.json` (which can then be read by neovim). Note that
-papis.nvim doesn’t (currently) support the python yq
-<https://github.com/kislyuk/yq>.
+To run, papis.nvim requires: - yq <https://github.com/mikefarah/yq>. This is
+used to convert `.yaml` files to `.json` (which can then be read by neovim).
+Note that papis.nvim doesn’t (currently) support the python yq
+<https://github.com/kislyuk/yq>. - sqlite3: Needed by the `sqlite.lua`
+dependency.
+
+Optionally, you’ll need: - a font with icons
+<https://github.com/ryanoasis/nerd-fonts#font-installation> for increased
+prettiness. You can set
 
 You’ll need the nvim-cmp <https://github.com/hrsh7th/nvim-cmp> plugin if you
 intend to use the completion module.
@@ -136,15 +141,17 @@ intend to use the completion module.
 
 NEOVIM PACKAGE MANAGERS ~
 
-In addition to the below snippets, you might also need to install: - `sqlite3`
-(required by `sqlite.lua`) - _treesitter yaml parser_ (if you want the
-completion module)
+In addition to the below snippets, you might also need to install: -
+_treesitter yaml parser_ (if you want the completion module)
 
 rocks.nvim ~
 
 >vim
     :Rocks install papis.nvim
 <
+
+Additionally, may want to install `telescope` (for search) and `cmp` (for
+completion).
 
 lazy.nvim ~
 
@@ -350,6 +357,9 @@ All configuration options (with defaults) ~
     -- Papis options to import into papis.nvim.
     papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
     
+    -- Whether to enable pretty icons (requires something like nerd font)
+    enable_icons = true,
+    
     -- Configuration of the search module.
     ["search"] = {
     
@@ -373,23 +383,28 @@ All configuration options (with defaults) ~
       --      the value in the preview (even though it is defined after it in this
       --      configuration (e.g. `title = Critique of Pure Reason`)).
       -- `empty_line` is used to insert an empty line
+      -- Strings that define the formatting (such as in 2. and 4. above) can optionally
+      -- be a table, defining, first, an icon, and second, a non-icon version. What is
+      -- used is defined by the `enable_icons` option.
       preview_format = {
         { "author", "%s", "PapisPreviewAuthor" },
         { "year", "%s", "PapisPreviewYear" },
         { "title", "%s", "PapisPreviewTitle" },
         { "empty_line" },
-        { "ref", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "type", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "tags", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "files", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "notes", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "journal", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
-        { "abstract", "%s", "PapisPreviewValue", "show_key", "%s = ", "PapisPreviewKey" },
+        { "journal", "%s", "PapisPreviewValue", "show_key", { "󱀁  ", "%s: " }, "PapisPreviewKey" },
+        { "type", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+        { "ref", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+        { "tags", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+        { "abstract", "%s", "PapisPreviewValue", "show_key", { "󰭷  ", "%s: " }, "PapisPreviewKey" },
       },
     
       -- The format of each line in the the results window. Here, everything is show on
-      -- one line (otherwise equivalent to points 1-3 of `preview_format`).
+      -- one line (otherwise equivalent to points 1-3 of `preview_format`). The `force_space`
+      -- value is used to force whitespace for icons (so that if e.g. a file is absent, it will
+      -- show "  ", ensuring that columns are aligned.)
       results_format = {
+        { "files", { " ", "F " }, "PapisResultsFiles", "force_space" },
+        { "notes", { "󰆈 ", "N " }, "PapisResultsNotes", "force_space" },
         { "author", "%s ", "PapisResultsAuthor" },
         { "year", "(%s) ", "PapisResultsYear" },
         { "title", "%s", "PapisResultsTitle" },
