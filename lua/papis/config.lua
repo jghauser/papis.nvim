@@ -67,6 +67,7 @@ local default_config = {
   end,
   init_filetypes = { "markdown", "norg", "yaml" },
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
+  enable_icons = true,
   ["formatter"] = {
     format_notes_fn = function(entry)
       local title_format = {
@@ -115,22 +116,22 @@ local default_config = {
     initial_sort_by_time_added = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
     preview_format = {
-      { "author",    "%s", "PapisPreviewAuthor" },
-      { "year",      "%s", "PapisPreviewYear" },
-      { "title",     "%s", "PapisPreviewTitle" },
+      { "author", "%s", "PapisPreviewAuthor" },
+      { "year", "%s", "PapisPreviewYear" },
+      { "title", "%s", "PapisPreviewTitle" },
       { "empty_line" },
-      { "ref",       "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "type",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "tags",      "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "files",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "notes",     "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "journal",   "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
-      { "abstract",  "%s", "PapisPreviewValue", "show_key", "%s: ", "PapisPreviewKey" },
+      { "journal", "%s", "PapisPreviewValue", "show_key", { "󱀁  ", "%s: " }, "PapisPreviewKey" },
+      { "type", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+      { "ref", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+      { "tags", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
+      { "abstract", "%s", "PapisPreviewValue", "show_key", { "󰭷  ", "%s: " }, "PapisPreviewKey" },
     },
     results_format = {
-      { "author", "%s ",   "PapisResultsAuthor" },
-      { "year",   "(%s) ", "PapisResultsYear" },
-      { "title",  "%s",    "PapisResultsTitle" },
+      { "files", { " ", "F " }, "PapisResultsFiles", "force_space" },
+      { "notes", { "󰆈 ", "N " }, "PapisResultsNotes", "force_space" },
+      { "author", "%s ", "PapisResultsAuthor" },
+      { "year", "(%s) ", "PapisResultsYear" },
+      { "title", "%s", "PapisResultsTitle" },
     },
   },
   ["papis-storage"] = {

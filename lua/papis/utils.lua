@@ -224,15 +224,35 @@ end
 ---@param remove_editor_if_author boolean? #If true we don't add the editor if the entry has an author
 ---@return table #Same format as `format_table` but with k = v pairs removed
 function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
+  local enable_icons = require("papis.config")["enable_icons"]
   local clean_format_table = {}
   for _, v in ipairs(format_table) do
+    local f = vim.deepcopy(v) -- TODO: check if deepcopy necessary
     -- add entry value if either there's an entry value corresponding to the value in the
     -- format table or the value in the format table is "empty_line"
-    if entry[v[1]] or v[1] == "empty_line" then
-      table.insert(clean_format_table, v)
+    if entry[f[1]] or f[1] == "empty_line" then
+      table.insert(clean_format_table, f)
       -- don't add editor if there is author and use_author_if_editor is true
-    elseif remove_editor_if_author and v[1] == "author" and entry["editor"] then
-      table.insert(clean_format_table, v)
+    elseif remove_editor_if_author and f[1] == "author" and entry["editor"] then
+      table.insert(clean_format_table, f)
+      -- add empty space if space is forced but the element doesn't exist for entry
+    elseif f[4] == "force_space" then
+      f[2] = "  " -- TODO: this only works for icons, hardcoded because luajit doesn't support utf8.len
+      table.insert(clean_format_table, f)
+    end
+    if type(f[2]) == "table" then
+      if enable_icons then
+        f[2] = f[2][1]
+      else
+        f[2] = f[2][2]
+      end
+    end
+    if type(f[5]) == "table" then
+      if enable_icons then
+        f[5] = f[5][1]
+      else
+        f[5] = f[5][2]
+      end
     end
   end
   return clean_format_table
@@ -370,7 +390,11 @@ function M:format_display_strings(entry, format_table, use_shortitle)
       local shortitle = entry["title"]:match("([^:]+)")
       table.insert(str_elements, shortitle)
     else
-      table.insert(str_elements, entry[v[1]])
+      if entry[v[1]] then
+        table.insert(str_elements, entry[v[1]])
+      elseif v[4] == "force_space" then
+        table.insert(str_elements, "dummy")
+      end
     end
   end
 
