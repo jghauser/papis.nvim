@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/jghauser/papis.nvim/compare/v0.4.0...v0.5.0) (2024-06-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* rework commands and keymaps
+* add pretty icons
+
+### Features
+
+* add pretty icons ([f14ce7d](https://github.com/jghauser/papis.nvim/commit/f14ce7dcca7d05c25c837cb5d93a51bc6c1caacb))
+* rework commands and keymaps ([93f56ca](https://github.com/jghauser/papis.nvim/commit/93f56caf854e093aac3d74eed4c51b88f75a432b))
+* **search:** make telescope speedier ([c71dbe5](https://github.com/jghauser/papis.nvim/commit/c71dbe54e66595e9c88564ce709ab856ceba6cf6))
+* use option from Papis to open external files ([4a0575f](https://github.com/jghauser/papis.nvim/commit/4a0575f3ea4697d4284839ec3a7682ad74164003))
+
+
+### Bug Fixes
+
+* add missing modules (oops) ([5e0c9c7](https://github.com/jghauser/papis.nvim/commit/5e0c9c7aec4f4f696661a715f898a46a0507a957))
+* **data:** update precalc after updating db ([728e017](https://github.com/jghauser/papis.nvim/commit/728e0177759e4f21bdb782bc5342ff1d08d6ba62))
+* **papis-storage:** remove all control chars from strings ([3cd93d0](https://github.com/jghauser/papis.nvim/commit/3cd93d02817bcc6b31c9c54d381cd55fe7cf5c74))
+* **papis-storage:** remove newline/carrage return chars when importing ([31304b0](https://github.com/jghauser/papis.nvim/commit/31304b0e123cb059bfc803f5b3bc5b9f53142f8b))
+
 ## [0.4.0](https://github.com/jghauser/papis.nvim/compare/v0.3.3...v0.4.0) (2024-06-13)
 
 
