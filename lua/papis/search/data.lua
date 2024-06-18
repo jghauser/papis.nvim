@@ -114,8 +114,6 @@ local function init_tbl()
 
     local timestamp = make_timestamp(entry)
 
-    require("papis.search").update_precalc(entry)
-
     self:__update({
       where = { id = id },
       set = {
@@ -126,6 +124,8 @@ local function init_tbl()
         entry = id,
       },
     })
+
+    require("papis.search").update_precalc(entry)
   end
 end
 
