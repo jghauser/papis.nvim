@@ -12,7 +12,6 @@ local pickers = require("telescope.pickers")
 local actions = require("telescope.actions")
 local previewers = require("telescope.previewers")
 local telescope_config = require("telescope.config").values
-local entry_display = require("telescope.pickers.entry_display")
 local papis_actions = require("telescope._extensions.papis.actions")
 
 local utils = require("papis.utils")
@@ -31,14 +30,17 @@ local function parse_format_string()
   return cite_format
 end
 
-local wrap, preview_format, required_db_keys, initial_sort_by_time_added
+local wrap, preview_format, initial_sort_by_time_added
 
 ---Defines the papis.nvim telescope picker
 ---@param opts table #Options for the papis picker
 local function papis_picker(opts)
   opts = opts or {}
 
-  local results = db.data:get(nil, required_db_keys)
+  -- get precalculated entries for the telescope picker
+  local telescope_precalc = require("papis.search").get_precalc()
+
+  -- local results = db.data:get(nil, required_db_keys)
   local format_string = parse_format_string()
 
   -- amend the generic_sorter so that we can change initial sorting
@@ -67,30 +69,9 @@ local function papis_picker(opts)
       .new(opts, {
         prompt_title = "Papis References",
         finder = finders.new_table({
-          results = results,
+          results = telescope_precalc,
           entry_maker = function(entry)
-            local entry_pre_calc = db["search"]:get(entry["id"])[1]
-            local timestamp = entry_pre_calc["timestamp"]
-            local items = entry_pre_calc["items"]
-
-            local displayer_tbl = entry_pre_calc["displayer_tbl"]
-            local displayer = entry_display.create({
-              separator = "",
-              items = items,
-            })
-
-            local make_display = function()
-              return displayer(displayer_tbl)
-            end
-
-            local search_string = entry_pre_calc["search_string"]
-            return {
-              value = search_string,
-              ordinal = search_string,
-              display = make_display,
-              timestamp = timestamp,
-              id = entry,
-            }
+            return entry
           end,
         }),
         previewer = previewers.new_buffer_previewer({
@@ -138,9 +119,6 @@ return telescope.register_extension({
     wrap = opts["wrap"]
     initial_sort_by_time_added = opts["initial_sort_by_time_added"]
     preview_format = opts["preview_format"]
-    local search_keys = opts["search_keys"]
-    local results_format = opts["results_format"]
-    required_db_keys = utils:get_required_db_keys({ { "papis_id" }, search_keys, preview_format, results_format })
   end,
   exports = {
     papis = papis_picker,
