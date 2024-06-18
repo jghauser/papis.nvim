@@ -66,6 +66,11 @@ function M.start()
   end
   local does_pid_exist = require("papis.utils").does_pid_exist
 
+  -- setup commands
+  require("papis.commands").setup()
+  -- setup keymaps
+  require("papis.keymaps"):setup()
+
   -- get all functions that we need to run the various commands
   for module_name, _ in pairs(config["enable_modules"]) do
     log.trace(module_name .. " is enabled")
@@ -75,16 +80,6 @@ function M.start()
         module.setup()
       end
     end
-  end
-
-  log.debug("Setting up commands and keymaps")
-  -- setup commands
-  if config["enable_commands"] then
-    require("papis.commands").setup()
-  end
-  -- setup keymaps
-  if config["enable_keymaps"] then
-    require("papis.keymaps").setup()
   end
 
   -- check if other neovim instances has file watchers

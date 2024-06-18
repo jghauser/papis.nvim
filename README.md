@@ -20,14 +20,14 @@ While papis.nvim is likely buggy, it is equally likely unable to mess with your 
 
 A number of features (bundled into `modules`) are shipped with papis.nvim. These can be (de)activated as desired.
 
-### 'search' module
+### *Search* module
 
 ![search (trimmed)](https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif)
 
 Papis.nvim integrates with telescope to easily and quickly search one's bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
 Commands:
-- `:Telescope papis`: Opens the papis.nvim telescope picker
+- `:Papis search`: Opens the papis.nvim telescope picker
 
 With the picker open, the following (currently hardcoded) keymaps become available:
 - `of` (normal) / `<c-o>f` (insert): Opens files attached to the entry
@@ -35,35 +35,35 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 - `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
 - `f` (normal) / `c-f` (insert): Insert a formatted reference
 
-### 'completion' module
+### *Completion* module
 
 ![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
 
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) source.
 
-### 'cursor-actions' module
+### *At-cursor* module
 
-![cursor-actions (trimmed)](https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif)
+![at-cursor (trimmed)](https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif)
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
 
 Commands:
-- `:PapisShowPopup`: Opens a floating window with information about the entry
-- `:PapisOpenFile`: Opens files attached to the entry
-- `:PapisOpenNote`: Opens notes attached to the entry (asks for the creation of a new one if none exists)
-- `:PapisEditEntry`: Opens the `info.yaml` file
+- `:Papis at-cursor show-popup`: Opens a floating window with information about the entry
+- `:Papis at-cursor open-file`: Opens files attached to the entry
+- `:Papis at-cursor open-note`: Opens notes attached to the entry (asks for the creation of a new one if none exists)
+- `:Papis at-cursor edit`: Opens the `info.yaml` file
 
-### 'formatter' module
+### *Formatter* module
 
 ![formatter_trimmed](https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif)
 
-When creating new notes (via `:Telescope papis` or `:PapisOpenNote`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
+When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
 
 ## The database
 
 All of papis.nvim's features are made possible by a sqlite database that is created when the plugin is first started. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
 
-Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:PapisReInitData` to re-initialise the database.
+Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:Papis reload data` to re-initialise the database.
 
 ## Installation
 
@@ -160,7 +160,7 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
     home-manager.url = "github:nix-community/home-manager";
     papis-nvim.url = "github:jghauser/papis.nvim";
   };
-  outputs = { self, nixpkgs, home-manager, neorg, ... }: {
+  outputs = { self, nixpkgs, home-manager, ... }: {
     nixosConfigurations.machine = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -199,6 +199,9 @@ require("papis").setup({
   enable_keymaps = true,
   -- You might want to change the filetypes activating papis.nvim
   -- init_filetypes = { "markdown", "norg", "yaml" },
+  -- If you don't have an appropriate font (like Nerd Font), you
+  -- may want to disable icons.
+  -- enable_icons = false,
 })
 ```
 
@@ -210,7 +213,7 @@ require("papis").setup({
 enable_modules = {
   ["search"] = true,          -- Enables/disables the search module
   ["completion"] = true,      -- Enables/disables the completion module
-  ["cursor-actions"] = true,  -- Enables/disables the cursor-actions module
+  ["at-cursor"] = true,  -- Enables/disables the at-cursor module
   ["formatter"] = true,       -- Enables/disables the formatter module
   ["colors"] = true,          -- Enables/disables default highlight groups (you
                               -- probably want this)
@@ -222,7 +225,7 @@ enable_modules = {
 
 -- Defines citation formats for various filetypes. When the value is a table, then
 -- the first entry is used to insert citations, whereas the second will be used to
--- find references (e.g. by the `cursor-action` module). `%s` stands for the reference.
+-- find references (e.g. by the `at-cursor` module). `%s` stands for the reference.
 -- Note that the first entry is a string (where e.g. `\` needs to be excaped as `\\`)
 -- and the second a lua pattern (where magic characters need to be escaped with
 -- `%`; https://www.lua.org/pil/20.2.html).
@@ -240,10 +243,6 @@ cite_formats_fallback = "plain",
 
 -- Enable default keymaps.
 enable_keymaps = false,
-
--- Enable commands (disabling this still allows you to call the relevant lua
--- functions directly)
-enable_commands = true,
 
 -- Whether to enable the file system event watcher. When disabled, the database
 -- is only updated on startup.
@@ -354,10 +353,10 @@ enable_icons = true,
   },
 },
 
--- Configuration of the cursor-actions module.
-["cursor-actions"] = {
+-- Configuration of the at-cursor module.
+["at-cursor"] = {
 
-  -- The format of the popup shown on `:PapisShowPopup` (equivalent to points 1-3
+  -- The format of the popup shown on `:Papis at-cursor show-popup` (equivalent to points 1-3
   -- of `preview_format`)
   popup_format = {
     { "author", "%s", "PapisPopupAuthor" },
@@ -461,7 +460,7 @@ cmp.setup({
 
 ## Usage
 
-Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:PapisReInitConfig`.
+Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config`.
 
 ## Keymaps
 
