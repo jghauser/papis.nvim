@@ -124,7 +124,7 @@ local function make_full_paths(filenames, path)
   local full_paths = {}
   for _, filename in ipairs(filenames) do
     local full_path = tostring(Path(path, filename))
-    table.insert(full_paths, full_path)
+    full_paths[#full_paths + 1] = full_path
   end
   return full_paths
 end
@@ -147,14 +147,14 @@ function M.get_metadata(paths)
     paths = {}
     for path in library_dir:fs_iterdir() do
       if path:basename() == info_name then
-        table.insert(paths, path)
+        paths[#paths + 1] = path
       end
     end
   end
   local metadata = {}
   for _, path in ipairs(paths) do
     local mtime = fs_stat(tostring(path)).mtime.sec
-    table.insert(metadata, { path = tostring(path), mtime = mtime })
+    metadata[#metadata + 1] = { path = tostring(path), mtime = mtime }
   end
   return metadata
 end
@@ -170,7 +170,7 @@ function M.get_data_full(metadata)
     local mtime = metadata_v["mtime"]
     local entry = read_yaml(path)
     if is_valid_entry(entry, path) then
-      entry = do_convert_entry_keys(entry)
+      entry = do_convert_entry_keys(entry) --NOTE: entry is never nil because of `is_valid_entry()`
       local data = {}
       for key, type_of_val in pairs(data_tbl_schema) do
         if type(type_of_val) == "table" then
@@ -205,7 +205,7 @@ function M.get_data_full(metadata)
           end
         end
       end
-      table.insert(data_complete, { data, { path = path, mtime = mtime } })
+      data_complete[#data_complete + 1] = { data, { path = path, mtime = mtime } }
     end
   end
   return data_complete

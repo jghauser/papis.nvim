@@ -30,7 +30,7 @@ local M = {}
 
 ---Get the cite_format for the current filetype
 ---@param filetype string #Filetype for which we need a cite_format
----@return string #cite_format to be used for the filetype
+---@return string|table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
 function M.get_cite_format(filetype)
   local config = require("papis.config")
   local cite_formats = config["cite_formats"]
@@ -56,7 +56,7 @@ function M.do_split_str(inputstr, sep)
   local t = {}
   for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
     str = str:match("^()%s*$") and "" or str:match("^%s*(.*%S)")
-    table.insert(t, str)
+    t[#t + 1] = str
   end
   return t
 end
@@ -66,12 +66,9 @@ end
 function M:do_open_file_external(path)
   local opentool = require("papis.sqlite-wrapper").config:get_value({ id = 1 }, "opentool")
   local opentool_table = self.do_split_str(opentool, " ")
-  local command = opentool_table[1]
-  local args = {}
-  for i = 2, #opentool_table do
-    table.insert(args, opentool_table[i])
-  end
-  table.insert(args, path)
+  local command = table.remove(opentool_table, 1)
+  local args = opentool_table
+  args[#args + 1] = path
 
   local handle
   handle = vim.loop.spawn(command, {
@@ -90,7 +87,7 @@ function M.get_filenames(full_paths)
   if full_paths then
     for _, full_path in ipairs(full_paths) do
       local filename = Path(full_path):basename()
-      table.insert(filenames, filename)
+      filenames[#filenames + 1] = filename
     end
   end
   return filenames
@@ -231,15 +228,16 @@ function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
     -- add entry value if either there's an entry value corresponding to the value in the
     -- format table or the value in the format table is "empty_line"
     if entry[f[1]] or f[1] == "empty_line" then
-      table.insert(clean_format_table, f)
+      clean_format_table[#clean_format_table + 1] = f
       -- don't add editor if there is author and use_author_if_editor is true
     elseif remove_editor_if_author and f[1] == "author" and entry["editor"] then
-      table.insert(clean_format_table, f)
+      clean_format_table[#clean_format_table + 1] = f
       -- add empty space if space is forced but the element doesn't exist for entry
     elseif f[4] == "force_space" then
       f[2] = "  " -- TODO: this only works for icons, hardcoded because luajit doesn't support utf8.len
-      table.insert(clean_format_table, f)
+      clean_format_table[#clean_format_table + 1] = f
     end
+    -- use either icons or normal characters depending on settings
     if type(f[2]) == "table" then
       if enable_icons then
         f[2] = f[2][1]
@@ -295,7 +293,7 @@ function M.make_nui_lines(clean_format_tbl, entry)
       end
     end
     max_width = math.max(max_width, (width1 + width2))
-    table.insert(nui_lines, line)
+    nui_lines[#nui_lines + 1] = line
   end
 
   return nui_lines, max_width
@@ -360,40 +358,40 @@ function M:format_display_strings(entry, format_table, use_shortitle)
       local authors = {}
       if entry["author_list"] then
         for _, vv in ipairs(entry["author_list"]) do
-          table.insert(authors, vv["family"])
+          authors[#authors + 1] = vv["family"]
         end
-        table.insert(str_elements, table.concat(authors, ", "))
+        str_elements[#str_elements + 1] = table.concat(authors, ", ")
       elseif entry["author"] then
         if string.find(entry["author"], " and ") then
           local str = string.gsub(entry["author"], " and ", "|")
           local str_split = self.do_split_str(str, "|")
           for _, s in ipairs(str_split) do
-            table.insert(authors, self.do_split_str(s, ",")[1])
+            authors[#authors + 1] = self.do_split_str(s, ",")[1]
           end
         else
-          table.insert(authors, self.do_split_str(entry["author"], ",")[1])
+          authors[#authors + 1] = self.do_split_str(entry["author"], ",")[1]
         end
-        table.insert(str_elements, table.concat(authors, ", "))
+        str_elements[#str_elements + 1] = table.concat(authors, ", ")
       elseif entry["editor"] then
         if string.find(entry["editor"], " and ") then
           local str = string.gsub(entry["editor"], " and ", "|")
           local str_split = self.do_split_str(str, "|")
           for _, s in ipairs(str_split) do
-            table.insert(authors, self.do_split_str(s, ",")[1])
+            authors[#authors + 1] = self.do_split_str(s, ",")[1]
           end
         else
-          table.insert(authors, self.do_split_str(entry["editor"], ",")[1])
+          authors[#authors + 1] = self.do_split_str(entry["editor"], ",")[1]
         end
-        table.insert(str_elements, table.concat(authors, ", ") .. " (eds.)")
+        str_elements[#str_elements + 1] = table.concat(authors, ", ") .. " (eds.)"
       end
     elseif v[1] == "title" and use_shortitle then
       local shortitle = entry["title"]:match("([^:]+)")
-      table.insert(str_elements, shortitle)
+      str_elements[#str_elements + 1] = shortitle
     else
       if entry[v[1]] then
-        table.insert(str_elements, entry[v[1]])
+        str_elements[#str_elements + 1] = entry[v[1]]
       elseif v[4] == "force_space" then
-        table.insert(str_elements, "dummy")
+        str_elements[#str_elements + 1] = "dummy"
       end
     end
   end
@@ -401,7 +399,7 @@ function M:format_display_strings(entry, format_table, use_shortitle)
   local display_strings = {}
   for k, str_element in ipairs(str_elements) do
     local formatted_str = string.format(clean_results_format[k][2], str_element)
-    table.insert(display_strings, { formatted_str, clean_results_format[k][3] })
+    display_strings[#display_strings + 1] = { formatted_str, clean_results_format[k][3] }
   end
 
   return display_strings

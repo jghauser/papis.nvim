@@ -22,6 +22,9 @@ end
 
 local telescope_precalc = {}
 
+---Create a telescope entry for a given db entry
+---@param entry table #A entry in the library db
+---@return table #A telescope entry
 local entry_maker = function(entry)
   local entry_pre_calc = db["search"]:get(entry["id"])[1]
   local timestamp = entry_pre_calc["timestamp"]
@@ -78,11 +81,15 @@ local module_keymaps = {
 
 local M = {}
 
+---Updates the precalculated telescope entry for the picker
+---@param entry table #The db entry for which to update the telescope entry
 function M.update_precalc(entry)
   local id = entry["id"]
   telescope_precalc[id] = entry_maker(entry)
 end
 
+---Get precalcuated telescope entries (or create them if they don't yet exist)
+---@return table #Table with precalculated telescope entries for all db entries
 function M.get_precalc()
   if vim.tbl_isempty(telescope_precalc) then
     local entries = db.data:get()

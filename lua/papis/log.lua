@@ -152,7 +152,7 @@ M.new = function(config, standalone)
         local fmt = table.remove(passed, 1)
         local inspected = {}
         for _, v in ipairs(passed) do
-          table.insert(inspected, vim.inspect(v))
+          inspected[#inspected + 1] = vim.inspect(v)
         end
         return string.format(fmt, unpack(inspected))
       end)

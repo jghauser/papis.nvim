@@ -34,8 +34,11 @@ local fs_watching_stopped = false
 ---@param on_error function #Function to run on error
 local function do_watch(path, on_event, on_error)
   local handle = uv.new_fs_event()
+  if not handle then
+    return
+  end
   local unwatch_cb = function()
-    uv.fs_event_stop(handle)
+    handle:stop()
   end
   local event_cb = function(err, filename)
     if err then
@@ -44,8 +47,8 @@ local function do_watch(path, on_event, on_error)
       on_event(filename, unwatch_cb)
     end
   end
-  uv.fs_event_start(handle, tostring(path), {}, event_cb)
-  table.insert(handles, handle)
+  handle:start(tostring(path), {}, event_cb)
+  handles[#handles + 1] = handle
 end
 
 ---Gets all directories in the library_dir
@@ -54,7 +57,7 @@ local function get_library_dirs()
   local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
   local library_dirs = {}
   for path in library_dir:fs_iterdir() do
-    table.insert(library_dirs, path)
+    library_dirs[#library_dirs + 1] = path
   end
   return library_dirs
 end
@@ -79,14 +82,16 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
       log.debug("Filesystem event in the library root directory")
       entry_dir = Path(dir_to_watch, filename)
       info_path = entry_dir / info_name
+      local entry_dir_str = tostring(entry_dir)
+      local info_path_str = tostring(info_path)
       if entry_dir:exists() and entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '%s' added", tostring(entry_dir)))
-        init_fs_watcher(tostring(entry_dir))
+        log.debug(string.format("Filesystem event: path '%s' added", entry_dir_str))
+        init_fs_watcher(entry_dir_str)
         if info_path:exists() then
-          mtime = fs_stat(tostring(info_path)).mtime.sec
+          mtime = fs_stat(info_path_str).mtime.sec
         end
       elseif entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '' removed", tostring(entry_dir)))
+        log.debug(string.format("Filesystem event: path '' removed", entry_dir_str))
         -- don't update here, because we'll catch it below under entry events
         do_update = false
       else
@@ -97,24 +102,26 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
       log.debug("Filesystem event in entry directory")
       entry_dir = Path(dir_to_watch)
       info_path = entry_dir / info_name
+      local info_path_str = tostring(info_path)
       if info_path:exists() then
         -- info file exists, update with new info
-        log.debug(string.format("Filesystem event: '%s' changed", tostring(info_path)))
+        log.debug(string.format("Filesystem event: '%s' changed", info_path_str))
         mtime = fs_stat(tostring(info_path)).mtime.sec
       elseif not entry_dir:exists() then
         -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
-        log.debug(string.format("Filesystem event: '%s' removed", tostring(info_path)))
+        log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
         do_unwatch = true
       else
         -- info file doesn't exist but entry dir does. delete entry but keep watcher
-        log.debug(string.format("Filesystem event: '%s' removed", tostring(info_path)))
+        log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
       end
     end
     if do_update then
+      local info_path_str = tostring(info_path)
       log.debug("Update database for this fs event...")
-      log.debug("Updating: " .. vim.inspect({ path = tostring(info_path), mtime = mtime }))
+      log.debug("Updating: " .. vim.inspect({ path = info_path_str, mtime = mtime }))
       vim.defer_fn(function()
-        data.update_db({ path = tostring(info_path), mtime = mtime })
+        data.update_db({ path = info_path_str, mtime = mtime })
       end, 200)
     elseif do_unwatch then
       log.debug("Removing watcher")
@@ -225,7 +232,7 @@ function M.stop()
   if not vim.tbl_isempty(handles) then
     log.trace("Stopping the fs watchers")
     for _, handle in ipairs(handles) do
-      uv.fs_event_stop(handle)
+      handle:stop()
     end
     handles = {}
     db.state:set_fw_running()

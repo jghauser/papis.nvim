@@ -101,6 +101,7 @@ M.state = M:tbl("state", {
 ---Creates the schema of the config table
 ---@return table #The config table schema
 local function get_config_tbl_schema()
+  ---@type table<string, boolean|table>
   local tbl_schema = { id = true, }
   for _, key in ipairs(config["papis_conf_keys"]) do
     local sanitized_key = string.gsub(key, "-", "_")
@@ -137,7 +138,7 @@ function M:clean_update(tbl_name, where, new_values)
   local fields_to_del = {}
   for col, _ in pairs(row) do
     if not new_values[col] and (col ~= "id") then
-      table.insert(fields_to_del, col)
+      fields_to_del[#fields_to_del + 1] = col
     end
   end
 

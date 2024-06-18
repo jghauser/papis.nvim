@@ -28,21 +28,21 @@ local function format_search_string(entry)
 
   local str_elements = {}
   if do_incl_str("author") then
-    table.insert(str_elements, entry["author"])
+    str_elements[#str_elements + 1] = entry["author"]
   elseif do_incl_str("editor", "author") then
-    table.insert(str_elements, entry["editor"])
+    str_elements[#str_elements + 1] = entry["editor"]
   end
   if do_incl_str("year") then
-    table.insert(str_elements, entry["year"])
+    str_elements[#str_elements + 1] = entry["year"]
   end
   if do_incl_str("title") then
-    table.insert(str_elements, entry["title"])
+    str_elements[#str_elements + 1] = entry["title"]
   end
   if do_incl_str("type") then
-    table.insert(str_elements, entry["type"])
+    str_elements[#str_elements + 1] = entry["type"]
   end
   if do_incl_str("tags") then
-    table.insert(str_elements, table.concat(entry["tags"], " "))
+    str_elements[#str_elements + 1] = table.concat(entry["tags"], " ")
   end
   local search_string = table.concat(str_elements, " ")
   return search_string
@@ -107,10 +107,10 @@ local function init_tbl()
     local items = {}
     local displayer_tbl = {}
     for _, vv in ipairs(display_strings) do
-      table.insert(items, { width = vim.fn.strdisplaywidth(vv[1], 1) })
-      table.insert(displayer_tbl, { vv[1], vv[2] })
+      items[#items + 1] = { width = vim.fn.strdisplaywidth(vv[1], 1) }
+      displayer_tbl[#displayer_tbl + 1] = { vv[1], vv[2] }
     end
-    table.insert(items, { remaining = true })
+    items[#items + 1] = { remaining = true }
 
     local timestamp = make_timestamp(entry)
 
