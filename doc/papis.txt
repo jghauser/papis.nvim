@@ -600,7 +600,7 @@ I’m open to suggestions and PRs. Here are some things I’ve thought of:
 ==============================================================================
 2. Links                                                         *papis-links*
 
-1. *Papis search*: https://github.com/jghauser/papis.nvim/assets/10319377/b0de2038-3ea7-4dd7-9ba4-aaeb9d0fbe32
+1. *Papis search*: https://github.com/jghauser/papis.nvim/assets/10319377/dd7bad33-762c-41dd-9eca-9538d6117ac1
 2. *search (trimmed)*: https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif
 3. *completion (trimmed)*: https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif
 4. *at-cursor (trimmed)*: https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif
