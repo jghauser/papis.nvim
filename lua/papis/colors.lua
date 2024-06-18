@@ -11,14 +11,16 @@ local links = {
   PreviewAuthor = "Title",
   PreviewYear = "@string",
   PreviewTitle = "@variable",
-  PreviewKey = "@string",
+  PreviewKey = "@property",
   PreviewValue = "@variable",
   PopupAuthor = "Title",
   PopupYear = "@string",
   PopupTitle = "@variable",
-  ResultsAuthor = "@tag",
+  ResultsAuthor = "Title",
   ResultsYear = "@string",
   ResultsTitle = "@variable",
+  ResultsFiles = "@property",
+  ResultsNotes = "@comment.warning",
 }
 
 ---Sets up all the default highlight groups
