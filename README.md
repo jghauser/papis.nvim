@@ -484,6 +484,8 @@ Papis.nvim defines and links the following default highlight groups:
 - `PapisResultsAuthor`: The author in the Telescope results window
 - `PapisResultsYear`: The year in the Telescope results window
 - `PapisResultsTitle`: The title in the Telescope results window
+- `PapisResultsFiles`: The files in the Telescope results window
+- `PapisResultsNotes`: The notes in the Telescope results window
 - `PapisPopupAuthor`: The author in the cursor action popup
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
@@ -494,9 +496,9 @@ In order to change the colours, simply override them with whatever you desire.
 
 You can use `:checkhealth papis` for some basic troubleshooting. In addition, you can enable the `debug` module, which exposes the following commands and a log:
 
-- `PapisDebugGetLogPath`: Get the path to the log file
-- `PapisDebugFWStop`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
-- `PapisDebugFWStart`: Starts file watching for the current neovim instance
+- `:Papis debug info`: Get the path to the log file
+- `:Papis debug stop-watchers`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
+- `:Papis debug start-watchers`: Starts file watching for the current neovim instance
 
 Please open an issue when you find bugs!
 
@@ -511,11 +513,9 @@ I'm open to suggestions and PRs. Here are some things I've thought of:
 - [ ] better search
   - by entry keys (e.g. tags)
   - full text (with rga?)
-  - faster!
 - [ ] adding new entries (both automatic and manual)
 - [ ] bib(la)tex backend (in addition to Papis)
   - I'm unlikely to do this myself as I don't need it. I'd be more than happy to help with the implemention however!
 - [ ] sharing functionality
 - [ ] insert formatted references and bibliographies (using .csl)
 - [ ] tests
-- [ ] make more modular
