@@ -2,7 +2,7 @@
 
 Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
-![20221002_18h39m59s_grim](https://user-images.githubusercontent.com/10319377/193468827-b6468f39-47f0-4b3b-aa47-4328ea2629e4.jpeg)
+![Papis search](https://github.com/jghauser/papis.nvim/assets/10319377/04392433-f726-45c7-8738-362e015adbec)
 
 - Search your bibliography with [telescope](https://github.com/nvim-telescope/telescope.nvim)
 - Place your cursor over a citation key and get information about the entry
