@@ -16,21 +16,31 @@ if not db then
 end
 local tag_delimiter
 
+-- Mapping table for tag delimiters
+local tag_delimiters = {
+  tbl = "- ",
+  [","] = ", ",
+  [";"] = "; ",
+  [" "] = " ",
+}
+
 ---Gets tag_delimiter for the tag_format
 ---@return string|nil #The delimiter between tags given the format
 local function get_tag_delimiter()
   local tag_format = db.state:get_value({ id = 1 }, "tag_format")
-  if tag_format == "tbl" then
-    tag_delimiter = "- "
-  elseif tag_format == "," then
-    tag_delimiter = ", "
-  elseif tag_format == ";" then
-    tag_delimiter = "; "
-  elseif tag_format == " " then
-    tag_delimiter = tag_format
-  end
+  -- Use the mapping table to get the tag_delimiter
+  tag_delimiter = tag_delimiters[tag_format]
   return tag_delimiter
 end
+
+local parse_query = ts.query.parse(
+  "yaml",
+  [[
+  (block_mapping_pair
+    key: (flow_node) @name (#eq? @name "tags")
+  ) @capture
+  ]]
+)
 
 local M = {}
 
@@ -64,14 +74,6 @@ function M:is_available()
       local parser = ts.get_parser(0, "yaml")
       local root = parser:parse()[1]:root()
       local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
-      local parse_query = ts.query.parse(
-        "yaml",
-        [[
-        (block_mapping_pair
-          key: (flow_node) @name (#eq? @name "tags")
-        ) @capture
-        ]]
-      )
       local cur_row, _ = unpack(api.nvim_win_get_cursor(0))
       -- check all captured nodes
       for id, node, _ in parse_query:iter_captures(root, 0, start_row, end_row) do

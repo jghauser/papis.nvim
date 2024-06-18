@@ -31,10 +31,10 @@ local function make_completion_items()
   local completion_items = {}
   local tags = get_all_tags()
   for _, tag in ipairs(tags) do
-    table.insert(completion_items, {
-      word = tag,  -- what is inserted?
-      label = tag, -- what is visible in the completion popup
-    })
+    completion_items[#completion_items + 1] = {
+      word = tag,
+      label = tag,
+    }
   end
   return completion_items
 end
