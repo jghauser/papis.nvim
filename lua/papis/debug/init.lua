@@ -21,12 +21,12 @@ local module_subcommands = {
       end
     end,
     complete = function(subcmd_arg_lead)
-      local reload_args = {
+      local debug_args = {
         "start-watchers",
         "stop-watchers",
         "info",
       }
-      return vim.iter(reload_args)
+      return vim.iter(debug_args)
           :filter(function(install_arg)
             return install_arg:find(subcmd_arg_lead) ~= nil
           end)

@@ -116,13 +116,13 @@ local module_subcommands = {
       end
     end,
     complete = function(subcmd_arg_lead)
-      local reload_args = {
+      local at_cursor_args = {
         "open-file",
         "open-note",
         "edit",
         "show-popup",
       }
-      return vim.iter(reload_args)
+      return vim.iter(at_cursor_args)
           :filter(function(install_arg)
             return install_arg:find(subcmd_arg_lead) ~= nil
           end)
