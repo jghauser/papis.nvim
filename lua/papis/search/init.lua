@@ -10,8 +10,7 @@ if not has_telescope then
   log.error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
   return nil
 end
-local entry_display = vim.deepcopy(require("telescope.pickers.entry_display"))
-entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
+local entry_display = require("telescope.pickers.entry_display")
 local config = require("papis.config")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -19,6 +18,10 @@ local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
+
+local papis_entry_display = {}
+setmetatable(papis_entry_display, { __index = entry_display })
+papis_entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
 
 local telescope_precalc = {}
 
@@ -31,7 +34,7 @@ local entry_maker = function(entry)
   local items = entry_pre_calc["items"]
 
   local displayer_tbl = entry_pre_calc["displayer_tbl"]
-  local displayer = entry_display.create({
+  local displayer = papis_entry_display.create({
     separator = "",
     items = items,
   })
