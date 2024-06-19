@@ -472,7 +472,10 @@ By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, h
 
 ## Highlights
 
-Papis.nvim defines and links the following default highlight groups:
+Papis.nvim defines and links a number of default highlight groups. In order to change the colours, simply override them with whatever you desire.
+
+<details>
+  <summary>Highlight groups</summary>
 
 - `PapisPreviewAuthor`: The author field in the Telescope previewer
 - `PapisPreviewYear`: The year field in the Telescope previewer
@@ -488,7 +491,7 @@ Papis.nvim defines and links the following default highlight groups:
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
 
-In order to change the colours, simply override them with whatever you desire.
+</details>
 
 ## Issues/Troubleshooting
 
