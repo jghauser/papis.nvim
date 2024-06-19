@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/jghauser/papis.nvim/compare/v0.5.0...v0.5.1) (2024-06-19)
+
+
+### Bug Fixes
+
+* **search:** copy entry_display from telescope before amending it ([c7b0f47](https://github.com/jghauser/papis.nvim/commit/c7b0f47445c86dbddfd8b81678be097bee99fbf1))
+
 ## [0.5.0](https://github.com/jghauser/papis.nvim/compare/v0.4.0...v0.5.0) (2024-06-18)
 
 
