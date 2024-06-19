@@ -75,7 +75,9 @@ function M:do_open_file_external(path)
     args = args,
     stdio = { nil, nil, nil }
   }, vim.schedule_wrap(function()
-    handle:close()
+    if handle then
+      handle:close()
+    end
   end))
 end
 
