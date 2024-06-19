@@ -37,6 +37,7 @@ local default_config = {
     editor = "text",
     year = "text",
     title = "text",
+    shorttitle = "text",
     type = "text",
     abstract = "text",
     time_added = "text",
@@ -105,9 +106,14 @@ local default_config = {
   },
   ["at-cursor"] = {
     popup_format = {
-      { "author", "%s", "PapisPopupAuthor" },
-      { "year",   "%s", "PapisPopupYear" },
-      { "title",  "%s", "PapisPopupTitle" },
+      {
+        { "author", "%s", "PapisPopupAuthor" },
+        { "vspace", "vspace" },
+        { "files", { " ", "F " }, "PapisResultsFiles" },
+        { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
+      },
+      { "year",  "%s", "PapisPopupYear" },
+      { "title", "%s", "PapisPopupTitle" },
     },
   },
   ["search"] = {

@@ -21,7 +21,6 @@ local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
-local hover_required_db_keys = utils:get_required_db_keys({ popup_format })
 
 ---Tries to identify the ref under cursor
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref
@@ -72,9 +71,8 @@ end
 ---Creates a popup with information regarding the entry specified by `ref`
 ---@param papis_id string #The `papis_id` of the entry
 local function create_hover_popup(papis_id)
-  local entry = db.data:get({ papis_id = papis_id }, hover_required_db_keys)[1]
-  local clean_popup_format = utils.do_clean_format_tbl(popup_format, entry)
-  local popup_lines, width = utils.make_nui_lines(clean_popup_format, entry)
+  local entry = db.data:get({ papis_id = papis_id })[1]
+  local popup_lines, width = utils:make_nui_lines(popup_format, entry)
 
   local popup = NuiPopup({
     position = 1,

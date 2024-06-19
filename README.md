@@ -314,8 +314,15 @@ enable_icons = true,
   -- What keys to search for matches.
   search_keys = { "author", "editor", "year", "title", "tags" },
 
-  -- The format for the previewer. Each line in the config represents a line in
-  -- the preview. For each line, we define:
+  -- Papis.nvim uses a common configuration format for defining the formatting
+  -- of strings. Sometimes -- as for instance in the below `preview_format` option --
+  -- we define a set of lines. At other times -- as for instance in the `results_format`
+  -- option -- we define a single line. Sets of lines are composed of single lines.
+  -- A line can be composed of either a single element or multiple elements. The below
+  -- `preview_format` shows an example where each line is defined by a table with just
+  -- one element. The `results_format` and `popup_format` are examples where (some) of
+  -- the lines contain multiple elements (and are represented by a table of tables).
+  -- Each element contains:
   --   1. The key whose value is shown
   --   2. How it is formatted (here, each is just given as is)
   --   3. The highlight group
@@ -324,10 +331,10 @@ enable_icons = true,
   --      formatting of the key and its highlight group. The key is shown *before*
   --      the value in the preview (even though it is defined after it in this
   --      configuration (e.g. `title = Critique of Pure Reason`)).
-  -- `empty_line` is used to insert an empty line
+  -- An element may also just contain `empty_line`. This is used to insert an empty line
   -- Strings that define the formatting (such as in 2. and 4. above) can optionally
-  -- be a table, defining, first, an icon, and second, a non-icon version. What is
-  -- used is defined by the `enable_icons` option.
+  -- be a table, defining, first, an icon, and second, a non-icon version. The 
+  -- `enable_icons` option determines what is used.
   preview_format = {
     { "author", "%s", "PapisPreviewAuthor" },
     { "year", "%s", "PapisPreviewYear" },
@@ -357,10 +364,18 @@ enable_icons = true,
 ["at-cursor"] = {
 
   -- The format of the popup shown on `:Papis at-cursor show-popup` (equivalent to points 1-3
-  -- of `preview_format`)
+  -- of `preview_format`). Note that one of the lines is composed of multiple elements. Note
+  -- also the `{ "vspace", "vspace" },` line which is exclusive to `popup_format` and which tells
+  -- papis.nvim to fill the space between the previous and next element with whitespace (and
+  -- in effect make whatever comes after right-aligned). It can only occur once in a line.
   popup_format = {
-    { "author", "%s", "PapisPopupAuthor" },
-    { "year", "%s", "PapisPopupYear" },
+    {
+      { "author", "%s", "PapisPopupAuthor" },
+      { "vspace", "vspace" },
+      { "files", { " ", "F " }, "PapisResultsFiles" },
+      { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
+    },
+    { "year",  "%s", "PapisPopupYear" },
     { "title", "%s", "PapisPopupTitle" },
   },
 },

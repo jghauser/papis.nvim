@@ -225,107 +225,72 @@ function M:do_open_text_file(papis_id, type)
   vim.cmd(cmd)
 end
 
----Takes the format table and removes k = v pairs not existing in the entry + some other conditions
----@param format_table table #As defined in config.lua (e.g. "preview_format")
----@param entry table #An entry
----@param remove_editor_if_author boolean? #If true we don't add the editor if the entry has an author
----@return table #Same format as `format_table` but with k = v pairs removed
-function M.do_clean_format_tbl(format_table, entry, remove_editor_if_author)
-  local enable_icons = require("papis.config")["enable_icons"]
-  local clean_format_table = {}
-  for _, v in ipairs(format_table) do
-    local f = vim.deepcopy(v) -- TODO: check if deepcopy necessary
-    -- add entry value if either there's an entry value corresponding to the value in the
-    -- format table or the value in the format table is "empty_line"
-    if entry[f[1]] or f[1] == "empty_line" then
-      clean_format_table[#clean_format_table + 1] = f
-      -- don't add editor if there is author and use_author_if_editor is true
-    elseif remove_editor_if_author and f[1] == "author" and entry["editor"] then
-      clean_format_table[#clean_format_table + 1] = f
-      -- add empty space if space is forced but the element doesn't exist for entry
-    elseif f[4] == "force_space" then
-      f[2] = "  " -- TODO: this only works for icons, hardcoded because luajit doesn't support utf8.len
-      clean_format_table[#clean_format_table + 1] = f
-    end
-    -- use either icons or normal characters depending on settings
-    if type(f[2]) == "table" then
-      if enable_icons then
-        f[2] = f[2][1]
-      else
-        f[2] = f[2][2]
-      end
-    end
-    if type(f[5]) == "table" then
-      if enable_icons then
-        f[5] = f[5][1]
-      else
-        f[5] = f[5][2]
-      end
-    end
-  end
-  return clean_format_table
-end
-
 ---Makes nui lines ready to be displayed
----@param clean_format_tbl table #A cleaned format table as output by self.do_clean_format_tbl
+---@param lines_format_tbl table #A format table defining multiple lines
 ---@param entry table #An entry
 ---@return table #A list of nui lines
 ---@return integer #The maximum character length of the nui lines
-function M.make_nui_lines(clean_format_tbl, entry)
-  local nui_lines = {}
+function M:make_nui_lines(lines_format_tbl, entry)
+  local lines = {}
+  local line_widths = {}
   local max_width = 0
-  for _, v in ipairs(clean_format_tbl) do
-    local line = NuiLine()
-    local width1 = 0
-    local width2 = 0
-    if v[1] == "empty_line" then
-      line:append(" ")
+  -- local max_width_line_nr
+  local vspace = {}
+  for _, line_format_tbl in ipairs(lines_format_tbl) do
+    local line = {}
+    local width = 0
+    if line_format_tbl[1] == "empty_line" then
+      -- here we add a line without hl group
+      line[#line + 1] = { " " }
     else
-      if v[4] == "show_key" then
-        local str = v[1]
-        str = string.format(v[5], str)
-        str = string.gsub(str, "\n", "")
-        width1 = vim.fn.strdisplaywidth(str, 1)
-        line:append(str, v[6])
-      end
-      if type(entry[v[1]]) ~= "table" then
-        local str = tostring(entry[v[1]])
-        str = string.format(v[2], str)
-        str = string.gsub(str, "\n", "")
-        width2 = vim.fn.strdisplaywidth(str, 1)
-        line:append(str, v[3])
-      else
-        local str = table.concat(entry[v[1]], ", ")
-        str = string.format(v[2], str)
-        str = string.gsub(str, "\n", "")
-        width2 = vim.fn.strdisplaywidth(str, 1)
-        line:append(str, v[3])
+      -- we format the strings for the line and add them to the line
+      local formatted_strings = self:format_display_strings(entry, line_format_tbl)
+      for k, v in ipairs(formatted_strings) do
+        line[#line + 1] = { v[1], v[2] }
+        if v[1] == "vspace" then
+          -- in case of vspace elements, we gotta keep track where they occur
+          vspace[#vspace + 1] = { linenr = #lines + 1, elem = k }
+        else
+          -- we get the width of the line by adding all elements' width
+          width = width + vim.fn.strdisplaywidth(v[1], 1)
+        end
       end
     end
-    max_width = math.max(max_width, (width1 + width2))
-    nui_lines[#nui_lines + 1] = line
+    -- add the width of the line just processed to the table of line_widths
+    line_widths[#lines + 1] = width
+
+    -- add the line just processed to the table of lines
+    lines[#lines + 1] = line
   end
 
+  max_width = math.max(unpack(line_widths))
+
+  local vspace_len = 0
+  -- sort out vertical space padding for each line that has `vspace`
+  for _, v in pairs(vspace) do
+    if line_widths[v.linenr] >= max_width then
+      -- if the line with the vspace is the longest line, only add 1 space
+      vspace_len = 1
+    else
+      -- if it isn't the longest line, calculate required vspace
+      vspace_len = max_width - (line_widths[v.linenr])
+    end
+    -- replace "vspace" by the required number of " "
+    lines[v.linenr][v.elem] = { string.rep(" ", vspace_len) }
+    -- and recalculate max_width
+    max_width = math.max(max_width, (line_widths[v.linenr] + vspace_len))
+  end
+
+  -- turn our lines into NuiLines
+  local nui_lines = {}
+  for _, line in ipairs(lines) do
+    local nui_line = NuiLine()
+    for _, v in ipairs(line) do
+      nui_line:append(v[1], v[2])
+    end
+    nui_lines[#nui_lines + 1] = nui_line
+  end
   return nui_lines, max_width
-end
-
----Get the list of keys required by format table
----@param tbls table #A format table(e.g. "preview_format" in config.lua)
----@return table #A list of keys
-function M:get_required_db_keys(tbls)
-  local required_db_keys = { id = true }
-  for _, tbl in ipairs(tbls) do
-    for _, v in ipairs(tbl) do
-      if v[1] == nil then
-        required_db_keys[v] = true
-      else
-        required_db_keys[v[1]] = true
-      end
-    end
-  end
-  required_db_keys["empty_line"] = nil
-  required_db_keys = vim.tbl_keys(required_db_keys)
-  return required_db_keys
 end
 
 ---Determine whether there's a process with a given pid
@@ -356,21 +321,48 @@ end
 
 ---Creates a table of formatted strings to be displayed in a line (e.g. Telescope results pane)
 ---@param entry table #A papis entry
+---@param line_format_tbl table #A table containing format strings defining the line
 ---@param use_shortitle? boolean #If true, use short titles
----@return table #A list of strings
-function M:format_display_strings(entry, format_table, use_shortitle)
-  local clean_results_format = self.do_clean_format_tbl(format_table, entry, true)
+---@param remove_editor_if_author? boolean #If true, remove editor if author exists
+---@return table #A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
+function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_editor_if_author)
+  local enable_icons = require("papis.config")["enable_icons"]
 
-  local str_elements = {}
-  for _, v in ipairs(clean_results_format) do
-    assert(v ~= "empty_line", "Empty lines aren't allowed for the results_format")
-    if v[1] == "author" then
+  -- if the line has just one item, embed within a tbl so we can process like the others
+  if type(line_format_tbl[1]) == "string" then
+    log.debug("line has just one item, embed within table")
+    line_format_tbl = { line_format_tbl }
+  end
+
+  ---Table containing tables {format string, string, highlight group}
+  ---@type table<table<string, string, string>>
+  local formatting_items = {}
+
+  -- iterate over each string element in the line_format_tbl
+  for _, line_item in ipairs(line_format_tbl) do
+    local line_item_copy = vim.deepcopy(line_item)
+
+    -- set icons or normal chars as desired
+    local icon_keys = { 2, 5 }
+    for _, icon_key in ipairs(icon_keys) do
+      if type(line_item_copy[icon_key]) == "table" then
+        if enable_icons then
+          line_item_copy[icon_key] = line_item_copy[icon_key][1]
+        else
+          line_item_copy[icon_key] = line_item_copy[icon_key][2]
+        end
+      end
+    end
+
+    -- format values
+    local processed_string = nil
+    if line_item_copy[1] == "author" and (entry["author"] or entry["author_list"] or entry["editor"]) then -- add author
       local authors = {}
       if entry["author_list"] then
         for _, vv in ipairs(entry["author_list"]) do
           authors[#authors + 1] = vv["family"]
         end
-        str_elements[#str_elements + 1] = table.concat(authors, ", ")
+        processed_string = table.concat(authors, ", ")
       elseif entry["author"] then
         if string.find(entry["author"], " and ") then
           local str = string.gsub(entry["author"], " and ", "|")
@@ -381,7 +373,7 @@ function M:format_display_strings(entry, format_table, use_shortitle)
         else
           authors[#authors + 1] = self.do_split_str(entry["author"], ",")[1]
         end
-        str_elements[#str_elements + 1] = table.concat(authors, ", ")
+        processed_string = table.concat(authors, ", ")
       elseif entry["editor"] then
         if string.find(entry["editor"], " and ") then
           local str = string.gsub(entry["editor"], " and ", "|")
@@ -392,27 +384,68 @@ function M:format_display_strings(entry, format_table, use_shortitle)
         else
           authors[#authors + 1] = self.do_split_str(entry["editor"], ",")[1]
         end
-        str_elements[#str_elements + 1] = table.concat(authors, ", ") .. " (eds.)"
+        processed_string = table.concat(authors, ", ") .. " (eds.)"
       end
-    elseif v[1] == "title" and use_shortitle then
-      local shortitle = entry["title"]:match("([^:]+)")
-      str_elements[#str_elements + 1] = shortitle
-    else
-      if entry[v[1]] then
-        str_elements[#str_elements + 1] = entry[v[1]]
-      elseif v[4] == "force_space" then
-        str_elements[#str_elements + 1] = "dummy"
+    elseif line_item_copy[1] == "editor" and entry["editor"] then
+      if not remove_editor_if_author then
+        local editors = {}
+        if string.find(entry["editor"], " and ") then
+          local str = string.gsub(entry["editor"], " and ", "|")
+          local str_split = self.do_split_str(str, "|")
+          for _, s in ipairs(str_split) do
+            editors[#editors + 1] = self.do_split_str(s, ",")[1]
+          end
+        else
+          editors[#editors + 1] = self.do_split_str(entry["editor"], ",")[1]
+        end
+        processed_string = table.concat(editors, ", ")
       end
+    elseif line_item_copy[1] == "title" and (entry["title"] or entry["shortitle"]) then
+      if use_shortitle then
+        local shortitle = entry["shortitle"] or entry["title"]:match("([^:]+)")
+        processed_string = shortitle
+      else
+        processed_string = entry["title"]
+      end
+    elseif entry[line_item_copy[1]] then -- add other elements if they exist in the entry
+      local input = entry[line_item_copy[1]]
+      if line_item_copy[1] == ("notes" or "files") then
+        -- get only file names (not full path)
+        input = self.get_filenames(entry[line_item_copy[1]])
+      end
+      if type(input) == "table" then
+        -- if it's a table, convert to string
+        processed_string = table.concat(entry[line_item_copy[1]], ", ")
+      else
+        processed_string = input
+      end
+    elseif line_item_copy[4] == "force_space" then
+      -- set icon to empty space
+      line_item_copy[2] = "  " -- TODO: this only works for icons, hardcoded because luajit doesn't support utf8.len
+      -- add dummy element
+      processed_string = "dummy"
+    elseif line_item_copy[1] == "vspace" then
+      processed_string = "vspace"
+    end
+
+    -- if a string exists, add keys if required and add hl group etc
+    if processed_string then
+      if line_item_copy[4] == "show_key" then
+        formatting_items[#formatting_items + 1] = { line_item_copy[5], line_item_copy[1], line_item_copy[6] }
+      end
+      formatting_items[#formatting_items + 1] = { line_item_copy[2], processed_string, line_item_copy[3] }
     end
   end
 
-  local display_strings = {}
-  for k, str_element in ipairs(str_elements) do
-    local formatted_str = string.format(clean_results_format[k][2], str_element)
-    display_strings[#display_strings + 1] = { formatted_str, clean_results_format[k][3] }
+  ---Table containing tables {formatted string, highlight group}
+  ---@type table<table<string, string>>
+  local formatted_str_and_hl = {}
+  for _, formatting_item in ipairs(formatting_items) do
+    local formatted_str = string.format(formatting_item[1], formatting_item[2])
+    formatted_str_and_hl[#formatted_str_and_hl + 1] = { formatted_str, formatting_item[3] }
   end
 
-  return display_strings
+  return formatted_str_and_hl
 end
 
 return M
