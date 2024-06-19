@@ -10,7 +10,7 @@ if not has_telescope then
   log.error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
   return nil
 end
-local entry_display = require("telescope.pickers.entry_display")
+local entry_display = vim.deepcopy(require("telescope.pickers.entry_display"))
 entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
 local config = require("papis.config")
 local commands = require("papis.commands")
