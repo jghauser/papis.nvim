@@ -197,7 +197,7 @@ require("papis").setup({
   enable_keymaps = true,
   -- You might want to change the filetypes activating papis.nvim
   -- init_filetypes = { "markdown", "norg", "yaml" },
-  -- If you don't have an appropriate font (like Nerd Font), you
+  -- If you don't have an appropriate font (like Nerd Fonts), you
   -- may want to disable icons.
   -- enable_icons = false,
 })
@@ -256,6 +256,7 @@ data_tbl_schema = {
   editor = "text",
   year = "text",
   title = "text",
+  shorttitle = "text",
   type = "text",
   abstract = "text",
   time_added = "text",
@@ -297,7 +298,7 @@ init_filetypes = { "markdown", "norg", "yaml" },
 -- Papis options to import into papis.nvim.
 papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
 
--- Whether to enable pretty icons (requires something like nerd font)
+-- Whether to enable pretty icons (requires something like Nerd Fonts)
 enable_icons = true,
 
 -- Configuration of the search module.
