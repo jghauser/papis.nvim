@@ -12,9 +12,7 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 
 And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
 
-This plugin is currently in beta. Bugs and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
-
-While papis.nvim is likely buggy, it is equally likely unable to mess with your precious bibliography. First, it doesn't by itself alter your Papis `info.yaml` files; it always uses the `papis` command to do so. Second, this command is currently only invoked when adding new notes to an item. Your database should therefore be safe from corruption (**however**: have backups, gremlins waiting to pounce are not my responsibility). In the future, papis.nvim might directly edit `info.yaml` files, but if and when that happens, this will be clearly communicated as a breaking change.
+This plugin is in beta and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
 
 ## Features
 
