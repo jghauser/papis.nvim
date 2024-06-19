@@ -69,12 +69,9 @@ Note that papis.nvim is only tested with the latest stable version of Neovim. It
 
 To run, papis.nvim requires:
 - [yq](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
-- sqlite3: Needed by the `sqlite.lua` dependency.
 
 Optionally, you'll need:
-- [a font with icons](https://github.com/ryanoasis/nerd-fonts#font-installation) for increased prettiness. You can set 
-
-You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you intend to use the completion module.
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) for increased prettiness.
 
 ### Neovim package managers
 
@@ -173,6 +170,9 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
               ];
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
+                # if not already installed, you may also want:
+                # telescope-nvim
+                # nvim-cmp",
               ]
             };
           };
