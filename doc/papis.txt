@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 19
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 21
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -259,7 +259,8 @@ Minimal setup:
       -- You might want to change the filetypes activating papis.nvim
       -- init_filetypes = { "markdown", "norg", "yaml" },
       -- If you don't have an appropriate font (like Nerd Font), you
-      -- may want to disable icons.
+      -- may want to disable icons. This may require a `:Papis reload data`.
+      -- to take effect.
       -- enable_icons = false,
     })
 <
