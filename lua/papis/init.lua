@@ -13,6 +13,7 @@ local log
 local function make_start_autocmd()
   local load_papis = api.nvim_create_augroup("loadPapis", { clear = true })
   api.nvim_create_autocmd("FileType", {
+    once = true,
     pattern = config["init_filetypes"],
     callback = require("papis").start,
     group = load_papis,
