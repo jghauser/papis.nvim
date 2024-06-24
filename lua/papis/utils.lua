@@ -146,14 +146,23 @@ function M:do_open_text_file(papis_id, type)
     if entry["notes"] then
       cmd = string.format("edit %s", entry["notes"][1])
     else
+      local lines_text = {
+        { "This entry has no notes.", "WarningMsg" },
+        { "Create a new one? (Y/n)" },
+      }
+      local width = 0
+      for _, line in pairs(lines_text) do
+        width = math.max(width, #line[1])
+      end
       local popup = NuiPopup({
         enter = true,
         position = "50%",
         size = {
-          width = 24,
-          height = 2,
+          width = width,
+          height = #lines_text,
         },
         border = {
+          padding = { 1, 1, 1, 1 },
           style = "single",
         },
         buf_options = {
@@ -201,12 +210,11 @@ function M:do_open_text_file(papis_id, type)
         popup:unmount()
       end, { once = true })
 
-      local line1 = NuiLine()
-      line1:append("This entry has no notes.", "WarningMsg")
-      line1:render(popup.bufnr, -1, 1)
-      local line2 = NuiLine()
-      line2:append("Create a new one? (Y/n)")
-      line2:render(popup.bufnr, -1, 2)
+      for k, line in pairs(lines_text) do
+        local nuiline = NuiLine()
+        nuiline:append(unpack(line))
+        nuiline:render(popup.bufnr, -1, k)
+      end
 
       popup:mount()
     end
