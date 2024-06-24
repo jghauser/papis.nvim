@@ -101,7 +101,7 @@ local function init_tbl()
     local entry = db["data"]:__get({
       where = { id = id }
     })[1]
-    local display_strings = utils:format_display_strings(entry, results_format)
+    local display_strings = utils:format_display_strings(entry, results_format, false, true)
     local search_string = format_search_string(entry)
 
     local items = {}

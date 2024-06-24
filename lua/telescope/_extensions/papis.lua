@@ -76,18 +76,7 @@ local function papis_picker(opts)
         }),
         previewer = previewers.new_buffer_previewer({
           define_preview = function(self, entry, status)
-            local previewer_entry = vim.deepcopy(entry)
-            local clean_preview_format = utils.do_clean_format_tbl(preview_format, previewer_entry.id)
-
-            -- get only file names (not full path)
-            if previewer_entry.id.notes then
-              previewer_entry.id.notes = utils.get_filenames(previewer_entry.id.notes)
-            end
-            if previewer_entry.id.files then
-              previewer_entry.id.files = utils.get_filenames(previewer_entry.id.files)
-            end
-
-            local preview_lines = utils.make_nui_lines(clean_preview_format, previewer_entry.id)
+            local preview_lines = utils:make_nui_lines(preview_format, entry.id)
 
             for line_nr, line in ipairs(preview_lines) do
               line:render(self.state.bufnr, -1, line_nr)
