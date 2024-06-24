@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 21
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 24
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -38,17 +38,8 @@ org-ref <https://github.com/jkitchin/org-ref>, helm-bibtex
 <https://github.com/tmalsburg/helm-bibtex>, and citar
 <https://github.com/emacs-citar/citar>.
 
-This plugin is currently in beta. Bugs and breaking changes are expected.
-Breaking changes are communicated in a pinned issue and commit messages.
-
-While papis.nvim is likely buggy, it is equally likely unable to mess with your
-precious bibliography. First, it doesn’t by itself alter your Papis
-`info.yaml` files; it always uses the `papis` command to do so. Second, this
-command is currently only invoked when adding new notes to an item. Your
-database should therefore be safe from corruption (**however**: have backups,
-gremlins waiting to pounce are not my responsibility). In the future,
-papis.nvim might directly edit `info.yaml` files, but if and when that happens,
-this will be clearly communicated as a breaking change.
+This plugin is in beta and breaking changes are expected. Breaking changes are
+communicated in a pinned issue and commit messages.
 
 
 FEATURES                                      *papis-📚-papis.nvim-features*
@@ -85,7 +76,7 @@ the database. This module is implemented as a nvim-cmp
 
 AT-CURSOR MODULE ~
 
-When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
+When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
 papis.nvim allows you to interact with the bibliography item referenced by it.
 
 Commands: - `:Papis at-cursor show-popup`: Opens a floating window with
@@ -107,7 +98,7 @@ an example suitable for the `markdown` format.
 THE DATABASE                              *papis-📚-papis.nvim-the-database*
 
 All of papis.nvim’s features are made possible by a sqlite database that is
-created when the plugin is first started. This might take a while, so be
+created when you run `:Papis reload data`. This might take a while, so be
 patient. From then on, the database is automatically (and very quickly) updated
 whenever `info.yaml` files are added, changed, or deleted. The database is
 synchronised when papis.nvim is started and is then kept up-to-date
@@ -129,15 +120,10 @@ installation of Papis is required.
 To run, papis.nvim requires: - yq <https://github.com/mikefarah/yq>. This is
 used to convert `.yaml` files to `.json` (which can then be read by neovim).
 Note that papis.nvim doesn’t (currently) support the python yq
-<https://github.com/kislyuk/yq>. - sqlite3: Needed by the `sqlite.lua`
-dependency.
+<https://github.com/kislyuk/yq>.
 
-Optionally, you’ll need: - a font with icons
-<https://github.com/ryanoasis/nerd-fonts#font-installation> for increased
-prettiness. You can set
-
-You’ll need the nvim-cmp <https://github.com/hrsh7th/nvim-cmp> plugin if you
-intend to use the completion module.
+Optionally, you’ll need: - Nerd Fonts
+<https://github.com/ryanoasis/nerd-fonts> for increased prettiness.
 
 
 NEOVIM PACKAGE MANAGERS ~
@@ -231,6 +217,9 @@ Nix configuration ~
                   ];
                   plugins = with pkgs.vimPlugins; [
                     papis-nvim
+                    # if not already installed, you may also want:
+                    # telescope-nvim
+                    # nvim-cmp",
                   ]
                 };
               };
@@ -258,9 +247,8 @@ Minimal setup:
       enable_keymaps = true,
       -- You might want to change the filetypes activating papis.nvim
       -- init_filetypes = { "markdown", "norg", "yaml" },
-      -- If you don't have an appropriate font (like Nerd Font), you
-      -- may want to disable icons. This may require a `:Papis reload data`.
-      -- to take effect.
+      -- If you don't have an appropriate font (like Nerd Fonts), you
+      -- may want to disable icons.
       -- enable_icons = false,
     })
 <
@@ -317,6 +305,7 @@ All configuration options (with defaults) ~
       editor = "text",
       year = "text",
       title = "text",
+      shorttitle = "text",
       type = "text",
       abstract = "text",
       time_added = "text",
@@ -358,7 +347,7 @@ All configuration options (with defaults) ~
     -- Papis options to import into papis.nvim.
     papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
     
-    -- Whether to enable pretty icons (requires something like nerd font)
+    -- Whether to enable pretty icons (requires something like Nerd Fonts)
     enable_icons = true,
     
     -- Configuration of the search module.
@@ -522,8 +511,10 @@ USAGE                                            *papis-📚-papis.nvim-usage*
 Papis.nvim will start automatically according to the filetypes defined in
 `init_filetypes` (see the |papis-setup-section|). When first starting,
 papis.nvim will import some configuration values from Papis and save them in
-the database. If you update your Papis configuration, you should re-import the
-configuration into papis.nvim with `:Papis reload config`.
+the database. It will then prompt you to run `:Papis reload data` to import all
+of your library into the database. If you update your Papis configuration, you
+should re-import the configuration into papis.nvim with `:Papis reload config`
+and run `:Papis relad data` again.
 
 
 KEYMAPS                                        *papis-📚-papis.nvim-keymaps*
@@ -541,7 +532,10 @@ you with the following:
 
 HIGHLIGHTS                                  *papis-📚-papis.nvim-highlights*
 
-Papis.nvim defines and links the following default highlight groups:
+Papis.nvim defines and links a number of default highlight groups. In order to
+change the colours, simply override them with whatever you desire.
+
+Highlight groups ~
 
 - `PapisPreviewAuthor`: The author field in the Telescope previewer
 - `PapisPreviewYear`: The year field in the Telescope previewer
@@ -556,8 +550,6 @@ Papis.nvim defines and links the following default highlight groups:
 - `PapisPopupAuthor`: The author in the cursor action popup
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
-
-In order to change the colours, simply override them with whatever you desire.
 
 
 ISSUES/TROUBLESHOOTING          *papis-📚-papis.nvim-issues/troubleshooting*
@@ -589,7 +581,7 @@ PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-imp
 I’m open to suggestions and PRs. Here are some things I’ve thought of:
 
 - ☐ better search
-    - by entry keys (e.g. tags)
+    - by entry keys (e.g. tags)
     - full text (with rga?)
 - ☐ adding new entries (both automatic and manual)
 - ☐ bib(la)tex backend (in addition to Papis)
