@@ -12,40 +12,70 @@ if not has_sqlite then
   log.error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
   return nil
 end
+local sqlite_utils = require "sqlite.utils"
 
 local Path = require("pathlib")
 local config = require("papis.config")
 local db_uri = Path(config["db_path"])
-local data_tbl_schema = config["data_tbl_schema"]
+local is_testing_session = config.enable_modules.testing
+local papis_conf_keys = config.papis_conf_keys
 
 if not db_uri:exists() then
   db_uri:parent_assert():mkdir(Path.permission("rwxr-xr-x"), true)
 end
 
-local tbl_methods = {}
+---Queries Papis to get various options.
+---@return table #A table { info_name = val, dir = val }
+local function get_papis_py_conf()
+  local papis_py_conf_new = {}
+  local testing_conf_path = ""
+  if is_testing_session then
+    testing_conf_path = "-c ./tests/papis_config "
+  end
+  for _, key in ipairs(papis_conf_keys) do
+    local handle = io.popen("papis " .. testing_conf_path .. "config " .. key)
+    if handle then
+      papis_py_conf_new[string.gsub(key, "-", "_")] = string.gsub(handle:read("*a"), "\n", "")
+      handle:close()
+    end
+  end
+  if papis_py_conf_new["dir"] then
+    local dir = papis_py_conf_new["dir"]
+    if string.sub(dir, 1, 1) == "~" then
+      dir = os.getenv("HOME") .. string.sub(dir, 2, #dir)
+    end
+    papis_py_conf_new["dir"] = dir
+  end
+  return papis_py_conf_new
+end
+
+---Table that contains all table methods (defined below)
+local tbl_methods = {
+  for_each = {}, -- all tables get these methods
+  state = {},    -- the state table gets these methods
+  config = {},   -- the config table gets these methods
+}
 
 ---General sqlite get function
----@param tbl table #The table to query
 ---@param where? table #The sqlite where clause defining which rows' data to return
 ---@param select? table #The sqlite select statement defining which columns to return
 ---@return table #Has structure { { col1 = value1, col2 = value2 ... } ... } giving queried data
-function tbl_methods.get(tbl, where, select)
-  return tbl:__get({
+function tbl_methods.for_each:get(where, select)
+  return self:__get({
     where = where,
     select = select,
   })
 end
 
 ---General sqlite get single value function
----@param tbl table #The table to query
 ---@param where table #The sqlite where clause defining which rows' data to return
 ---@param key string #The key of which to return the value
 ---@return unknown #The value queried
-function tbl_methods.get_value(tbl, where, key)
+function tbl_methods.for_each:get_value(where, key)
   if type(key) ~= "string" then
     error("get_value() needs to be be called with a single key name")
   end
-  local result = tbl:__get({
+  local result = self:__get({
     where = where,
     select = { key },
   })
@@ -58,45 +88,52 @@ function tbl_methods.get_value(tbl, where, key)
 end
 
 ---Updates a row
----@param tbl table #The table to update
 ---@param where table #The sqlite where clause defining which rows' data to return
 ---@param new_values table #The new row to be inserted
 ---@return boolean #Whether update successful
-function tbl_methods.update(tbl, where, new_values)
-  return tbl:__update({
+function tbl_methods.for_each:update(where, new_values)
+  return self:__update({
     where = where,
     set = new_values,
   })
 end
 
-local M = sqlite({
-  uri = tostring(db_uri),
-  opts = { busy_timeout = 30000 },
-})
+---Updates a row, deleting fields that don't exist in `new_row`
+---@param where table #The sqlite where clause defining which rows' data to return
+---@param new_values table #The new row to be inserted
+function tbl_methods.for_each:clean_update(where, new_values)
+  local id = self:get_value(where, "id")
+  new_values.id = id
+  self:remove(where)
+  self:insert(new_values)
+end
 
--- the main data table
-M.data = M:tbl("data", data_tbl_schema)
+---Gets config from Papis and updates the config table with it
+function tbl_methods.config:update()
+  local papis_py_conf_new = get_papis_py_conf()
+  self:remove({ id = 1 })
+  self:__update({ where = { id = 1 }, set = papis_py_conf_new })
+end
 
--- the metadata table
-M.metadata = M:tbl("metadata", {
-  id = { "integer", pk = true },
-  path = { "text", required = true, unique = true },
-  mtime = { "integer", required = true }, -- mtime of the info_yaml
-  entry = {
-    type = "integer",
-    reference = "data.id",
-    on_update = "cascade",
-    on_delete = "cascade",
-  },
-})
+---Gets the pid of the neovim instance that is running file watchers
+---@return number? #Pid of the relevant process if they are running, nil if not
+function tbl_methods.state:get_fw_running()
+  local is_running
+  if not self:empty() then
+    is_running = self:get_value({ id = 1 }, "fw_running")
+    if is_running == 0 then
+      is_running = nil
+    end
+  end
+  return is_running
+end
 
--- the state table
-M.state = M:tbl("state", {
-  id = true,
-  fw_running = { "integer", default = nil },
-  tag_format = { "text", default = nil },
-})
-
+---Sets the pid of the neovim process running file watchers
+---@param pid? number #pid of the neovim instance
+function tbl_methods.state:set_fw_running(pid)
+  pid = pid or 0
+  self:update({ id = 1 }, { fw_running = pid })
+end
 
 ---Creates the schema of the config table
 ---@return table #The config table schema
@@ -110,80 +147,87 @@ local function get_config_tbl_schema()
   return tbl_schema
 end
 
-M.config = M:tbl("config", get_config_tbl_schema())
+---Checks whether the schema has changed.
+---@param new_schema table #The new schema
+---@param old_schema table #The old schema
+---@return boolean #True if schema has changed, false otherwise
+local function has_schema_changed(new_schema, old_schema)
+  local old_schema_okays = sqlite_utils.okeys(old_schema)
+  local new_schema_okays = sqlite_utils.okeys(new_schema)
+  -- local len = { new = #new_schema_len, old = #old_schema_len }
+  if not vim.deep_equal(old_schema_okays, new_schema_okays) then
+    return true
+  else
+    return false
+  end
+end
 
----Adds common methods to tbls
----@param tbls table #Set of tables that should have methods added
-function M.add_tbl_methods(tbls)
-  for _, tbl in pairs(tbls) do
-    for method_name, method in pairs(tbl_methods) do
+-- Schemas for all tables
+local schemas = {
+  data = config["data_tbl_schema"],
+  metadata = {
+    id = { "integer", pk = true },
+    path = { "text", required = true, unique = true },
+    mtime = { "integer", required = true }, -- mtime of the info_yaml
+    entry = {
+      type = "integer",
+      reference = "data.id",
+      on_update = "cascade",
+      on_delete = "cascade",
+    },
+  },
+  state = {
+    id = true,
+    fw_running = { "integer", default = nil },
+    tag_format = { "text", default = nil },
+  },
+  config = get_config_tbl_schema(),
+}
+
+-- Create the db
+local M = sqlite({
+  uri = tostring(db_uri),
+  opts = { busy_timeout = 30000 },
+})
+
+---Creates a table with methods
+---@param tbl_name string #The name of the table
+---@return table #The table with methods
+function M:create_tbl_with_methods(tbl_name)
+  local tbl = self:tbl(tbl_name, schemas[tbl_name])
+  for method_name, method in pairs(tbl_methods["for_each"]) do
+    tbl[method_name] = method
+  end
+  if tbl_methods[tbl_name] then
+    for method_name, method in pairs(tbl_methods[tbl_name]) do
       tbl[method_name] = method
     end
   end
+  return tbl
 end
 
-M.add_tbl_methods({ M.data, M.metadata, M.state, M.config })
-
----Updates a row, deleting fields that don't exist in `new_row`
----@param tbl_name string #The table to update
----@param where table #The sqlite where clause defining which rows' data to return
----@param new_values table #The new row to be inserted
-function M:clean_update(tbl_name, where, new_values)
-  local id = self[tbl_name]:get_value(where, "id")
-
-  local row = self[tbl_name]:__get({
-    where = where,
-  })[1]
-
-  local fields_to_del = {}
-  for col, _ in pairs(row) do
-    if not new_values[col] and (col ~= "id") then
-      fields_to_del[#fields_to_del + 1] = col
-    end
-  end
-
-  for _, col in ipairs(fields_to_del) do
-    self:with_open(function()
-      return self:execute([[update ]] .. tbl_name .. [[ set ]] .. col .. [[ = null where id = ]] .. id .. [[;]])
-    end)
-  end
-
-  self[tbl_name]:update(where, new_values)
-end
-
----Gets the pid of the neovim instance that is running file watchers
----@return number? #Pid of the relevant process if they are running, nil if not
-function M.state:get_fw_running()
-  local is_running
-  if not self:empty() then
-    is_running = tbl_methods.get_value(self, { id = 1 }, "fw_running")
-    if is_running == 0 then
-      is_running = nil
-    end
-  end
-  return is_running
-end
-
----Sets the pid of the neovim process running file watchers
----@param pid? number #pid of the neovim instance
-function M.state:set_fw_running(pid)
-  pid = pid or 0
-  tbl_methods.update(self, { id = 1 }, { fw_running = pid })
-end
-
----Checks if the config database is setup
-function M.config:is_setup()
-  local papis_py_conf = M.config:get()
-  if vim.tbl_isempty(papis_py_conf) then
-    return false
-  else
-    for _, value in pairs(papis_py_conf[1]) do
-      if value == nil or value == '' then
-        return false
+---Intialises the database
+function M:init()
+  self:open()
+  local ask_user_to_reload_data = false
+  for tbl_name, new_schema in pairs(schemas) do
+    local old_schema = self:tbl(tbl_name):schema()
+    if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
+      self[tbl_name] = self:create_tbl_with_methods(tbl_name)
+    else
+      if self:exists(tbl_name) then
+        self:drop(tbl_name)
       end
+      self[tbl_name] = self:create_tbl_with_methods(tbl_name)
+      if tbl_name == "config" then
+        self.config:update()
+      end
+      ask_user_to_reload_data = true
     end
   end
-  return true
+  if ask_user_to_reload_data then
+    vim.notify("Papis.nvim needs to reset its database. Please run `:Papis reload data`.", vim.log.levels.WARN)
+  end
 end
 
 return M

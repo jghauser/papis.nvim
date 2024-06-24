@@ -7,7 +7,6 @@
 
 local config = require("papis.config")
 local api = vim.api
-local log
 
 ---Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
 local function make_start_autocmd()
@@ -49,23 +48,24 @@ end
 
 ---This function starts all of papis.nvim.
 function M.start()
-  log = require("papis.log")
+  local log = require("papis.log")
   log.new(config["log"] or log.get_default_config(), true)
   log.debug("_________________________STARTING PAPIS.NVIM_________________________")
 
-  -- ensure that config options from Papis (python app) are setup
-  config:setup_papis_py_conf()
-
-  if not are_dependencies_available() then
-    return nil
-  end
-
-  -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
+  -- set up db
   local db = require("papis.sqlite-wrapper")
   if not db then
     log.warn("Requiring `sqlite-wrapper.lua` failed. Aborting...")
     return nil
   end
+  db:init()
+
+  -- check for dependencies
+  if not are_dependencies_available() then
+    return nil
+  end
+
+  -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
   local data = require("papis.data")
   if not data then
     log.warn("Requiring `data.lua` failed. Aborting...")
@@ -91,13 +91,17 @@ function M.start()
   -- check if other neovim instances has file watchers
   local does_pid_exist = require("papis.utils").does_pid_exist
   if not does_pid_exist(db.state:get_fw_running()) then
-    -- setup file watchers (or an autocmd if another instance has file watchers)
+    -- setup file watchers because no other neovim instance has them
     if config["enable_fs_watcher"] then
       require("papis.fs-watcher"):init()
     end
 
-    log.debug("Synchronising the database")
-    data:sync_db()
+    -- only synchronise the data table if it's not empty
+    -- (in that case, we tell users to manually do it because it takes a while)
+    if not db.data:empty() then
+      log.debug("Synchronising the database")
+      data:sync_db()
+    end
   else
     -- setup file watchers (or an autocmd if another instance has file watchers)
     if config["enable_fs_watcher"] then

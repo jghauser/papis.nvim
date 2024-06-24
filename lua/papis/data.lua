@@ -64,7 +64,7 @@ local function update_main_tbls(metadata)
       if not vim.tbl_isempty(id) then
         log.debug("Changing an existing entry")
         id = id[1]["id"]
-        db:clean_update("data", { id = id }, data_row)
+        db.data:clean_update({ id = id }, data_row)
         db.metadata:update({ id = id }, metadata_row)
       else
         log.debug("Adding a new entry")

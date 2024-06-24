@@ -59,7 +59,7 @@ When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), p
 
 ## The database
 
-All of papis.nvim's features are made possible by a sqlite database that is created when the plugin is first started. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
+All of papis.nvim's features are made possible by a sqlite database that is created when you run `:Papis reload data`. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
 
 Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:Papis reload data` to re-initialise the database.
 
@@ -459,7 +459,7 @@ cmp.setup({
 
 ## Usage
 
-Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config`.
+Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. It will then prompt you to run `:Papis reload data` to import all of your library into the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config` and run `:Papis relad data` again.
 
 ## Keymaps
 
