@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.6.0](https://github.com/jghauser/papis.nvim/compare/v0.5.1...v0.6.0) (2024-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **at-cursor:** add icon to at-cursor popup
+
+### Features
+
+* **at-cursor:** add icon to at-cursor popup ([4eeb7bc](https://github.com/jghauser/papis.nvim/commit/4eeb7bc4cbc603dd4cf6826297186fccbf763d37))
+* check for schema changes on startup ([850988c](https://github.com/jghauser/papis.nvim/commit/850988cba3726147a27d2bc3820b6b0ddb1b9cce))
+
+
+### Bug Fixes
+
+* **init:** only ever run loadPapis autocmd once ([4a09b98](https://github.com/jghauser/papis.nvim/commit/4a09b98bd705709917164cbcadada85f901b6768))
+* make icon style more consistent ([745983b](https://github.com/jghauser/papis.nvim/commit/745983b8cd816f41f847a5bfaae826c3bff9af2c))
+* **search:** don't deepcopy, use metatable ([9322c41](https://github.com/jghauser/papis.nvim/commit/9322c41d1901fbd295bc0afa2588abee73b81528))
+* **utils:** check if handle exists before closing ([db3632a](https://github.com/jghauser/papis.nvim/commit/db3632a038db9ad2ac4121c31f50d48a742b1dea))
+
 ## [0.5.1](https://github.com/jghauser/papis.nvim/compare/v0.5.0...v0.5.1) (2024-06-19)
 
 
