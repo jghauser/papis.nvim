@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 19
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 June 21
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -85,7 +85,7 @@ the database. This module is implemented as a nvim-cmp
 
 AT-CURSOR MODULE ~
 
-When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
+When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
 papis.nvim allows you to interact with the bibliography item referenced by it.
 
 Commands: - `:Papis at-cursor show-popup`: Opens a floating window with
@@ -259,7 +259,8 @@ Minimal setup:
       -- You might want to change the filetypes activating papis.nvim
       -- init_filetypes = { "markdown", "norg", "yaml" },
       -- If you don't have an appropriate font (like Nerd Font), you
-      -- may want to disable icons.
+      -- may want to disable icons. This may require a `:Papis reload data`.
+      -- to take effect.
       -- enable_icons = false,
     })
 <
@@ -588,7 +589,7 @@ PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-imp
 I’m open to suggestions and PRs. Here are some things I’ve thought of:
 
 - ☐ better search
-    - by entry keys (e.g. tags)
+    - by entry keys (e.g. tags)
     - full text (with rga?)
 - ☐ adding new entries (both automatic and manual)
 - ☐ bib(la)tex backend (in addition to Papis)
