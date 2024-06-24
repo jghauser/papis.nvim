@@ -197,8 +197,9 @@ require("papis").setup({
   enable_keymaps = true,
   -- You might want to change the filetypes activating papis.nvim
   -- init_filetypes = { "markdown", "norg", "yaml" },
-  -- If you don't have an appropriate font (like Nerd Fonts), you
-  -- may want to disable icons.
+  -- If you don't have an appropriate font (like Nerd Font), you
+  -- may want to disable icons. This may require a `:Papis reload data`.
+  -- to take effect.
   -- enable_icons = false,
 })
 ```
