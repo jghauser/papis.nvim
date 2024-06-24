@@ -12,9 +12,7 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 
 And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
 
-This plugin is currently in beta. Bugs and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
-
-While papis.nvim is likely buggy, it is equally likely unable to mess with your precious bibliography. First, it doesn't by itself alter your Papis `info.yaml` files; it always uses the `papis` command to do so. Second, this command is currently only invoked when adding new notes to an item. Your database should therefore be safe from corruption (**however**: have backups, gremlins waiting to pounce are not my responsibility). In the future, papis.nvim might directly edit `info.yaml` files, but if and when that happens, this will be clearly communicated as a breaking change.
+This plugin is in beta and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
 
 ## Features
 
@@ -61,7 +59,7 @@ When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), p
 
 ## The database
 
-All of papis.nvim's features are made possible by a sqlite database that is created when the plugin is first started. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
+All of papis.nvim's features are made possible by a sqlite database that is created when you run `:Papis reload data`. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
 
 Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:Papis reload data` to re-initialise the database.
 
@@ -71,12 +69,9 @@ Note that papis.nvim is only tested with the latest stable version of Neovim. It
 
 To run, papis.nvim requires:
 - [yq](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
-- sqlite3: Needed by the `sqlite.lua` dependency.
 
 Optionally, you'll need:
-- [a font with icons](https://github.com/ryanoasis/nerd-fonts#font-installation) for increased prettiness. You can set 
-
-You'll need the [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) plugin if you intend to use the completion module.
+- [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) for increased prettiness.
 
 ### Neovim package managers
 
@@ -175,6 +170,9 @@ The `flake.nix` provides an overlay that can be used to install `papis.nvim`. Wi
               ];
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
+                # if not already installed, you may also want:
+                # telescope-nvim
+                # nvim-cmp",
               ]
             };
           };
@@ -259,6 +257,7 @@ data_tbl_schema = {
   editor = "text",
   year = "text",
   title = "text",
+  shorttitle = "text",
   type = "text",
   abstract = "text",
   time_added = "text",
@@ -300,7 +299,7 @@ init_filetypes = { "markdown", "norg", "yaml" },
 -- Papis options to import into papis.nvim.
 papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
 
--- Whether to enable pretty icons (requires something like nerd font)
+-- Whether to enable pretty icons (requires something like Nerd Fonts)
 enable_icons = true,
 
 -- Configuration of the search module.
@@ -461,7 +460,7 @@ cmp.setup({
 
 ## Usage
 
-Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config`.
+Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. It will then prompt you to run `:Papis reload data` to import all of your library into the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config` and run `:Papis relad data` again.
 
 ## Keymaps
 
@@ -475,7 +474,10 @@ By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, h
 
 ## Highlights
 
-Papis.nvim defines and links the following default highlight groups:
+Papis.nvim defines and links a number of default highlight groups. In order to change the colours, simply override them with whatever you desire.
+
+<details>
+  <summary>Highlight groups</summary>
 
 - `PapisPreviewAuthor`: The author field in the Telescope previewer
 - `PapisPreviewYear`: The year field in the Telescope previewer
@@ -491,7 +493,7 @@ Papis.nvim defines and links the following default highlight groups:
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
 
-In order to change the colours, simply override them with whatever you desire.
+</details>
 
 ## Issues/Troubleshooting
 

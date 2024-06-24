@@ -6,8 +6,6 @@
 --
 -- Adapted from https://github.com/nvim-neorocks/nvim-best-practices
 
-local config = require("papis.config")
-
 ---@class PapisSubcommand
 ---@field impl fun(args:string[], opts: table) The command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] (optional) Command completions callback, taking the lead of the subcommand's arguments
@@ -17,7 +15,7 @@ local subcommand_tbl = {
     impl = function(args, _)
       -- Implementation (args is a list of strings)
       if args[1] == "config" then
-        config:update_papis_py_conf()
+        require("papis.sqlite-wrapper").config:update()
       elseif args[1] == "data" then
         require("papis.data"):reset_db()
       end
