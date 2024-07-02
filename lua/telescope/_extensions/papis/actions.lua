@@ -29,7 +29,7 @@ M.ref_insert_formatted = function()
     actions.close(prompt_bufnr)
     local papis_id = action_state.get_selected_entry().id.papis_id
     local entry = db.data:get({ papis_id = papis_id })[1]
-    local reference = config["formatter"]["format_references_fn"](entry)
+    local reference = config["formatter"].format_references_fn(entry)
 
     vim.api.nvim_put({ reference }, "", false, true)
   end

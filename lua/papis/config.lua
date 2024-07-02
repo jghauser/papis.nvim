@@ -52,7 +52,7 @@ local default_config = {
   db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
   yq_bin = "yq",
   create_new_note_fn = function(papis_id, notes_name)
-    local testing_session = require("papis.config")["enable_modules"]["testing"]
+    local testing_session = require("papis.config").enable_modules["testing"]
     local testing_conf_path = ""
     if testing_session then
       testing_conf_path = "-c ./tests/papis_config "
@@ -159,15 +159,15 @@ function M:update(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
   -- set disabled modules to nil if false
-  for module_name, is_enabled in pairs(newconf["enable_modules"]) do
+  for module_name, is_enabled in pairs(newconf.enable_modules) do
     if is_enabled == false then
       newconf.enable_modules[module_name] = nil
     end
   end
 
   -- if debug mode is on, log level should be at least debug
-  if newconf["enable_modules"]["debug"] == true then
-    newconf["log"] = {
+  if newconf.enable_modules["debug"] == true then
+    newconf.log = {
       level = "trace",
       use_console = "false",
       use_file = "true",

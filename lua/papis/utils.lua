@@ -33,11 +33,11 @@ local M = {}
 ---@return string|table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
 function M.get_cite_format(filetype)
   local config = require("papis.config")
-  local cite_formats = config["cite_formats"]
-  local cite_formats_fallback = config["cite_formats_fallback"]
+  local cite_formats = config.cite_formats
+  local cite_formats_fallback = config.cite_formats_fallback
 
-  if config["always_use_plain"] then
-    local cite_format = cite_formats["plain"] or "%s"
+  if config.always_use_plain then
+    local cite_format = cite_formats.plain or "%s"
     return cite_format
   else
     local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
@@ -103,10 +103,10 @@ function M:do_open_attached_files(papis_id)
     return nil
   end
   local entry = db.data:get({ papis_id = papis_id }, { "files", "id" })[1]
-  local filenames = self.get_filenames(entry["files"])
+  local filenames = self.get_filenames(entry.files)
   local lookup_tbl = {}
   for k, filename in ipairs(filenames) do
-    lookup_tbl[filename] = entry["files"][k]
+    lookup_tbl[filename] = entry.files[k]
   end
   if vim.tbl_isempty(filenames) then
     log.info("This item has no attached files.")
@@ -138,13 +138,13 @@ function M:do_open_text_file(papis_id, type)
   end
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
-  local info_path = Path(db.metadata:get_value({ entry = entry["id"] }, "path"))
+  local info_path = Path(db.metadata:get_value({ entry = entry.id }, "path"))
   log.debug("Text file in folder: " .. tostring(info_path))
   local cmd = ""
   if type == "note" then
     log.debug("Opening a note")
-    if entry["notes"] then
-      cmd = string.format("edit %s", entry["notes"][1])
+    if entry.notes then
+      cmd = string.format("edit %s", entry.notes[1])
     else
       local lines_text = {
         { "This entry has no notes.", "WarningMsg" },
@@ -174,15 +174,15 @@ function M:do_open_text_file(papis_id, type)
       popup:map("n", { "Y", "y", "<cr>" }, function(_)
         popup:unmount()
         local config = require("papis.config")
-        local create_new_note_fn = config["create_new_note_fn"]
+        local create_new_note_fn = config.create_new_note_fn
         local notes_name = db.config:get_value({ id = 1 }, "notes_name")
-        local enable_modules = config["enable_modules"]
+        local enable_modules = config.enable_modules
         create_new_note_fn(papis_id, notes_name)
         if enable_modules["formatter"] then
           entry = db.data:get({ papis_id = papis_id })[1]
           local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
           log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
-          local callback = config["formatter"]["format_notes_fn"]
+          local callback = config["formatter"].format_notes_fn
           require("papis.formatter").create_autocmd(pattern, callback, entry)
         end
         local entry_has_note = new_timer()
@@ -192,7 +192,7 @@ function M:do_open_text_file(papis_id, type)
           5,
           vim.schedule_wrap(function()
             entry = db.data:get({ papis_id = papis_id }, { "notes" })[1]
-            if entry["notes"] and not file_opened then
+            if entry.notes and not file_opened then
               log.debug("Opening newly created notes file")
               self:do_open_text_file(papis_id, type)
               file_opened = true
@@ -326,7 +326,7 @@ end
 ---@param remove_editor_if_author? boolean #If true, remove editor if author exists
 ---@return table #A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
 function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_editor_if_author)
-  local enable_icons = require("papis.config")["enable_icons"]
+  local enable_icons = require("papis.config").enable_icons
 
   -- if the line has just one item, embed within a tbl so we can process like the others
   if type(line_format_tbl[1]) == "string" then
@@ -356,56 +356,56 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
 
     -- format values
     local processed_string = nil
-    if line_item_copy[1] == "author" and (entry["author"] or entry["author_list"] or entry["editor"]) then -- add author
+    if line_item_copy[1] == "author" and (entry.author or entry.author_list or entry.editor) then -- add author
       local authors = {}
-      if entry["author_list"] then
-        for _, vv in ipairs(entry["author_list"]) do
-          authors[#authors + 1] = vv["family"]
+      if entry.author_list then
+        for _, vv in ipairs(entry.author_list) do
+          authors[#authors + 1] = vv.family
         end
         processed_string = table.concat(authors, ", ")
-      elseif entry["author"] then
-        if string.find(entry["author"], " and ") then
-          local str = string.gsub(entry["author"], " and ", "|")
+      elseif entry.author then
+        if string.find(entry.author, " and ") then
+          local str = string.gsub(entry.author, " and ", "|")
           local str_split = self.do_split_str(str, "|")
           for _, s in ipairs(str_split) do
             authors[#authors + 1] = self.do_split_str(s, ",")[1]
           end
         else
-          authors[#authors + 1] = self.do_split_str(entry["author"], ",")[1]
+          authors[#authors + 1] = self.do_split_str(entry.author, ",")[1]
         end
         processed_string = table.concat(authors, ", ")
-      elseif entry["editor"] then
-        if string.find(entry["editor"], " and ") then
-          local str = string.gsub(entry["editor"], " and ", "|")
+      elseif entry.editor then
+        if string.find(entry.editor, " and ") then
+          local str = string.gsub(entry.editor, " and ", "|")
           local str_split = self.do_split_str(str, "|")
           for _, s in ipairs(str_split) do
             authors[#authors + 1] = self.do_split_str(s, ",")[1]
           end
         else
-          authors[#authors + 1] = self.do_split_str(entry["editor"], ",")[1]
+          authors[#authors + 1] = self.do_split_str(entry.editor, ",")[1]
         end
         processed_string = table.concat(authors, ", ") .. " (eds.)"
       end
-    elseif line_item_copy[1] == "editor" and entry["editor"] then
+    elseif line_item_copy[1] == "editor" and entry.editor then
       if not remove_editor_if_author then
         local editors = {}
-        if string.find(entry["editor"], " and ") then
-          local str = string.gsub(entry["editor"], " and ", "|")
+        if string.find(entry.editor, " and ") then
+          local str = string.gsub(entry.editor, " and ", "|")
           local str_split = self.do_split_str(str, "|")
           for _, s in ipairs(str_split) do
             editors[#editors + 1] = self.do_split_str(s, ",")[1]
           end
         else
-          editors[#editors + 1] = self.do_split_str(entry["editor"], ",")[1]
+          editors[#editors + 1] = self.do_split_str(entry.editor, ",")[1]
         end
         processed_string = table.concat(editors, ", ")
       end
-    elseif line_item_copy[1] == "title" and (entry["title"] or entry["shortitle"]) then
+    elseif line_item_copy[1] == "title" and (entry.title or entry.shortitle) then
       if use_shortitle then
-        local shortitle = entry["shortitle"] or entry["title"]:match("([^:]+)")
+        local shortitle = entry.shortitle or entry.title:match("([^:]+)")
         processed_string = shortitle
       else
-        processed_string = entry["title"]
+        processed_string = entry.title
       end
     elseif entry[line_item_copy[1]] then -- add other elements if they exist in the entry
       local input = entry[line_item_copy[1]]

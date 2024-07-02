@@ -29,11 +29,11 @@ local telescope_precalc = {}
 ---@param entry table #A entry in the library db
 ---@return table #A telescope entry
 local entry_maker = function(entry)
-  local entry_pre_calc = db["search"]:get(entry["id"])[1]
-  local timestamp = entry_pre_calc["timestamp"]
-  local items = entry_pre_calc["items"]
+  local entry_pre_calc = db.search:get(entry.id)[1]
+  local timestamp = entry_pre_calc.timestamp
+  local items = entry_pre_calc.items
 
-  local displayer_tbl = entry_pre_calc["displayer_tbl"]
+  local displayer_tbl = entry_pre_calc.displayer_tbl
   local displayer = papis_entry_display.create({
     separator = "",
     items = items,
@@ -43,7 +43,7 @@ local entry_maker = function(entry)
     return displayer(displayer_tbl)
   end
 
-  local search_string = entry_pre_calc["search_string"]
+  local search_string = entry_pre_calc.search_string
   return {
     value = search_string,
     ordinal = search_string,
@@ -87,7 +87,7 @@ local M = {}
 ---Updates the precalculated telescope entry for the picker
 ---@param entry table #The db entry for which to update the telescope entry
 function M.update_precalc(entry)
-  local id = entry["id"]
+  local id = entry.id
   telescope_precalc[id] = entry_maker(entry)
 end
 
@@ -97,7 +97,7 @@ function M.get_precalc()
   if vim.tbl_isempty(telescope_precalc) then
     local entries = db.data:get()
     for _, entry in ipairs(entries) do
-      local id = entry["id"]
+      local id = entry.id
       telescope_precalc[id] = entry_maker(entry)
     end
   end

@@ -22,11 +22,11 @@ local reports = {}
 ---Creates a report for the sqlite database
 reports["sqlite-wrapper"] = function()
   local sqlite_is_executable = vim.fn.executable("sqlite3")
-  local db_exists = Path(config["db_path"]):exists()
+  local db_exists = Path(config.db_path):exists()
   local db_is_empty = db.data:empty()
 
   health.start("Sqlite database")
-  health.info(string.format("Papis.nvim db location: %s.", config["db_path"]))
+  health.info(string.format("Papis.nvim db location: %s.", config.db_path))
   if sqlite_is_executable then
     health.ok("The 'sqlite3' executable was found in path.")
   else
@@ -86,10 +86,10 @@ M.check = function()
   end
 
   reports["sqlite-wrapper"]()
-  if config["enable_fs_watcher"] then
+  if config.enable_fs_watcher then
     reports["fs-watcher"]()
   end
-  for module_name, _ in pairs(config["enable_modules"]) do
+  for module_name, _ in pairs(config.enable_modules) do
     if reports[module_name] then
       reports[module_name]()
     end

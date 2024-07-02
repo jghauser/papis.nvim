@@ -21,12 +21,12 @@ end
 --- Recursively merges the provided table with the keymaps table.
 ---@param module_keymaps table #A table with a module's keymaps
 function M:add_keymaps(module_keymaps)
-  if config["enable_keymaps"] then
+  if config.enable_keymaps then
     for _, keymap in pairs(module_keymaps) do
-      local opts = vim.deepcopy(keymap["opts"])
-      opts["silent"] = true
-      opts["buffer"] = true
-      vim.keymap.set(keymap["mode"], keymap["lhs"], keymap["rhs"], opts)
+      local opts = vim.deepcopy(keymap.opts)
+      opts.silent = true
+      opts.buffer = true
+      vim.keymap.set(keymap.mode, keymap.lhs, keymap.rhs, opts)
     end
   end
 end

@@ -108,7 +108,7 @@ function M:complete(request, callback)
 
   if comp_after_tag_delimiter or comp_after_keyword then
     log.debug("Running cmp `complete()` function.")
-    self.items = db.completion:get()[1]["tag_strings"]
+    self.items = db.completion:get()[1].tag_strings
     callback(self.items)
   end
 end

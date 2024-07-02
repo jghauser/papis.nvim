@@ -57,7 +57,7 @@ local function papis_picker(opts)
       if #prompt == 0 then
         local min_timestamp = 0
         local max_timestamp = os.time()
-        local timestamp = entry["timestamp"]
+        local timestamp = entry.timestamp
 
         score = 1 - (timestamp - min_timestamp) / (max_timestamp - min_timestamp)
       end
@@ -105,9 +105,9 @@ end
 
 return telescope.register_extension({
   setup = function(opts)
-    wrap = opts["wrap"]
-    initial_sort_by_time_added = opts["initial_sort_by_time_added"]
-    preview_format = opts["preview_format"]
+    wrap = opts.wrap
+    initial_sort_by_time_added = opts.initial_sort_by_time_added
+    preview_format = opts.preview_format
   end,
   exports = {
     papis = papis_picker,
