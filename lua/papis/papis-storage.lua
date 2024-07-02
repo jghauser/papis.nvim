@@ -16,12 +16,12 @@ end
 local utils = require("papis.utils")
 local log = require("papis.log")
 local config = require("papis.config")
-local data_tbl_schema = config["data_tbl_schema"]
-local key_name_conversions = config["papis-storage"]["key_name_conversions"]
-local required_keys = config["papis-storage"]["required_keys"]
-local tag_format = config["papis-storage"]["tag_format"]
+local data_tbl_schema = config.data_tbl_schema
+local key_name_conversions = config["papis-storage"].key_name_conversions
+local required_keys = config["papis-storage"].required_keys
+local tag_format = config["papis-storage"].tag_format
 local have_determined_tag_format = false
-local yq_bin = config["yq_bin"]
+local yq_bin = config.yq_bin
 
 ---Determines if tag format is list, space separated, or comma separated
 ---@param tags any #Either a table or a string with tag(s)
@@ -166,8 +166,8 @@ function M.get_data_full(metadata)
   metadata = metadata or M.get_metadata()
   local data_complete = {}
   for _, metadata_v in ipairs(metadata) do
-    local path = metadata_v["path"]
-    local mtime = metadata_v["mtime"]
+    local path = metadata_v.path
+    local mtime = metadata_v.mtime
     local entry = read_yaml(path)
     if is_valid_entry(entry, path) then
       entry = do_convert_entry_keys(entry) --NOTE: entry is never nil because of `is_valid_entry()`
@@ -199,7 +199,7 @@ function M.get_data_full(metadata)
             if type(entry[key]) == "table" then
               data[key] = entry[key]
             else
-              log.warn("Wanted to add `" .. key .. "` of `" .. entry["ref"] .. "` but the value is not of type `table`")
+              log.warn("Wanted to add `" .. key .. "` of `" .. entry.ref .. "` but the value is not of type `table`")
               data[key] = {}
             end
           end

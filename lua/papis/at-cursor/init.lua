@@ -13,7 +13,7 @@ local fn = vim.fn
 
 local log = require("papis.log")
 local config = require("papis.config")
-local popup_format = config["at-cursor"]["popup_format"]
+local popup_format = config["at-cursor"].popup_format
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -57,7 +57,7 @@ local function if_ref_valid_run_fun(fun, self, type)
   local ref = get_ref_under_cursor()
   local entry = db.data:get({ ref = ref }, { "papis_id" })
   if not vim.tbl_isempty(entry) then
-    local papis_id = entry[1]["papis_id"]
+    local papis_id = entry[1].papis_id
     if self then
       fun(self, papis_id, type)
     else

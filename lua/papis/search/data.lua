@@ -10,8 +10,8 @@ if not db then
   return nil
 end
 local config = require("papis.config")
-local search_keys = config["search"]["search_keys"]
-local results_format = config["search"]["results_format"]
+local search_keys = config["search"].search_keys
+local results_format = config["search"].results_format
 local utils = require("papis.utils")
 
 ---Creates a string that is used to search among entries (not displayed)
@@ -28,21 +28,21 @@ local function format_search_string(entry)
 
   local str_elements = {}
   if do_incl_str("author") then
-    str_elements[#str_elements + 1] = entry["author"]
+    str_elements[#str_elements + 1] = entry.author
   elseif do_incl_str("editor", "author") then
-    str_elements[#str_elements + 1] = entry["editor"]
+    str_elements[#str_elements + 1] = entry.editor
   end
   if do_incl_str("year") then
-    str_elements[#str_elements + 1] = entry["year"]
+    str_elements[#str_elements + 1] = entry.year
   end
   if do_incl_str("title") then
-    str_elements[#str_elements + 1] = entry["title"]
+    str_elements[#str_elements + 1] = entry.title
   end
   if do_incl_str("type") then
-    str_elements[#str_elements + 1] = entry["type"]
+    str_elements[#str_elements + 1] = entry.type
   end
   if do_incl_str("tags") then
-    str_elements[#str_elements + 1] = table.concat(entry["tags"], " ")
+    str_elements[#str_elements + 1] = table.concat(entry.tags, " ")
   end
   local search_string = table.concat(str_elements, " ")
   return search_string
@@ -52,7 +52,7 @@ end
 ---@param entry table #A papis entry
 ---@return integer #The timestamp (date when entry was added in secs since epoch or 1 if missing)
 local function make_timestamp(entry)
-  local timestamp = entry["time_added"]
+  local timestamp = entry.time_added
   if timestamp then
     local year, month, day, hour, min, sec = timestamp:match("(%d+)-(%d+)-(%d+)-(%d+):(%d+):(%d+)")
     local t = { year = year, month = month, day = day, hour = hour, min = min, sec = sec }
@@ -98,7 +98,7 @@ local function init_tbl()
   ---Updates the tbl for a given id
   ---@param id number #The id of a papis entry
   function db.search:update(id)
-    local entry = db["data"]:__get({
+    local entry = db.data:__get({
       where = { id = id }
     })[1]
     local display_strings = utils:format_display_strings(entry, results_format, false, true)

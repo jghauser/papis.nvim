@@ -16,8 +16,8 @@ local sqlite_utils = require "sqlite.utils"
 
 local Path = require("pathlib")
 local config = require("papis.config")
-local db_uri = Path(config["db_path"])
-local is_testing_session = config.enable_modules.testing
+local db_uri = Path(config.db_path)
+local is_testing_session = config.enable_modules["testing"]
 local papis_conf_keys = config.papis_conf_keys
 
 if not db_uri:exists() then
@@ -39,12 +39,12 @@ local function get_papis_py_conf()
       handle:close()
     end
   end
-  if papis_py_conf_new["dir"] then
-    local dir = papis_py_conf_new["dir"]
+  if papis_py_conf_new.dir then
+    local dir = papis_py_conf_new.dir
     if string.sub(dir, 1, 1) == "~" then
       dir = os.getenv("HOME") .. string.sub(dir, 2, #dir)
     end
-    papis_py_conf_new["dir"] = dir
+    papis_py_conf_new.dir = dir
   end
   return papis_py_conf_new
 end
@@ -140,7 +140,7 @@ end
 local function get_config_tbl_schema()
   ---@type table<string, boolean|table>
   local tbl_schema = { id = true, }
-  for _, key in ipairs(config["papis_conf_keys"]) do
+  for _, key in ipairs(config.papis_conf_keys) do
     local sanitized_key = string.gsub(key, "-", "_")
     tbl_schema[sanitized_key] = { "text", default = nil }
   end
@@ -164,7 +164,7 @@ end
 
 -- Schemas for all tables
 local schemas = {
-  data = config["data_tbl_schema"],
+  data = config.data_tbl_schema,
   metadata = {
     id = { "integer", pk = true },
     path = { "text", required = true, unique = true },
@@ -195,7 +195,7 @@ local M = sqlite({
 ---@return table #The table with methods
 function M:create_tbl_with_methods(tbl_name)
   local tbl = self:tbl(tbl_name, schemas[tbl_name])
-  for method_name, method in pairs(tbl_methods["for_each"]) do
+  for method_name, method in pairs(tbl_methods.for_each) do
     tbl[method_name] = method
   end
   if tbl_methods[tbl_name] then

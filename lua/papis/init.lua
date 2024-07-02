@@ -13,7 +13,7 @@ local function make_start_autocmd()
   local load_papis = api.nvim_create_augroup("loadPapis", { clear = true })
   api.nvim_create_autocmd("FileType", {
     once = true,
-    pattern = config["init_filetypes"],
+    pattern = config.init_filetypes,
     callback = require("papis").start,
     group = load_papis,
     desc = "Load papis.nvim for defined filetypes",
@@ -22,7 +22,7 @@ end
 
 ---Checks whether dependencies are available
 local function are_dependencies_available()
-  local dependencies = { "papis", config["yq_bin"] }
+  local dependencies = { "papis", config.yq_bin }
   for _, dependency in ipairs(dependencies) do
     if vim.fn.executable(dependency) == 0 then
       log.error(
@@ -78,11 +78,11 @@ function M.start()
   require("papis.keymaps"):setup()
 
   -- setup enabled modules
-  for module_name, _ in pairs(config["enable_modules"]) do
+  for module_name, _ in pairs(config.enable_modules) do
     log.trace(module_name .. " is enabled")
     local has_module, module = pcall(require, "papis." .. module_name)
     if has_module then
-      if module["setup"] then
+      if module.setup then
         module.setup()
       end
     end
@@ -92,7 +92,7 @@ function M.start()
   local does_pid_exist = require("papis.utils").does_pid_exist
   if not does_pid_exist(db.state:get_fw_running()) then
     -- setup file watchers because no other neovim instance has them
-    if config["enable_fs_watcher"] then
+    if config.enable_fs_watcher then
       require("papis.fs-watcher"):init()
     end
 
@@ -104,7 +104,7 @@ function M.start()
     end
   else
     -- setup file watchers (or an autocmd if another instance has file watchers)
-    if config["enable_fs_watcher"] then
+    if config.enable_fs_watcher then
       require("papis.fs-watcher"):init()
     end
   end

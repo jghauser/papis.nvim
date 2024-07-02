@@ -16,8 +16,8 @@ local function get_all_tags()
   local all_tags = {}
   local result = db.data:get(nil, { "tags" })
   for _, entry in pairs(result) do
-    if entry["tags"] then
-      for _, tag in pairs(entry["tags"]) do
+    if entry.tags then
+      for _, tag in pairs(entry.tags) do
         all_tags[tag] = true
       end
     end
