@@ -81,6 +81,10 @@ local M = {}
 
 ---Main function called by checkhealth
 M.check = function()
+  -- make sure papis.nvim is started as checkhealth can be called outside
+  -- configured filetypes
+  require("papis").start()
+
   if not health then
     health = vim.health
   end
