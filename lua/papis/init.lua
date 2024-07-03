@@ -7,6 +7,7 @@
 
 local config = require("papis.config")
 local api = vim.api
+local has_run = false
 
 ---Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
 local function make_start_autocmd()
@@ -14,7 +15,11 @@ local function make_start_autocmd()
   api.nvim_create_autocmd("FileType", {
     once = true,
     pattern = config.init_filetypes,
-    callback = require("papis").start,
+    callback = function()
+      if not has_run then
+        require("papis").start()
+      end
+    end,
     group = load_papis,
     desc = "Load papis.nvim for defined filetypes",
   })
@@ -51,6 +56,8 @@ function M.start()
   local log = require("papis.log")
   log.new(config["log"] or log.get_default_config(), true)
   log.debug("_________________________STARTING PAPIS.NVIM_________________________")
+
+  has_run = true
 
   -- set up db
   local db = require("papis.sqlite-wrapper")
