@@ -165,6 +165,9 @@ function M:update(opts)
     end
   end
 
+  -- add checkhealth to filetypes (so papis gets loaded there)
+  table.insert(newconf.init_filetypes, "checkhealth")
+
   -- if debug mode is on, log level should be at least debug
   if newconf.enable_modules["debug"] == true then
     newconf.log = {
