@@ -7,6 +7,7 @@
 
 local config = require("papis.config")
 local api = vim.api
+local has_run = false
 
 ---Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
 local function make_start_autocmd()
@@ -14,7 +15,11 @@ local function make_start_autocmd()
   api.nvim_create_autocmd("FileType", {
     once = true,
     pattern = config.init_filetypes,
-    callback = require("papis").start,
+    callback = function()
+      if not has_run then
+        require("papis").start()
+      end
+    end,
     group = load_papis,
     desc = "Load papis.nvim for defined filetypes",
   })
@@ -52,6 +57,8 @@ function M.start()
   log.new(config["log"] or log.get_default_config(), true)
   log.debug("_________________________STARTING PAPIS.NVIM_________________________")
 
+  has_run = true
+
   -- set up db
   local db = require("papis.sqlite-wrapper")
   if not db then
@@ -72,11 +79,6 @@ function M.start()
     return nil
   end
 
-  -- setup commands
-  require("papis.commands").setup()
-  -- setup keymaps
-  require("papis.keymaps"):setup()
-
   -- setup enabled modules
   for module_name, _ in pairs(config.enable_modules) do
     log.trace(module_name .. " is enabled")
@@ -87,6 +89,12 @@ function M.start()
       end
     end
   end
+
+  -- setup commands
+  require("papis.commands").setup()
+  -- setup keymaps
+  require("papis.keymaps"):setup()
+
 
   -- check if other neovim instances has file watchers
   local does_pid_exist = require("papis.utils").does_pid_exist
