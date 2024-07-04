@@ -450,14 +450,6 @@ enable_icons = true,
   -- the database.
   required_keys = { "papis_id", "ref" },
 },
-
--- Configuration of logging.
-log = {
-
-  -- What levels to log. Debug mode is more conveniently
-  -- enabled in `enable_modules`.
-  level = "info",
-},
 ```
 
 In order to use the cmp source, you need to add it to the sources loaded by cmp.

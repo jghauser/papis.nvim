@@ -5,11 +5,10 @@
 -- Wrapper around sqlite.lua setting up the main database and associated methods.
 --
 
-local log = require("papis.log")
-
 local has_sqlite, sqlite = pcall(require, "sqlite")
 if not has_sqlite then
-  log.error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
+  vim.notify("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim",
+    vim.log.levels.ERROR)
   return nil
 end
 local sqlite_utils = require "sqlite.utils"

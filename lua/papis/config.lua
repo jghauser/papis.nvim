@@ -146,9 +146,6 @@ local default_config = {
     tag_format = nil,
     required_keys = { "papis_id", "ref" },
   },
-  log = {
-    level = "info", -- off turns it off
-  },
 }
 
 local M = vim.deepcopy(default_config)

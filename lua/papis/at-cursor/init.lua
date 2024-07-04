@@ -64,7 +64,7 @@ local function if_ref_valid_run_fun(fun, self, type)
       fun(papis_id, type)
     end
   else
-    log.info(string.format("No entry in database corresponds to '%s'", ref))
+    vim.notify(string.format("No entry in database corresponds to '%s'", ref), vim.log.levels.WARN)
   end
 end
 

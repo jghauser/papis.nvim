@@ -30,7 +30,7 @@
 local default_config = {
   plugin = "papis.nvim",
 
-  use_console = true,
+  use_console = false,
 
   highlights = true,
 

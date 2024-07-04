@@ -68,12 +68,13 @@ local function is_valid_entry(entry, path)
       if entry[key] then
         is_valid = true
       else
-        log.info(string.format("The entry at '%s' is missing the key '%s' and will not be added.", path, key))
+        vim.notify(string.format("The entry at '%s' is missing the key '%s' and will not be added.", path, key),
+          vim.log.levels.WARN)
         break
       end
     end
   else
-    log.info(string.format("The entry at '%s' is faulty and will not be added.", path))
+    vim.notify(string.format("The entry at '%s' is faulty and will not be added.", path), vim.log.levels.WARN)
   end
   return is_valid
 end
@@ -199,7 +200,8 @@ function M.get_data_full(metadata)
             if type(entry[key]) == "table" then
               data[key] = entry[key]
             else
-              log.warn("Wanted to add `" .. key .. "` of `" .. entry.ref .. "` but the value is not of type `table`")
+              vim.notify("Wanted to add `" .. key .. "` of `" .. entry.ref .. "` but the value is not of type `table`",
+                vim.log.levels.WARN)
               data[key] = {}
             end
           end

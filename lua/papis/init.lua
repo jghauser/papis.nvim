@@ -30,8 +30,9 @@ local function are_dependencies_available()
   local dependencies = { "papis", config.yq_bin }
   for _, dependency in ipairs(dependencies) do
     if vim.fn.executable(dependency) == 0 then
-      log.error(
-        string.format("The executable '%s' could not be found. Please install it to use papis.nvim", dependency)
+      vim.notify(
+        string.format("The executable '%s' could not be found. Please install it to use papis.nvim", dependency),
+        vim.log.levels.ERROR
       )
       return false
     end
@@ -62,7 +63,7 @@ function M.start()
   -- set up db
   local db = require("papis.sqlite-wrapper")
   if not db then
-    log.warn("Requiring `sqlite-wrapper.lua` failed. Aborting...")
+    vim.notify("Requiring `sqlite-wrapper.lua` failed. Aborting...", vim.log.levels.ERROR)
     return nil
   end
   db:init()
@@ -75,7 +76,7 @@ function M.start()
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
   local data = require("papis.data")
   if not data then
-    log.warn("Requiring `data.lua` failed. Aborting...")
+    vim.notify("Requiring `data.lua` failed. Aborting...", vim.log.levels.ERROR)
     return nil
   end
 

@@ -138,7 +138,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     -- disable watcher
     unwatch_cb()
     -- note, print still occurs even though we unwatched *future* events
-    log.warn(string.format("An error occured: %s", error))
+    vim.notify(string.format("An error occured: %s", error), vim.log.levels.ERROR)
   end)
 end
 

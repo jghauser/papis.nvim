@@ -109,9 +109,9 @@ function M:do_open_attached_files(papis_id)
     lookup_tbl[filename] = entry.files[k]
   end
   if vim.tbl_isempty(filenames) then
-    log.info("This item has no attached files.")
+    vim.notify("This item has no attached files.", vim.log.levels.WARN)
   elseif #filenames == 1 then
-    log.info("Opening file '" .. filenames[1] .. "' ")
+    vim.notify("Opening file '" .. filenames[1] .. "' ", vim.log.levels.INFO)
     local path = lookup_tbl[filenames[1]]
     self:do_open_file_external(path)
   else
@@ -119,7 +119,7 @@ function M:do_open_attached_files(papis_id)
       prompt = "Select attachment to open:",
     }, function(choice)
       if choice then
-        log.info("Opening file '" .. choice .. "' ")
+        vim.notify("Opening file '" .. choice .. "' ", vim.log.levels.INFO)
         local path = lookup_tbl[choice]
         self:do_open_file_external(path)
       end
@@ -133,7 +133,7 @@ end
 function M:do_open_text_file(papis_id, type)
   local db = require("papis.sqlite-wrapper")
   if not db then
-    log.warn("Sqlite-wrapper has not been initialised properly. Aborting...")
+    vim.notify("Sqlite-wrapper has not been initialised properly. Aborting...", vim.log.levels.ERROR)
     return nil
   end
   log.debug("Opening a text file")
