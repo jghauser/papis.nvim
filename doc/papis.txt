@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 July 03
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 July 04
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -498,14 +498,6 @@ All configuration options (with defaults) ~
       -- missing these keys will cause an error message and will not be added to
       -- the database.
       required_keys = { "papis_id", "ref" },
-    },
-    
-    -- Configuration of logging.
-    log = {
-    
-      -- What levels to log. Debug mode is more conveniently
-      -- enabled in `enable_modules`.
-      level = "info",
     },
 <
 
