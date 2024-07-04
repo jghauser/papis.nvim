@@ -7,8 +7,7 @@
 local log = require("papis.log")
 local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
-  vim.notify("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.",
-    vim.log.levels.ERROR)
+  log.error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
   return nil
 end
 local entry_display = require("telescope.pickers.entry_display")

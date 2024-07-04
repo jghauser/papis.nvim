@@ -133,7 +133,7 @@ end
 function M:do_open_text_file(papis_id, type)
   local db = require("papis.sqlite-wrapper")
   if not db then
-    vim.notify("Sqlite-wrapper has not been initialised properly. Aborting...", vim.log.levels.ERROR)
+    log.error("Sqlite-wrapper has not been initialised properly. Aborting...")
     return nil
   end
   log.debug("Opening a text file")

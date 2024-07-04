@@ -63,7 +63,7 @@ function M.start()
   -- set up db
   local db = require("papis.sqlite-wrapper")
   if not db then
-    vim.notify("Requiring `sqlite-wrapper.lua` failed. Aborting...", vim.log.levels.ERROR)
+    log.error("Requiring `sqlite-wrapper.lua` failed. Aborting...")
     return nil
   end
   db:init()
@@ -76,7 +76,7 @@ function M.start()
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
   local data = require("papis.data")
   if not data then
-    vim.notify("Requiring `data.lua` failed. Aborting...", vim.log.levels.ERROR)
+    log.error("Requiring `data.lua` failed. Aborting...")
     return nil
   end
 
