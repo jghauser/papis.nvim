@@ -142,8 +142,8 @@ end
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
-  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
-  local info_name = db.config:get_value({ id = 1 }, "info_name")
+  local library_dir = Path(db.config:get_conf_value("dir"))
+  local info_name = db.config:get_conf_value("info_name")
   if not paths then
     paths = {}
     for path in library_dir:fs_iterdir() do

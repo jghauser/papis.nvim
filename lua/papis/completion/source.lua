@@ -63,7 +63,7 @@ function M:is_available()
   local current_filepath = Path(api.nvim_buf_get_name(0))
   local filename = current_filepath:basename()
 
-  local info_name = db.config:get_value({ id = 1 }, "info_name")
+  local info_name = db.config:get_conf_value("info_name")
   if filename == info_name then
     log.trace("we are in a papis info file")
     if not tag_delimiter then

@@ -54,7 +54,7 @@ end
 ---Gets all directories in the library_dir
 ---@return table #A list of all directories in library_dir
 local function get_library_dirs()
-  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
+  local library_dir = Path(db.config:get_conf_value("dir"))
   local library_dirs = {}
   for path in library_dir:fs_iterdir() do
     library_dirs[#library_dirs + 1] = path
@@ -72,7 +72,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
   ---@param filename string #The name of the file that triggered the event
   ---@param unwatch_cb function #The callback that stops a watcher
   local function do_handle_event(filename, unwatch_cb)
-    local info_name = db.config:get_value({ id = 1 }, "info_name")
+    local info_name = db.config:get_conf_value("info_name")
     local mtime
     local entry_dir
     local info_path
@@ -160,7 +160,7 @@ end
 ---Starts file system watchers for root dir and all entry dirs
 local function start_fs_watchers()
   log.debug("Set db state to indicate fswatcher is active")
-  local library_dir = Path(db.config:get_value({ id = 1 }, "dir"))
+  local library_dir = Path(db.config:get_conf_value("dir"))
   db.state:set_fw_running(uv.os_getpid())
 
   log.debug("Setting up fswatcher for library root directory")

@@ -115,6 +115,11 @@ function tbl_methods.config:update()
   self:__update({ where = { id = 1 }, set = papis_py_conf_new })
 end
 
+---Gets config from Papis and updates the config table with it
+function tbl_methods.config:get_conf_value(key)
+  return self:get_value({ id = 1 }, key)
+end
+
 ---Gets the pid of the neovim instance that is running file watchers
 ---@return number? #Pid of the relevant process if they are running, nil if not
 function tbl_methods.state:get_fw_running()

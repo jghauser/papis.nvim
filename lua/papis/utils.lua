@@ -64,7 +64,7 @@ end
 -- Open file outside neovim
 ---@param path string #Path to the file
 function M:do_open_file_external(path)
-  local opentool = require("papis.sqlite-wrapper").config:get_value({ id = 1 }, "opentool")
+  local opentool = require("papis.sqlite-wrapper").config:get_conf_value("opentool")
   local opentool_table = self.do_split_str(opentool, " ")
   local command = table.remove(opentool_table, 1)
   local args = opentool_table
@@ -175,7 +175,7 @@ function M:do_open_text_file(papis_id, type)
         popup:unmount()
         local config = require("papis.config")
         local create_new_note_fn = config.create_new_note_fn
-        local notes_name = db.config:get_value({ id = 1 }, "notes_name")
+        local notes_name = db.config:get_conf_value("notes_name")
         local enable_modules = config.enable_modules
         create_new_note_fn(papis_id, notes_name)
         if enable_modules["formatter"] then
