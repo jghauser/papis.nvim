@@ -147,7 +147,7 @@ local function get_config_tbl_schema()
   local tbl_schema = { id = true, }
   for _, key in ipairs(config.papis_conf_keys) do
     local sanitized_key = string.gsub(key, "-", "_")
-    tbl_schema[sanitized_key] = { "text", default = nil }
+    tbl_schema[sanitized_key] = { "text" }
   end
   return tbl_schema
 end
@@ -183,8 +183,8 @@ local schemas = {
   },
   state = {
     id = true,
-    fw_running = { "integer", default = nil },
-    tag_format = { "text", default = nil },
+    fw_running = { "integer" },
+    tag_format = { "text" },
   },
   config = get_config_tbl_schema(),
 }
