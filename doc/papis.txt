@@ -1,23 +1,22 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 July 04
+*papis.txt*              For NVIM v0.8.0             Last change: 2024 July 06
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
 
-1. 📚 papis.nvim                                     |papis-📚-papis.nvim|
-  - Features                                  |papis-📚-papis.nvim-features|
-  - The database                          |papis-📚-papis.nvim-the-database|
-  - Installation                          |papis-📚-papis.nvim-installation|
-  - Setup                                        |papis-📚-papis.nvim-setup|
-  - Usage                                        |papis-📚-papis.nvim-usage|
-  - Keymaps                                    |papis-📚-papis.nvim-keymaps|
-  - Highlights                              |papis-📚-papis.nvim-highlights|
-  - Issues/Troubleshooting      |papis-📚-papis.nvim-issues/troubleshooting|
-  - Contributing                          |papis-📚-papis.nvim-contributing|
-  - Planned features and improvements|papis-📚-papis.nvim-planned-features-and-improvements|
-2. Links                                                         |papis-links|
+  - Features                                                  |papis-features|
+  - The database                                          |papis-the-database|
+  - Installation                                          |papis-installation|
+  - Setup                                                        |papis-setup|
+  - Usage                                                        |papis-usage|
+  - Keymaps                                                    |papis-keymaps|
+  - Highlights                                              |papis-highlights|
+  - Issues/Troubleshooting                      |papis-issues/troubleshooting|
+  - Contributing                                          |papis-contributing|
+  - Planned features and improvements|papis-planned-features-and-improvements|
+  - Thanks                                                      |papis-thanks|
+1. Links                                                         |papis-links|
 
-==============================================================================
-1. 📚 papis.nvim                                     *papis-📚-papis.nvim*
+
 
 Papis.nvim is a neovim <https://github.com/neovim/neovim> companion plugin for
 the bibliography manager Papis <https://github.com/papis/papis>. It’s meant
@@ -42,7 +41,7 @@ This plugin is in beta and breaking changes are expected. Breaking changes are
 communicated in a pinned issue and commit messages.
 
 
-FEATURES                                      *papis-📚-papis.nvim-features*
+FEATURES                                                      *papis-features*
 
 A number of features (bundled into `modules`) are shipped with papis.nvim.
 These can be (de)activated as desired.
@@ -95,7 +94,7 @@ or provide it with a skeleton structure. Below, in the setup section, there’s
 an example suitable for the `markdown` format.
 
 
-THE DATABASE                              *papis-📚-papis.nvim-the-database*
+THE DATABASE                                              *papis-the-database*
 
 All of papis.nvim’s features are made possible by a sqlite database that is
 created when you run `:Papis reload data`. This might take a while, so be
@@ -110,7 +109,7 @@ messy state. If strange errors appear, use `:Papis reload data` to
 re-initialise the database.
 
 
-INSTALLATION                              *papis-📚-papis.nvim-installation*
+INSTALLATION                                              *papis-installation*
 
 Note that papis.nvim is only tested with the latest stable version of Neovim.
 It should work across various OSs, but most development has been done on Linux
@@ -231,7 +230,7 @@ Nix configuration ~
 <
 
 
-SETUP                                            *papis-📚-papis.nvim-setup*
+SETUP                                                            *papis-setup*
 
 Papis.nvim exposes a rather large number of configuration options, most of
 which can be left alone – and quite a few of which probably _should_ be left
@@ -509,7 +508,7 @@ cmp.
 <
 
 
-USAGE                                            *papis-📚-papis.nvim-usage*
+USAGE                                                            *papis-usage*
 
 Papis.nvim will start automatically according to the filetypes defined in
 `init_filetypes` (see the |papis-setup-section|). When first starting,
@@ -520,7 +519,7 @@ should re-import the configuration into papis.nvim with `:Papis reload config`
 and run `:Papis relad data` again.
 
 
-KEYMAPS                                        *papis-📚-papis.nvim-keymaps*
+KEYMAPS                                                        *papis-keymaps*
 
 By default, papis.nvim doesn’t set any keymaps (except in Telescope). You
 can, however, enable them by setting `enable_keymaps` to true. This provides
@@ -533,7 +532,7 @@ you with the following:
 - `<leader>pi` (normal): Show entry info popup
 
 
-HIGHLIGHTS                                  *papis-📚-papis.nvim-highlights*
+HIGHLIGHTS                                                  *papis-highlights*
 
 Papis.nvim defines and links a number of default highlight groups. In order to
 change the colours, simply override them with whatever you desire.
@@ -555,7 +554,7 @@ Highlight groups ~
 - `PapisPopupTitle`: The title in the cursor action popup
 
 
-ISSUES/TROUBLESHOOTING          *papis-📚-papis.nvim-issues/troubleshooting*
+ISSUES/TROUBLESHOOTING                          *papis-issues/troubleshooting*
 
 You can use `:checkhealth papis` for some basic troubleshooting. In addition,
 you can enable the `debug` module, which exposes the following commands and a
@@ -568,7 +567,7 @@ log:
 Please open an issue when you find bugs!
 
 
-CONTRIBUTING                              *papis-📚-papis.nvim-contributing*
+CONTRIBUTING                                              *papis-contributing*
 
 I am quite new to programming and there’s a million things that I want to
 improve and probably another million things that I _should_ improve but don’t
@@ -579,7 +578,7 @@ guide you through the process of creating a new module. PRs should be formatted
 to have indents of 2 spaces and have emmydoc comments.
 
 
-PLANNED FEATURES AND IMPROVEMENTS*papis-📚-papis.nvim-planned-features-and-improvements*
+PLANNED FEATURES AND IMPROVEMENTS    *papis-planned-features-and-improvements*
 
 I’m open to suggestions and PRs. Here are some things I’ve thought of:
 
@@ -593,8 +592,14 @@ I’m open to suggestions and PRs. Here are some things I’ve thought of:
 - ☐ insert formatted references and bibliographies (using .csl)
 - ☐ tests
 
+
+THANKS                                                          *papis-thanks*
+
+Big thanks to Irteza Rehman <https://www.irtezarehman.com/> for generously
+contributing the beautiful logo.
+
 ==============================================================================
-2. Links                                                         *papis-links*
+1. Links                                                         *papis-links*
 
 1. *Papis search*: https://github.com/jghauser/papis.nvim/assets/10319377/dd7bad33-762c-41dd-9eca-9538d6117ac1
 2. *search (trimmed)*: https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif
