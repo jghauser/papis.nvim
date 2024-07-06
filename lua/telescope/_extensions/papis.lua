@@ -86,16 +86,33 @@ local function papis_picker(opts)
           end,
         }),
         sorter = papis_sorter,
-        attach_mappings = function(_, map)
-          actions.select_default:replace(papis_actions.ref_insert(format_string))
-          map("i", "<c-o>f", papis_actions.open_file(), { desc = "Open file" })
-          map("n", "of", papis_actions.open_file(), { desc = "Open file" })
-          map("i", "<c-o>n", papis_actions.open_note(), { desc = "Open note" })
-          map("n", "on", papis_actions.open_note(), { desc = "Open note" })
-          map("i", "<c-e>", papis_actions.open_info(), { desc = "Open info.yaml file" })
-          map("n", "e", papis_actions.open_info(), { desc = "Open info.yaml file" })
-          map("n", "f", papis_actions.ref_insert_formatted(), { desc = "Insert formatted reference" })
-          map("i", "<c-f>", papis_actions.ref_insert_formatted(), { desc = "Insert formatted reference" })
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(
+            function() papis_actions.ref_insert(prompt_bufnr, format_string) end)
+          map("i", "<c-o>f",
+            function() papis_actions.open_file(prompt_bufnr) end,
+            { desc = "Open file" })
+          map("n", "of",
+            function() papis_actions.open_file(prompt_bufnr) end,
+            { desc = "Open file" })
+          map("i", "<c-o>n",
+            function() papis_actions.open_note(prompt_bufnr) end,
+            { desc = "Open note" })
+          map("n", "on",
+            function() papis_actions.open_note(prompt_bufnr) end,
+            { desc = "Open note" })
+          map("i", "<c-e>",
+            function() papis_actions.open_info(prompt_bufnr) end,
+            { desc = "Open info.yaml file" })
+          map("n", "e",
+            function() papis_actions.open_info(prompt_bufnr) end,
+            { desc = "Open info.yaml file" })
+          map("n", "f",
+            function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
+            { desc = "Insert formatted reference" })
+          map("i", "<c-f>",
+            function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
+            { desc = "Insert formatted reference" })
           -- Makes sure that the other defaults are still applied
           return true
         end,
