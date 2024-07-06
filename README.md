@@ -1,4 +1,14 @@
-# 📚 papis.nvim
+<div align="center">
+
+<img src="resources/logo.svg" width=300>
+
+# papis.nvim
+
+Manage your bibliography from within your favourite editor
+
+</div>
+
+<br>
 
 Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
@@ -524,3 +534,7 @@ I'm open to suggestions and PRs. Here are some things I've thought of:
 - [ ] sharing functionality
 - [ ] insert formatted references and bibliographies (using .csl)
 - [ ] tests
+
+## Thanks
+
+Big thanks to [Irteza Rehman](https://www.irtezarehman.com/) for generously contributing the beautiful logo.
