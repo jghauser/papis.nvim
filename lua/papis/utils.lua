@@ -111,7 +111,7 @@ function M:do_open_attached_files(papis_id)
   if vim.tbl_isempty(filenames) then
     vim.notify("This item has no attached files.", vim.log.levels.WARN)
   elseif #filenames == 1 then
-    vim.notify("Opening file '" .. filenames[1] .. "' ", vim.log.levels.INFO)
+    log.info(string.format("Opening file '%s' ", filenames[1]))
     local path = lookup_tbl[filenames[1]]
     self:do_open_file_external(path)
   else
@@ -119,7 +119,7 @@ function M:do_open_attached_files(papis_id)
       prompt = "Select attachment to open:",
     }, function(choice)
       if choice then
-        vim.notify("Opening file '" .. choice .. "' ", vim.log.levels.INFO)
+        log.info(string.format("Opening file '%s' ", choice))
         local path = lookup_tbl[choice]
         self:do_open_file_external(path)
       end
@@ -216,7 +216,9 @@ function M:do_open_text_file(papis_id, type)
         nuiline:render(popup.bufnr, -1, k)
       end
 
-      popup:mount()
+      vim.schedule(function()
+        popup:mount()
+      end)
     end
   elseif type == "info" then
     log.debug("Opening an info file")
