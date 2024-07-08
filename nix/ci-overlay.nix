@@ -16,7 +16,7 @@
       };
 
       neovimConfig = neovimUtils.makeNeovimConfig {
-        withPython3 = true;
+        withPython3 = false;
         viAlias = true;
         vimAlias = true;
         extraLuaPackages = luaPkgs: [
@@ -41,7 +41,7 @@
           wrapperArgs =
             lib.escapeShellArgs neovimConfig.wrapperArgs
             + " "
-            + ''--set NVIM_APPNAME "nvim-papis"''
+            + ''--set NVIM_APPNAME "nvim-${name}"''
             + " "
             + ''--prefix PATH : "${lib.makeBinPath runtimeDeps}"'';
           wrapRc = true;
@@ -141,5 +141,5 @@
             '';
         });
 in {
-  neovim-with-papis = mkNvimMinimal final.neovim-unwrapped;
+  neovim-with-plugin = mkNvimMinimal final.neovim-unwrapped;
 }

@@ -14,7 +14,7 @@
       buildLuarocksPackage {
         pname = name;
         version = "scm-1";
-        knownRockspec = "${self}/papis.nvim-scm-1.rockspec";
+        knownRockspec = "${self}/${name}-scm-1.rockspec";
         disabled = luaOlder "5.1";
         propagatedBuildInputs = [
           nui-nvim

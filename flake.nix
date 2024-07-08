@@ -55,7 +55,7 @@
                 ''
                   ${pkgs.coreutils}/bin/rm -rf ${test-lib-dir}
                   ${pkgs.coreutils}/bin/cp -r -r ./tests/files/library ${test-lib-dir}
-                  ${pkgs.neovim-with-papis}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
+                  ${pkgs.neovim-with-plugin}/bin/nvim -c "lua _Load_papis()" -c "e test.md"
                 '';
             };
           in [
@@ -74,7 +74,7 @@
         packages = rec {
           default = papis-nvim;
           inherit (pkgs.luajitPackages) papis-nvim;
-          inherit (pkgs) neovim-with-papis;
+          inherit (pkgs) neovim-with-plugin;
         };
       };
       flake = {
