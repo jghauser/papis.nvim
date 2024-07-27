@@ -200,7 +200,7 @@ local function start_fs_watch_active_timer()
         log.debug("Taking over file system watching duties")
         data:sync_db()
         start_fs_watchers()
-        log.debug("Start autocmd lo unset db state if this instance stops fs watchers")
+        log.debug("Start autocmd to unset db state if this instance stops fs watchers")
         init_autocmd()
       end
     end)
@@ -222,7 +222,7 @@ function M.start()
   if not does_pid_exist(db.state:get_fw_running()) then
     log.debug("Starting file watchers")
     start_fs_watchers()
-    log.debug("Start autocmd lo unset db state if this instance stops fs watchers")
+    log.debug("Start autocmd to unset db state if this instance stops fs watchers")
     init_autocmd()
   else
     log.debug("This neovim instance will take over file watching if required")
