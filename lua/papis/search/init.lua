@@ -95,6 +95,7 @@ function M.get_precalc()
     telescope_precalc = {}
     local entries = db.data:get()
     for _, entry in ipairs(entries) do
+      -- TODO: only update if mtime for entry indicates a recent change
       local id = entry.id
       telescope_precalc[id] = entry_maker(entry)
     end

@@ -65,6 +65,7 @@ local function update_main_tbls(metadata)
         log.debug("Changing an existing entry")
         id = id[1].id
         db.data:clean_update({ id = id }, data_row)
+        metadata_row.entry = id
         db.metadata:update({ id = id }, metadata_row)
       else
         log.debug("Adding a new entry")
