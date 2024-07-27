@@ -7,7 +7,7 @@
 
 local Path = require("pathlib")
 
-local uv = vim.loop
+local uv = vim.uv
 
 local config = require("papis.config")
 local utils = require("papis.utils")

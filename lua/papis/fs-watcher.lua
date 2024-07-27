@@ -9,7 +9,7 @@
 
 local Path = require("pathlib")
 
-local uv = vim.loop
+local uv = vim.uv
 local fs_stat = uv.fs_stat
 local new_timer = uv.new_timer
 local api = vim.api

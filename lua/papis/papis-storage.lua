@@ -7,7 +7,7 @@
 
 local Path = require("pathlib")
 
-local fs_stat = vim.loop.fs_stat
+local fs_stat = vim.uv.fs_stat
 
 local db = require("papis.sqlite-wrapper")
 if not db then
