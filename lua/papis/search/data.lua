@@ -124,8 +124,6 @@ local function init_tbl()
         entry = id,
       },
     })
-
-    require("papis.search").update_precalc(entry)
   end
 end
 

@@ -138,6 +138,8 @@ function M.update_db(metadata)
   log.debug("Updating the database")
   update_main_tbls(metadata)
   update_module_tbls(metadata)
+  local db_last_modified = os.time()
+  db.state:update({ id = 1 }, { db_last_modified = db_last_modified })
 end
 
 ---Resets the database
