@@ -110,8 +110,8 @@ function M.start()
 
     -- only synchronise the data table if it's not empty
     -- (in that case, we tell users to manually do it because it takes a while)
-    if not db.data:empty() then
-      log.debug("Setting up/syncrhonising the database")
+    if (db.data:empty() == false) and (db.metadata:empty() == false) then
+      log.debug("Setting up/syncronising the database")
       data:sync_db()
     end
   else
