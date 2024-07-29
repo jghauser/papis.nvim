@@ -261,6 +261,7 @@ function M:init()
       log.debug(string.format("The table schema for '%s' has changed", tbl_name))
       if self:exists(tbl_name) then
         self:drop(tbl_name)
+        self[tbl_name] = self:create_tbl_with_methods(tbl_name)
       end
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
       if tbl_name == "config" then
