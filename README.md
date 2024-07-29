@@ -78,7 +78,8 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 Note that papis.nvim is only tested with the latest stable version of Neovim. It should work across various OSs, but most development has been done on Linux (do feel free to open issues if you run into trouble on non-Linux systems). An installation of Papis is required.
 
 To run, papis.nvim requires:
-- [yq](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
+- [`yq`](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
+- `sqlite`. Needed by the `sqlite.lua` dependency.
 
 Optionally, you'll need:
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) for increased prettiness.
