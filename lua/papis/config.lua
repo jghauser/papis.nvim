@@ -30,7 +30,7 @@ local default_config = {
   enable_keymaps = false,
   enable_fs_watcher = true,
   data_tbl_schema = { -- only "text" and "luatable" are allowed
-    id = { "integer", pk = true },
+    id = { "integer", primary = true },
     papis_id = { "text", required = true, unique = true },
     ref = { "text", required = true, unique = true },
     author = "text",

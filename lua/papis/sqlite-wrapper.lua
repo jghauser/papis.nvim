@@ -171,7 +171,7 @@ end
 local schemas = {
   data = config.data_tbl_schema,
   metadata = {
-    id = { "integer", pk = true },
+    id = { "integer", primary = true },
     path = { "text", required = true, unique = true },
     mtime = { "integer", required = true }, -- mtime of the info_yaml
     entry = {
