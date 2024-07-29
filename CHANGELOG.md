@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.6.1](https://github.com/jghauser/papis.nvim/compare/v0.6.0...v0.6.1) (2024-07-29)
+
+
+### Features
+
+* add logo ([a978704](https://github.com/jghauser/papis.nvim/commit/a978704abea8bb2aa8e272796f28f9e9a723ac9e))
+* **fs-watcher:** add debounce and deferred handling ([2e2916f](https://github.com/jghauser/papis.nvim/commit/2e2916f066188391f03b5db4cf2e9aea882e9269))
+* **init:** better logging ([c73f255](https://github.com/jghauser/papis.nvim/commit/c73f2559601d12f04d2421b610e7512b4ffadab7))
+* **sqlite-wrapper:** make `has_schema_changed` more sophisticated ([ff8ae82](https://github.com/jghauser/papis.nvim/commit/ff8ae82c5a7a9a4b9200b59a91a7a2d952442490))
+
+
+### Bug Fixes
+
+* **fs-watcher:** correct typos ([1126504](https://github.com/jghauser/papis.nvim/commit/112650441a8a8caecea92c4278260957ebb999e3))
+* **init:** fix db tbl empty check ([286b9d3](https://github.com/jghauser/papis.nvim/commit/286b9d35a94d469e5b04315cd2ed1a7f1fb56e92))
+* **init:** load commands before modules ([6cacc32](https://github.com/jghauser/papis.nvim/commit/6cacc329aefec76cf7d42c6c1270df0770966ea8))
+* make some `notify` into `log` ([6f1cf00](https://github.com/jghauser/papis.nvim/commit/6f1cf00385d9b6cb522238c6d16627694e2e9e4a))
+* **search:** ensure metadata table always has entry row ([d7bcc4c](https://github.com/jghauser/papis.nvim/commit/d7bcc4cc3f729595f3e3778b2e7e42eca27c3b75))
+* **search:** regenerate telescope precalc on demand ([f9d1e72](https://github.com/jghauser/papis.nvim/commit/f9d1e721355bdccd578bf09a7ddb16e5c2bb95f0))
+* **sqlite-wrapper:** create tbl after dropping if schema change ([ae45382](https://github.com/jghauser/papis.nvim/commit/ae45382fafb6fad626dae153d9e0bcd6cbdf27ec))
+* **sqlite-wrapper:** set required to `true` not string `"true"` ([d41100a](https://github.com/jghauser/papis.nvim/commit/d41100a1c3491ec0a396fa7c90d0649f3a7fde20))
+
 ## [0.6.0](https://github.com/jghauser/papis.nvim/compare/v0.5.1...v0.6.0) (2024-07-03)
 
 
