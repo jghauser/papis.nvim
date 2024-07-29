@@ -24,6 +24,7 @@ setmetatable(papis_entry_display, { __index = entry_display })
 papis_entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
 
 local telescope_precalc = {}
+local precalc_last_updated = 0
 
 ---Create a telescope entry for a given db entry
 ---@param entry table #A entry in the library db
@@ -84,19 +85,17 @@ local module_keymaps = {
 
 local M = {}
 
----Updates the precalculated telescope entry for the picker
----@param entry table #The db entry for which to update the telescope entry
-function M.update_precalc(entry)
-  local id = entry.id
-  telescope_precalc[id] = entry_maker(entry)
-end
-
 ---Get precalcuated telescope entries (or create them if they don't yet exist)
 ---@return table #Table with precalculated telescope entries for all db entries
 function M.get_precalc()
-  if vim.tbl_isempty(telescope_precalc) then
+  local db_last_modified = db.state:get_value({ id = 1 }, "db_last_modified")
+  if precalc_last_updated < db_last_modified then
+    log.debug("Updating precalc")
+    precalc_last_updated = db_last_modified
+    telescope_precalc = {}
     local entries = db.data:get()
     for _, entry in ipairs(entries) do
+      -- TODO: only update if mtime for entry indicates a recent change
       local id = entry.id
       telescope_precalc[id] = entry_maker(entry)
     end

@@ -80,9 +80,13 @@ function M.start()
     return nil
   end
 
+  -- setup commands
+  log.debug("Setting up commands")
+  require("papis.commands").setup()
+
   -- setup enabled modules
   for module_name, _ in pairs(config.enable_modules) do
-    log.trace(module_name .. " is enabled")
+    log.debug(module_name .. " is enabled")
     local has_module, module = pcall(require, "papis." .. module_name)
     if has_module then
       if module.setup then
@@ -91,24 +95,23 @@ function M.start()
     end
   end
 
-  -- setup commands
-  require("papis.commands").setup()
   -- setup keymaps
+  log.debug("Setting up keymaps")
   require("papis.keymaps"):setup()
-
 
   -- check if other neovim instances has file watchers
   local does_pid_exist = require("papis.utils").does_pid_exist
   if not does_pid_exist(db.state:get_fw_running()) then
     -- setup file watchers because no other neovim instance has them
     if config.enable_fs_watcher then
+      log.debug("Setting up file watchers")
       require("papis.fs-watcher"):init()
     end
 
     -- only synchronise the data table if it's not empty
     -- (in that case, we tell users to manually do it because it takes a while)
-    if not db.data:empty() then
-      log.debug("Synchronising the database")
+    if (db.data:empty() == false) and (db.metadata:empty() == false) then
+      log.debug("Setting up/syncronising the database")
       data:sync_db()
     end
   else

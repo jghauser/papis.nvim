@@ -159,19 +159,55 @@ end
 local function has_schema_changed(new_schema, old_schema)
   local old_schema_okays = sqlite_utils.okeys(old_schema)
   local new_schema_okays = sqlite_utils.okeys(new_schema)
-  -- local len = { new = #new_schema_len, old = #old_schema_len }
   if not vim.deep_equal(old_schema_okays, new_schema_okays) then
     return true
   else
-    return false
+    for _, key in pairs(new_schema_okays) do
+      local normalised_value = {}
+      if new_schema[key] == true then
+        normalised_value = { type = "INTEGER", primary = true, required = true }
+      elseif type(new_schema[key]) == "string" then
+        local new_schema_type = new_schema[key]
+        if new_schema_type ~= "luatable" then
+          new_schema_type = string.upper(new_schema_type)
+        end
+        normalised_value.type = new_schema_type
+      else
+        for k, v in pairs(new_schema[key]) do
+          if k == 1 then
+            local new_schema_type = v
+            if new_schema_type ~= "luatable" then
+              new_schema_type = string.upper(new_schema_type)
+            end
+            normalised_value.type = new_schema_type
+          elseif k == "primary" then
+            normalised_value[k] = v
+          elseif k == "required" then
+            normalised_value[k] = v
+          end
+        end
+        if not vim.tbl_get(new_schema[key], "primary") then
+          normalised_value.primary = false
+        end
+        if not vim.tbl_get(new_schema[key], "required") then
+          normalised_value.required = false
+        end
+      end
+      for k, v in pairs(normalised_value) do
+        if old_schema[key][k] ~= v then
+          return true
+        end
+      end
+    end
   end
+  return false
 end
 
 -- Schemas for all tables
 local schemas = {
   data = config.data_tbl_schema,
   metadata = {
-    id = { "integer", pk = true },
+    id = { "integer", primary = true },
     path = { "text", required = true, unique = true },
     mtime = { "integer", required = true }, -- mtime of the info_yaml
     entry = {
@@ -179,12 +215,14 @@ local schemas = {
       reference = "data.id",
       on_update = "cascade",
       on_delete = "cascade",
+      required = true,
     },
   },
   state = {
     id = true,
     fw_running = { "integer" },
     tag_format = { "text" },
+    db_last_modified = { "integer", default = os.time() },
   },
   config = get_config_tbl_schema(),
 }
@@ -220,8 +258,10 @@ function M:init()
     if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
     else
+      log.debug(string.format("The table schema for '%s' has changed", tbl_name))
       if self:exists(tbl_name) then
         self:drop(tbl_name)
+        self[tbl_name] = self:create_tbl_with_methods(tbl_name)
       end
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
       if tbl_name == "config" then

@@ -10,8 +10,8 @@ local NuiPopup = require("nui.popup")
 local nuiEvent = require("nui.utils.autocmd").event
 local Path = require("pathlib")
 
-local new_timer = vim.loop.new_timer
-local os_name = vim.loop.os_uname()
+local new_timer = vim.uv.new_timer
+local os_name = vim.uv.os_uname()
 
 local log = require("papis.log")
 
@@ -71,7 +71,7 @@ function M:do_open_file_external(path)
   args[#args + 1] = path
 
   local handle
-  handle = vim.loop.spawn(command, {
+  handle = vim.uv.spawn(command, {
     args = args,
     stdio = { nil, nil, nil }
   }, vim.schedule_wrap(function()

@@ -9,7 +9,7 @@
 
 local Path = require("pathlib")
 
-local uv = vim.loop
+local uv = vim.uv
 local fs_stat = uv.fs_stat
 local new_timer = uv.new_timer
 local api = vim.api
@@ -27,6 +27,7 @@ local file_read_timer
 local autocmd_id
 local handles = {}
 local fs_watching_stopped = false
+local event_timestamps = {}
 
 ---Uses libuv to start file system watchers
 ---@param path string #The path to watch
@@ -78,55 +79,67 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     local info_path
     local do_unwatch = false
     local do_update = true
-    if is_library_root then
-      log.debug("Filesystem event in the library root directory")
-      entry_dir = Path(dir_to_watch, filename)
-      info_path = entry_dir / info_name
-      local entry_dir_str = tostring(entry_dir)
-      local info_path_str = tostring(info_path)
-      if entry_dir:exists() and entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '%s' added", entry_dir_str))
-        init_fs_watcher(entry_dir_str)
-        if info_path:exists() then
-          mtime = fs_stat(info_path_str).mtime.sec
+    local current_time = uv.hrtime() / 1e6 -- get current time in milliseconds
+    local last_event_time = event_timestamps[filename]
+
+    if last_event_time and current_time - last_event_time < 200 then
+      log.debug("Debouncing: skipping filesystem event")
+      -- If the last event for this file was less than 200ms ago, discard this event
+      return
+    end
+
+    -- Update the timestamp for this file
+    event_timestamps[filename] = current_time
+
+    vim.defer_fn(function()
+      if is_library_root then
+        log.debug("Filesystem event in the library root directory")
+        entry_dir = Path(dir_to_watch, filename)
+        info_path = entry_dir / info_name
+        local entry_dir_str = tostring(entry_dir)
+        local info_path_str = tostring(info_path)
+        if entry_dir:exists() and entry_dir:is_dir() then
+          log.debug(string.format("Filesystem event: path '%s' added", entry_dir_str))
+          init_fs_watcher(entry_dir_str)
+          if info_path:exists() then
+            mtime = fs_stat(info_path_str).mtime.sec
+          end
+        elseif entry_dir:is_dir() then
+          log.debug(string.format("Filesystem event: path '' removed", entry_dir_str))
+          -- don't update here, because we'll catch it below under entry events
+          do_update = false
+        else
+          -- it's a file (not a directory). ignore
+          do_update = false
         end
-      elseif entry_dir:is_dir() then
-        log.debug(string.format("Filesystem event: path '' removed", entry_dir_str))
-        -- don't update here, because we'll catch it below under entry events
-        do_update = false
       else
-        -- it's a file (not a directory). ignore
-        do_update = false
+        log.debug("Filesystem event in entry directory")
+        entry_dir = Path(dir_to_watch)
+        info_path = entry_dir / info_name
+        local info_path_str = tostring(info_path)
+        if info_path:exists() then
+          -- info file exists, update with new info
+          log.debug(string.format("Filesystem event: '%s' changed", info_path_str))
+          mtime = fs_stat(tostring(info_path)).mtime.sec
+        elseif not entry_dir:exists() then
+          -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
+          log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
+          do_unwatch = true
+        else
+          -- info file doesn't exist but entry dir does. delete entry but keep watcher
+          log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
+        end
       end
-    else
-      log.debug("Filesystem event in entry directory")
-      entry_dir = Path(dir_to_watch)
-      info_path = entry_dir / info_name
-      local info_path_str = tostring(info_path)
-      if info_path:exists() then
-        -- info file exists, update with new info
-        log.debug(string.format("Filesystem event: '%s' changed", info_path_str))
-        mtime = fs_stat(tostring(info_path)).mtime.sec
-      elseif not entry_dir:exists() then
-        -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
-        log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
-        do_unwatch = true
-      else
-        -- info file doesn't exist but entry dir does. delete entry but keep watcher
-        log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
-      end
-    end
-    if do_update then
-      local info_path_str = tostring(info_path)
-      log.debug("Update database for this fs event...")
-      log.debug("Updating: " .. vim.inspect({ path = info_path_str, mtime = mtime }))
-      vim.defer_fn(function()
+      if do_update then
+        local info_path_str = tostring(info_path)
+        log.debug("Update database for this fs event...")
+        log.debug("Updating: " .. vim.inspect({ path = info_path_str, mtime = mtime }))
         data.update_db({ path = info_path_str, mtime = mtime })
-      end, 200)
-    elseif do_unwatch then
-      log.debug("Removing watcher")
-      unwatch_cb()
-    end
+      elseif do_unwatch then
+        log.debug("Removing watcher")
+        unwatch_cb()
+      end
+    end, 200)
   end
 
   -- start the file watcher
@@ -187,7 +200,7 @@ local function start_fs_watch_active_timer()
         log.debug("Taking over file system watching duties")
         data:sync_db()
         start_fs_watchers()
-        log.debug("Start autocmd lo unset db state if this instance stops fs watchers")
+        log.debug("Start autocmd to unset db state if this instance stops fs watchers")
         init_autocmd()
       end
     end)
@@ -209,7 +222,7 @@ function M.start()
   if not does_pid_exist(db.state:get_fw_running()) then
     log.debug("Starting file watchers")
     start_fs_watchers()
-    log.debug("Start autocmd lo unset db state if this instance stops fs watchers")
+    log.debug("Start autocmd to unset db state if this instance stops fs watchers")
     init_autocmd()
   else
     log.debug("This neovim instance will take over file watching if required")

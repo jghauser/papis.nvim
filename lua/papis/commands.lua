@@ -55,7 +55,6 @@ end
 
 ---Creates the main Papis command
 local function create_command()
-  -- NOTE: the options will vary, based on your use case.
   vim.api.nvim_create_user_command("Papis", papis_cmd, {
     nargs = "+",
     desc = "Papis main command (with subcommands)",
