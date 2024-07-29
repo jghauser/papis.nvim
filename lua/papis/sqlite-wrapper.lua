@@ -179,7 +179,7 @@ local schemas = {
       reference = "data.id",
       on_update = "cascade",
       on_delete = "cascade",
-      required = "true",
+      required = true,
     },
   },
   state = {
