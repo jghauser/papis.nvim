@@ -258,6 +258,7 @@ function M:init()
     if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
     else
+      log.debug(string.format("The table schema for '%s' has changed", tbl_name))
       if self:exists(tbl_name) then
         self:drop(tbl_name)
       end
