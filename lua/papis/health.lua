@@ -77,6 +77,28 @@ reports["fs-watcher"] = function()
   end
 end
 
+---Creates a report for papis-storage
+reports["papis-storage"] = function()
+  local yq = config.yq_bin
+  local yq_is_executable = vim.fn.executable(yq)
+
+  health.start("Papis storage")
+  if yq_is_executable then
+    health.info(string.format("The '%s' executable was found in path.", yq))
+    local yq_version = vim.fn.system(yq .. " --version")
+    local is_yq_go = string.find(yq_version, "mikefarah")
+    if is_yq_go then
+      health.ok(string.format("The go version of the '%s' executable was found in path.", yq))
+    else
+      health.error(string.format("The python version of the '%s' executable was not found in path.", yq))
+    end
+  else
+    health.error(string.format("The '%s' executable was not found in path.", yq))
+  end
+end
+  end
+end
+
 local M = {}
 
 ---Main function called by checkhealth
@@ -85,6 +107,7 @@ M.check = function()
     health = vim.health
   end
 
+  reports["papis-storage"]()
   reports["sqlite-wrapper"]()
   if config.enable_fs_watcher then
     reports["fs-watcher"]()
