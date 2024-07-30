@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.2](https://github.com/jghauser/papis.nvim/compare/v0.6.1...v0.6.2) (2024-07-30)
+
+
+### Features
+
+* **health:** add check for completion ([4492155](https://github.com/jghauser/papis.nvim/commit/44921556aaa5aa774342ce14713e83949c3b712f))
+* **health:** add check for papis-storage ([82eef18](https://github.com/jghauser/papis.nvim/commit/82eef188f7babf4d64549b32d3ba93925e5c687f))
+
+
+### Bug Fixes
+
+* **health:** don't force start papis ([8c6d53b](https://github.com/jghauser/papis.nvim/commit/8c6d53ba2ddb64d200a1b382a13fbc29e68ce309))
+
 ## [0.6.1](https://github.com/jghauser/papis.nvim/compare/v0.6.0...v0.6.1) (2024-07-29)
 
 
