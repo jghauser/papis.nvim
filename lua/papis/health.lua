@@ -96,6 +96,16 @@ reports["papis-storage"] = function()
     health.error(string.format("The '%s' executable was not found in path.", yq))
   end
 end
+
+---Creates a report for completion
+reports["completion"] = function()
+  local yaml_parser = vim.api.nvim_get_runtime_file('parser/yaml.so', true)
+
+  health.start("Completion")
+  if not vim.tbl_isempty(yaml_parser) then
+    health.ok("The treesitter 'yaml' parser was found.")
+  else
+    health.error("The treesitter 'yaml' parser was not found.")
   end
 end
 
