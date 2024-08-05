@@ -15,19 +15,10 @@ local telescope_config = require("telescope.config").values
 local papis_actions = require("telescope._extensions.papis.actions")
 
 local utils = require("papis.utils")
+local config = require("papis.config")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
-end
-
----Gets the cite format for the filetype
----@return string #The cite format for the filetype (or fallback if undefined)
-local function parse_format_string()
-  local cite_format = utils.get_cite_format(vim.bo.filetype)
-  if type(cite_format) == "table" then
-    cite_format = cite_format[1]
-  end
-  return cite_format
 end
 
 local wrap, preview_format, initial_sort_by_time_added
@@ -39,9 +30,6 @@ local function papis_picker(opts)
 
   -- get precalculated entries for the telescope picker
   local telescope_precalc = require("papis.search").get_precalc()
-
-  -- local results = db.data:get(nil, required_db_keys)
-  local format_string = parse_format_string()
 
   -- amend the generic_sorter so that we can change initial sorting
   local generic_sorter = telescope_config.generic_sorter(opts)
@@ -88,7 +76,7 @@ local function papis_picker(opts)
         sorter = papis_sorter,
         attach_mappings = function(prompt_bufnr, map)
           actions.select_default:replace(
-            function() papis_actions.ref_insert(prompt_bufnr, format_string) end)
+            function() papis_actions.ref_insert(prompt_bufnr) end)
           map("i", "<c-o>f",
             function() papis_actions.open_file(prompt_bufnr) end,
             { desc = "Open file" })

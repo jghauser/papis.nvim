@@ -28,23 +28,6 @@ end
 
 local M = {}
 
----Get the cite_format for the current filetype
----@param filetype string #Filetype for which we need a cite_format
----@return string|table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
-function M.get_cite_format(filetype)
-  local config = require("papis.config")
-  local cite_formats = config.cite_formats
-  local cite_formats_fallback = config.cite_formats_fallback
-
-  if config.always_use_plain then
-    local cite_format = cite_formats.plain or "%s"
-    return cite_format
-  else
-    local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
-    return cite_format
-  end
-end
-
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
 ---@param sep? string #String giving each character by which to split

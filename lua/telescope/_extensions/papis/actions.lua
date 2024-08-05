@@ -21,21 +21,27 @@ local M = {}
 
 ---This function inserts a formatted ref string at the cursor
 ---@param prompt_bufnr number @The buffer number of the prompt
----@param format_string string @The string to be inserted
-M.ref_insert = function(prompt_bufnr, format_string)
+M.ref_insert = function(prompt_bufnr)
   local multi = get_multi(prompt_bufnr)
-
   actions.close(prompt_bufnr)
-  local string_to_insert = ""
+  local cite_format = config:get_cite_format()
+  local start_str = cite_format.start_str
+  local end_str = cite_format.end_str
+  local ref_prefix = cite_format.ref_prefix or ""
+  local separator_str = cite_format.separator_str
+  local string_to_insert = start_str or ""
+
   if vim.tbl_isempty(multi) then
-    local ref = string.format(format_string, action_state.get_selected_entry().id.ref)
-    string_to_insert = ref
+    local ref = ref_prefix .. action_state.get_selected_entry().id.ref
+    string_to_insert = string_to_insert .. ref
   else
+    local refs = {}
     for _, entry in pairs(multi) do
-      local ref = string.format(format_string, entry.id.ref)
-      string_to_insert = string_to_insert .. ref .. " "
+      refs[#refs + 1] = ref_prefix .. entry.id.ref
     end
+    string_to_insert = string_to_insert .. table.concat(refs, separator_str)
   end
+  string_to_insert = string_to_insert .. (end_str or "")
   vim.api.nvim_put({ string_to_insert }, "", false, true)
 end
 
