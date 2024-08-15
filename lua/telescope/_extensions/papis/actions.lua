@@ -55,14 +55,15 @@ M.ref_insert_formatted = function(prompt_bufnr)
   if vim.tbl_isempty(multi) then
     local papis_id = action_state.get_selected_entry().id.papis_id
     local full_entry = db.data:get({ papis_id = papis_id })[1]
-    local full_reference = config["formatter"].format_references_fn(full_entry)
-    string_to_insert = full_reference
+    local full_reference = config["formatter"].format_references(full_entry)
+    string_to_insert = full_reference[1]
   else
     for _, entry in pairs(multi) do
       local papis_id = entry.id.papis_id
       local full_entry = db.data:get({ papis_id = papis_id })[1]
-      local full_reference = config["formatter"].format_references_fn(full_entry)
-      string_to_insert = string_to_insert .. full_reference .. " "
+      local full_reference = config["formatter"].format_references(full_entry)
+      -- TODO: this should be able to use arbitary length `full_reference`s
+      string_to_insert = string_to_insert .. full_reference[1] .. " "
     end
   end
 

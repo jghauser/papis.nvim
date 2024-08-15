@@ -85,7 +85,7 @@ local default_config = {
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
   ["formatter"] = {
-    format_notes_fn = function(entry)
+    format_notes = function(entry)
       local title_format = {
         { "author", "%s ",   "" },
         { "year",   "(%s) ", "" },
@@ -101,10 +101,9 @@ local default_config = {
         "---",
         "",
       }
-      vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
-      vim.cmd("normal G")
+      return lines
     end,
-    format_references_fn = function(entry)
+    format_references = function(entry)
       local reference_format = {
         { "author",  "%s ",    "" },
         { "year",    "(%s). ", "" },
@@ -117,7 +116,8 @@ local default_config = {
       for k, v in ipairs(reference_data) do
         reference_data[k] = v[1]
       end
-      return table.concat(reference_data)
+      local lines = { table.concat(reference_data) }
+      return lines
     end,
   },
   ["at-cursor"] = {

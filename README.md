@@ -392,7 +392,7 @@ enable_icons = true,
   -- This function runs when first opening a new note. The `entry` arg is a table
   -- containing all the information about the entry (see above `data_tbl_schema`).
   -- This example is meant to be used with the `markdown` filetype.
-  format_notes_fn = function(entry)
+  format_notes = function(entry)
     -- Some string formatting templates (see above `results_format` option for
     -- more details)
     local title_format = {
@@ -413,14 +413,11 @@ enable_icons = true,
       "---",
       "",
     }
-    -- Insert the lines
-    vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
-    -- Move cursor to the bottom
-    vim.cmd("normal G")
+    return lines
   end,
   -- This function runs when inserting a formatted reference (currently by `f/c-f` in
-  -- Telescope). It works similarly to the `format_notes_fn` above.
-  format_references_fn = function(entry)
+  -- Telescope). It works similarly to the `format_notes` above.
+  format_references = function(entry)
     local reference_format = {
       { "author",  "%s ",   "" },
       { "year",    "(%s). ", "" },
@@ -433,7 +430,8 @@ enable_icons = true,
     for k, v in ipairs(reference_data) do
       reference_data[k] = v[1]
     end
-    return table.concat(reference_data)
+    local lines = { table.concat(reference_data) }
+    return lines
   end,
 },
 

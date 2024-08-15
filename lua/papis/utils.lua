@@ -110,6 +110,7 @@ function M:do_open_attached_files(papis_id)
   end
 end
 
+local popups = {}
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
 ---@param papis_id string #The `papis_id` of the entry
 ---@param type string #Either "note" or "info", specifying the type of file
@@ -137,7 +138,8 @@ function M:do_open_text_file(papis_id, type)
       for _, line in pairs(lines_text) do
         width = math.max(width, #line[1])
       end
-      local popup = NuiPopup({
+      local current_popup = #popups + 1
+      popups[current_popup] = NuiPopup({
         enter = true,
         position = "50%",
         size = {
@@ -154,28 +156,25 @@ function M:do_open_text_file(papis_id, type)
         },
       })
 
-      popup:map("n", { "Y", "y", "<cr>" }, function(_)
-        popup:unmount()
+      popups[current_popup]:map("n", { "Y", "y", "<cr>" }, function(_)
+        popups[current_popup]:unmount()
+        popups[current_popup] = nil
         local config = require("papis.config")
         local create_new_note_fn = config.create_new_note_fn
         local notes_name = db.config:get_conf_value("notes_name")
-        local enable_modules = config.enable_modules
         create_new_note_fn(papis_id, notes_name)
-        if enable_modules["formatter"] then
-          entry = db.data:get({ papis_id = papis_id })[1]
-          local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
-          log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
-          local callback = config["formatter"].format_notes_fn
-          require("papis.formatter").create_autocmd(pattern, callback, entry)
-        end
         local entry_has_note = new_timer()
         local file_opened = false
         entry_has_note:start(
           0,
           5,
           vim.schedule_wrap(function()
-            entry = db.data:get({ papis_id = papis_id }, { "notes" })[1]
+            entry = db.data:get({ papis_id = papis_id })[1]
             if entry.notes and not file_opened then
+              local enable_modules = config.enable_modules
+              if enable_modules["formatter"] then
+                require("papis.formatter").format_entire_file(entry)
+              end
               log.debug("Opening newly created notes file")
               self:do_open_text_file(papis_id, type)
               file_opened = true
@@ -185,22 +184,24 @@ function M:do_open_text_file(papis_id, type)
           end)
         )
       end, { noremap = true, nowait = true })
-      popup:map("n", { "N", "n", "<esc>", "q" }, function(_)
-        popup:unmount()
+      popups[current_popup]:map("n", { "N", "n", "<esc>", "q" }, function(_)
+        popups[current_popup]:unmount()
+        popups[current_popup] = nil
       end, { noremap = true, nowait = true })
 
-      popup:on({ nuiEvent.BufLeave }, function()
-        popup:unmount()
+      popups[current_popup]:on({ nuiEvent.BufLeave }, function()
+        popups[current_popup]:unmount()
+        popups[current_popup] = nil
       end, { once = true })
 
       for k, line in pairs(lines_text) do
         local nuiline = NuiLine()
         nuiline:append(unpack(line))
-        nuiline:render(popup.bufnr, -1, k)
+        nuiline:render(popups[current_popup].bufnr, -1, k)
       end
 
       vim.schedule(function()
-        popup:mount()
+        popups[current_popup]:mount()
       end)
     end
   elseif type == "info" then
