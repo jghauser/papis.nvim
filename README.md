@@ -233,19 +233,42 @@ enable_modules = {
                               -- troubleshoot and diagnose issues)
 },
 
--- Defines citation formats for various filetypes. When the value is a table, then
--- the first entry is used to insert citations, whereas the second will be used to
--- find references (e.g. by the `at-cursor` module). `%s` stands for the reference.
--- Note that the first entry is a string (where e.g. `\` needs to be excaped as `\\`)
--- and the second a lua pattern (where magic characters need to be escaped with
--- `%`; https://www.lua.org/pil/20.2.html).
+-- Defines citation formats for various filetypes. They define how citation strings
+-- are parsed and formatted when inserted. For each filetype, we may define:
+-- - `start_str`: precedes the citation
+-- - `end_str`: appended after the citation
+-- - `ref_prefix`: precedes each `ref` in a citation
+-- - `separator_str`: gets added between `ref`s if there are multiple in a citation
+-- For example, for the `org` filetype if we insert a citation with `Ref1` and `Ref2`,
+-- we end up with `[cite:@Ref1;@Ref2]`.
 cite_formats = {
-  tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
-  markdown = "@%s",
-  rmd = "@%s",
-  plain = "%s",
-  org = { "[cite:@%s]", "%[cite:@%s]" },
-  norg = "{= %s}",
+  tex = {
+    start_str = [[\cite{]],
+    end_str = "}",
+    separator_str = ", ",
+  },
+  markdown = {
+    ref_prefix = "@",
+    separator_str = "; "
+  },
+  rmd = {
+    ref_prefix = "@",
+    separator_str = "; "
+  },
+  plain = {
+    separator_str = ", "
+  },
+  org = {
+    start_str = "[cite:",
+    end_str = "]",
+    ref_prefix = "@",
+    separator_str = ";",
+  },
+  norg = {
+    start_str = "{= ",
+    end_str = "}",
+    separator_str = "; ",
+  },
 },
 
 -- What citation format to use when none is defined for the current filetype.
