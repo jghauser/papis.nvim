@@ -98,7 +98,6 @@ M.open_note = function(prompt_bufnr)
     utils:do_open_text_file(papis_id, "note")
   else
     for _, entry in pairs(multi) do
-      -- TODO: this only opens one note if a note needs to be created
       local papis_id = entry.id.papis_id
       utils:do_open_text_file(papis_id, "note")
     end
