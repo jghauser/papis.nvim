@@ -104,7 +104,7 @@ local default_config = {
       {
         { "author", "%s", "PapisPopupAuthor" },
         { "vspace", "vspace" },
-        { "files", { " ", "F " }, "PapisResultsFiles" },
+        { "files", { "󰈙 ", "F " }, "PapisResultsFiles" },
         { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
       },
       { "year",  "%s", "PapisPopupYear" },
