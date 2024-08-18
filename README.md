@@ -414,7 +414,8 @@ enable_icons = true,
 
   -- This function runs when first opening a new note. The `entry` arg is a table
   -- containing all the information about the entry (see above `data_tbl_schema`).
-  -- This example is meant to be used with the `markdown` filetype.
+  -- This example is meant to be used with the `markdown` filetype. The function
+  -- must return a set of lines, specifying the lines to be added to the note.
   format_notes = function(entry)
     -- Some string formatting templates (see above `results_format` option for
     -- more details)
@@ -439,7 +440,9 @@ enable_icons = true,
     return lines
   end,
   -- This function runs when inserting a formatted reference (currently by `f/c-f` in
-  -- Telescope). It works similarly to the `format_notes` above.
+  -- Telescope). It works similarly to the `format_notes` above, except that the set
+  -- of lines should only contain one line (references using multiple lines aren't
+  -- currently supported).
   format_references = function(entry)
     local reference_format = {
       { "author",  "%s ",   "" },
