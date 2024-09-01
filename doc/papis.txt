@@ -1,4 +1,4 @@
-*papis.txt*              For NVIM v0.8.0             Last change: 2024 July 30
+*papis.txt*           For NVIM v0.8.0           Last change: 2024 September 01
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -271,19 +271,42 @@ All configuration options (with defaults) ~
                                   -- troubleshoot and diagnose issues)
     },
     
-    -- Defines citation formats for various filetypes. When the value is a table, then
-    -- the first entry is used to insert citations, whereas the second will be used to
-    -- find references (e.g. by the `at-cursor` module). `%s` stands for the reference.
-    -- Note that the first entry is a string (where e.g. `\` needs to be excaped as `\\`)
-    -- and the second a lua pattern (where magic characters need to be escaped with
-    -- `%`; https://www.lua.org/pil/20.2.html).
+    -- Defines citation formats for various filetypes. They define how citation strings
+    -- are parsed and formatted when inserted. For each filetype, we may define:
+    -- - `start_str`: precedes the citation
+    -- - `end_str`: appended after the citation
+    -- - `ref_prefix`: precedes each `ref` in a citation
+    -- - `separator_str`: gets added between `ref`s if there are multiple in a citation
+    -- For example, for the `org` filetype if we insert a citation with `Ref1` and `Ref2`,
+    -- we end up with `[cite:@Ref1;@Ref2]`.
     cite_formats = {
-      tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
-      markdown = "@%s",
-      rmd = "@%s",
-      plain = "%s",
-      org = { "[cite:@%s]", "%[cite:@%s]" },
-      norg = "{= %s}",
+      tex = {
+        start_str = [[\cite{]],
+        end_str = "}",
+        separator_str = ", ",
+      },
+      markdown = {
+        ref_prefix = "@",
+        separator_str = "; "
+      },
+      rmd = {
+        ref_prefix = "@",
+        separator_str = "; "
+      },
+      plain = {
+        separator_str = ", "
+      },
+      org = {
+        start_str = "[cite:",
+        end_str = "]",
+        ref_prefix = "@",
+        separator_str = ";",
+      },
+      norg = {
+        start_str = "{= ",
+        end_str = "}",
+        separator_str = "; ",
+      },
     },
     
     -- What citation format to use when none is defined for the current filetype.
@@ -429,8 +452,9 @@ All configuration options (with defaults) ~
     
       -- This function runs when first opening a new note. The `entry` arg is a table
       -- containing all the information about the entry (see above `data_tbl_schema`).
-      -- This example is meant to be used with the `markdown` filetype.
-      format_notes_fn = function(entry)
+      -- This example is meant to be used with the `markdown` filetype. The function
+      -- must return a set of lines, specifying the lines to be added to the note.
+      format_notes = function(entry)
         -- Some string formatting templates (see above `results_format` option for
         -- more details)
         local title_format = {
@@ -451,14 +475,13 @@ All configuration options (with defaults) ~
           "---",
           "",
         }
-        -- Insert the lines
-        vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
-        -- Move cursor to the bottom
-        vim.cmd("normal G")
+        return lines
       end,
       -- This function runs when inserting a formatted reference (currently by `f/c-f` in
-      -- Telescope). It works similarly to the `format_notes_fn` above.
-      format_references_fn = function(entry)
+      -- Telescope). It works similarly to the `format_notes` above, except that the set
+      -- of lines should only contain one line (references using multiple lines aren't
+      -- currently supported).
+      format_references = function(entry)
         local reference_format = {
           { "author",  "%s ",   "" },
           { "year",    "(%s). ", "" },
@@ -471,7 +494,8 @@ All configuration options (with defaults) ~
         for k, v in ipairs(reference_data) do
           reference_data[k] = v[1]
         end
-        return table.concat(reference_data)
+        local lines = { table.concat(reference_data) }
+        return lines
       end,
     },
     
