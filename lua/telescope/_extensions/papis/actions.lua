@@ -25,11 +25,23 @@ M.ref_insert = function(prompt_bufnr)
   local multi = get_multi(prompt_bufnr)
   actions.close(prompt_bufnr)
   local cite_format = config:get_cite_format()
-  local start_str = cite_format.start_str
-  local end_str = cite_format.end_str
+  local start_str = cite_format.start_str or ""
+  local end_str = cite_format.end_str or ""
   local ref_prefix = cite_format.ref_prefix or ""
   local separator_str = cite_format.separator_str
-  local string_to_insert = start_str or ""
+  local string_to_insert = ""
+
+  -- Get the current line and cursor position
+  local current_line = vim.api.nvim_get_current_line()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)[2] + 1
+
+  -- Check if the cursor is enclosed by start_str and end_str
+  local enclosed = current_line:sub(1, cursor_pos - 1):find(start_str, 1, true) and
+      current_line:sub(cursor_pos):find(end_str, 1, true)
+
+  if not enclosed then
+    string_to_insert = start_str
+  end
 
   if vim.tbl_isempty(multi) then
     local ref = ref_prefix .. action_state.get_selected_entry().id.ref
@@ -41,7 +53,11 @@ M.ref_insert = function(prompt_bufnr)
     end
     string_to_insert = string_to_insert .. table.concat(refs, separator_str)
   end
-  string_to_insert = string_to_insert .. (end_str or "")
+
+  if not enclosed then
+    string_to_insert = string_to_insert .. end_str
+  end
+
   vim.api.nvim_put({ string_to_insert }, "", false, true)
 end
 
