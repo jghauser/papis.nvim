@@ -7,7 +7,6 @@
 
 local NuiLine = require("nui.line")
 local NuiPopup = require("nui.popup")
-local nuiEvent = require("nui.utils.autocmd").event
 local Path = require("pathlib")
 
 local new_timer = vim.uv.new_timer
@@ -27,23 +26,6 @@ elseif os_name.version:match("Windows") then
 end
 
 local M = {}
-
----Get the cite_format for the current filetype
----@param filetype string #Filetype for which we need a cite_format
----@return string|table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
-function M.get_cite_format(filetype)
-  local config = require("papis.config")
-  local cite_formats = config.cite_formats
-  local cite_formats_fallback = config.cite_formats_fallback
-
-  if config.always_use_plain then
-    local cite_format = cite_formats.plain or "%s"
-    return cite_format
-  else
-    local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
-    return cite_format
-  end
-end
 
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string #String to be split
@@ -111,7 +93,7 @@ function M:do_open_attached_files(papis_id)
   if vim.tbl_isempty(filenames) then
     vim.notify("This item has no attached files.", vim.log.levels.WARN)
   elseif #filenames == 1 then
-    vim.notify("Opening file '" .. filenames[1] .. "' ", vim.log.levels.INFO)
+    log.info(string.format("Opening file '%s' ", filenames[1]))
     local path = lookup_tbl[filenames[1]]
     self:do_open_file_external(path)
   else
@@ -119,11 +101,23 @@ function M:do_open_attached_files(papis_id)
       prompt = "Select attachment to open:",
     }, function(choice)
       if choice then
-        vim.notify("Opening file '" .. choice .. "' ", vim.log.levels.INFO)
+        log.info(string.format("Opening file '%s' ", choice))
         local path = lookup_tbl[choice]
         self:do_open_file_external(path)
       end
     end)
+  end
+end
+
+local popup
+local file_queue = {}
+
+-- Function to be called when a popup is closed
+function M:on_popup_close()
+  -- If there are no more active popups, open the files in the queue
+  if (not popup) and (#file_queue > 0) then
+    self:do_open_text_file(unpack(file_queue[1]))
+    table.remove(file_queue, 1)
   end
 end
 
@@ -145,6 +139,8 @@ function M:do_open_text_file(papis_id, type)
     log.debug("Opening a note")
     if entry.notes then
       cmd = string.format("edit %s", entry.notes[1])
+      popup = nil
+      self:on_popup_close()
     else
       local lines_text = {
         { "This entry has no notes.", "WarningMsg" },
@@ -154,7 +150,14 @@ function M:do_open_text_file(papis_id, type)
       for _, line in pairs(lines_text) do
         width = math.max(width, #line[1])
       end
-      local popup = NuiPopup({
+
+      -- If there are active popups, add the file to the queue and return
+      if popup then
+        table.insert(file_queue, { papis_id, type })
+        return
+      end
+
+      popup = NuiPopup({
         enter = true,
         position = "50%",
         size = {
@@ -176,23 +179,19 @@ function M:do_open_text_file(papis_id, type)
         local config = require("papis.config")
         local create_new_note_fn = config.create_new_note_fn
         local notes_name = db.config:get_conf_value("notes_name")
-        local enable_modules = config.enable_modules
         create_new_note_fn(papis_id, notes_name)
-        if enable_modules["formatter"] then
-          entry = db.data:get({ papis_id = papis_id })[1]
-          local pattern = [[*]] .. notes_name:match("^.+(%..+)$")
-          log.debug("Formatter autocmd pattern: " .. vim.inspect(pattern))
-          local callback = config["formatter"].format_notes_fn
-          require("papis.formatter").create_autocmd(pattern, callback, entry)
-        end
         local entry_has_note = new_timer()
         local file_opened = false
         entry_has_note:start(
           0,
           5,
           vim.schedule_wrap(function()
-            entry = db.data:get({ papis_id = papis_id }, { "notes" })[1]
+            entry = db.data:get({ papis_id = papis_id })[1]
             if entry.notes and not file_opened then
+              local enable_modules = config.enable_modules
+              if enable_modules["formatter"] then
+                require("papis.formatter").format_entire_file(entry)
+              end
               log.debug("Opening newly created notes file")
               self:do_open_text_file(papis_id, type)
               file_opened = true
@@ -202,13 +201,12 @@ function M:do_open_text_file(papis_id, type)
           end)
         )
       end, { noremap = true, nowait = true })
+
       popup:map("n", { "N", "n", "<esc>", "q" }, function(_)
         popup:unmount()
+        popup = nil
+        self:on_popup_close()
       end, { noremap = true, nowait = true })
-
-      popup:on({ nuiEvent.BufLeave }, function()
-        popup:unmount()
-      end, { once = true })
 
       for k, line in pairs(lines_text) do
         local nuiline = NuiLine()
@@ -216,7 +214,9 @@ function M:do_open_text_file(papis_id, type)
         nuiline:render(popup.bufnr, -1, k)
       end
 
-      popup:mount()
+      vim.schedule(function()
+        popup:mount()
+      end)
     end
   elseif type == "info" then
     log.debug("Opening an info file")

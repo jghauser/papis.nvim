@@ -6,28 +6,23 @@
 --
 
 local log = require("papis.log")
+local config = require("papis.config")
 
-local create_autocmd = vim.api.nvim_create_autocmd
-local create_augroup = vim.api.nvim_create_augroup
-
-local augroup = create_augroup("papisFormatter", { clear = true })
-local autocmd = {
-  pattern = nil,
-  callback = nil,
-  group = augroup,
-  once = true,
-  desc = "Papis: format a newly created note",
-}
+local api = vim.api
 
 local M = {}
 
-function M.create_autocmd(pattern, callback, entry)
-  autocmd.pattern = pattern
-  autocmd.callback = function()
-    log.debug("Running formatter callback...")
-    callback(entry)
-  end
-  create_autocmd("BufEnter", autocmd)
+function M.format_entire_file(entry)
+  log.debug("Formatting new notes file")
+  local lines = config["formatter"].format_notes(entry)
+  local notes_path = entry.notes[1]
+  local buf = api.nvim_create_buf(false, false)
+  api.nvim_buf_set_name(buf, notes_path)
+  api.nvim_buf_set_lines(buf, 0, #lines, false, lines)
+  api.nvim_buf_call(buf, function()
+    vim.cmd('write')
+  end)
+  api.nvim_buf_delete(buf, {})
 end
 
 return M

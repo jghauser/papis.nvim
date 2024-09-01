@@ -9,11 +9,10 @@ local NuiPopup = require("nui.popup")
 local nuiAutocmd = require("nui.utils.autocmd")
 local nuiEvent = require("nui.utils.autocmd").event
 
-local fn = vim.fn
-
 local log = require("papis.log")
 local config = require("papis.config")
 local popup_format = config["at-cursor"].popup_format
+local cite_format = config:get_cite_format()
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -25,24 +24,40 @@ end
 ---Tries to identify the ref under cursor
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref
 local function get_ref_under_cursor()
-  -- get the word under the cursor
-  local ref = fn.expand("<cWORD>")
-  local filetype = vim.bo.filetype
-  log.debug("The filetype is: " .. filetype)
-  local cite_format = utils.get_cite_format(filetype)
-  if type(cite_format) == "table" then
-    cite_format = cite_format[2]
-  end
-  log.debug("The cite_format is: " .. cite_format)
-  local _, prefix_end = string.find(cite_format, "%%s")
-  prefix_end = prefix_end - 2
-  local cite_format_prefix = string.sub(cite_format, 1, prefix_end)
-  local _, ref_start = string.find(ref, cite_format_prefix)
+  local start_str = cite_format.start_str
+  local ref_prefix = cite_format.ref_prefix
+
+  -- get current line and cursor position
+  local current_line = vim.api.nvim_get_current_line()
+  local _, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+
+  -- Find the start and end of the word under the cursor
+  local line_until_cursor = current_line:sub(1, cursor_col)
+  local word_start_col = line_until_cursor:find("[^%s,;]*$") or 1
+  local line_after_cursor = current_line:sub(cursor_col)
+  local word_end_col = cursor_col + (line_after_cursor:find("[%s,;]") or #line_after_cursor) - 1
+
+  -- Extract the word
+  local ref = current_line:sub(word_start_col, word_end_col)
+
   -- if we found the cite_format prefix in the string, we need to strip it
-  if ref_start then
-    ref_start = ref_start + 1
-    ref = string.sub(ref, ref_start)
+  if start_str then
+    local escaped_start_str = start_str:gsub("%W", "%%%0")
+    local _, ref_start = string.find(ref, escaped_start_str)
+    if ref_start then
+      ref = string.sub(ref, ref_start + 1)
+    end
   end
+  -- if we found the ref_prefix in the string, we need to strip it
+  if ref_prefix then
+    local escaped_ref_prefix = ref_prefix:gsub("%W", "%%%0")
+    local _, ref_start = string.find(ref, escaped_ref_prefix)
+    if ref_start then
+      ref_start = ref_start + 1
+      ref = string.sub(ref, ref_start)
+    end
+  end
+
   -- remove all punctuation characters at the beginning and end of string
   ref = ref:gsub("^[%p]*(.-)[%p]*$", "%1")
 

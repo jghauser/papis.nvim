@@ -18,12 +18,33 @@ local default_config = {
     ["testing"] = false,
   }, -- can be set to nil or false or left out
   cite_formats = {
-    tex = { "\\cite{%s}", "\\cite[tp]?%*?{%s}" },
-    markdown = "@%s",
-    rmd = "@%s",
-    plain = "%s",
-    org = { "[cite:@%s]", "%[cite:@%s]" },
-    norg = "{= %s}",
+    tex = {
+      start_str = [[\cite{]],
+      end_str = "}",
+      separator_str = ", ",
+    },
+    markdown = {
+      ref_prefix = "@",
+      separator_str = "; "
+    },
+    rmd = {
+      ref_prefix = "@",
+      separator_str = "; "
+    },
+    plain = {
+      separator_str = ", "
+    },
+    org = {
+      start_str = "[cite:",
+      end_str = "]",
+      ref_prefix = "@",
+      separator_str = ";",
+    },
+    norg = {
+      start_str = "{= ",
+      end_str = "}",
+      separator_str = "; ",
+    },
   },
   cite_formats_fallback = "plain",
   always_use_plain = false,
@@ -64,7 +85,7 @@ local default_config = {
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
   ["formatter"] = {
-    format_notes_fn = function(entry)
+    format_notes = function(entry)
       local title_format = {
         { "author", "%s ",   "" },
         { "year",   "(%s) ", "" },
@@ -80,10 +101,9 @@ local default_config = {
         "---",
         "",
       }
-      vim.api.nvim_buf_set_lines(0, 0, #lines, false, lines)
-      vim.cmd("normal G")
+      return lines
     end,
-    format_references_fn = function(entry)
+    format_references = function(entry)
       local reference_format = {
         { "author",  "%s ",    "" },
         { "year",    "(%s). ", "" },
@@ -96,7 +116,8 @@ local default_config = {
       for k, v in ipairs(reference_data) do
         reference_data[k] = v[1]
       end
-      return table.concat(reference_data)
+      local lines = { table.concat(reference_data) }
+      return lines
     end,
   },
   ["at-cursor"] = {
@@ -144,6 +165,27 @@ local default_config = {
 }
 
 local M = vim.deepcopy(default_config)
+
+---Get the cite_format for the current filetype
+---@return table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
+function M:get_cite_format()
+  local filetype = vim.bo.filetype
+
+  local cite_formats = self.cite_formats
+  local cite_formats_fallback = self.cite_formats_fallback
+
+  local fallback = {
+    separator_str = ", "
+  }
+
+  if self.always_use_plain then
+    local cite_format = cite_formats.plain or fallback
+    return cite_format
+  else
+    local cite_format = cite_formats[filetype] or cite_formats[cite_formats_fallback]
+    return cite_format
+  end
+end
 
 ---Updates the default configuration with user supplied options and gets conf from Papis
 ---@param opts table #Same format as default_config and contains user config

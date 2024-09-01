@@ -15,19 +15,10 @@ local telescope_config = require("telescope.config").values
 local papis_actions = require("telescope._extensions.papis.actions")
 
 local utils = require("papis.utils")
+local config = require("papis.config")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
-end
-
----Gets the cite format for the filetype
----@return string #The cite format for the filetype (or fallback if undefined)
-local function parse_format_string()
-  local cite_format = utils.get_cite_format(vim.bo.filetype)
-  if type(cite_format) == "table" then
-    cite_format = cite_format[1]
-  end
-  return cite_format
 end
 
 local wrap, preview_format, initial_sort_by_time_added
@@ -39,9 +30,6 @@ local function papis_picker(opts)
 
   -- get precalculated entries for the telescope picker
   local telescope_precalc = require("papis.search").get_precalc()
-
-  -- local results = db.data:get(nil, required_db_keys)
-  local format_string = parse_format_string()
 
   -- amend the generic_sorter so that we can change initial sorting
   local generic_sorter = telescope_config.generic_sorter(opts)
@@ -86,16 +74,33 @@ local function papis_picker(opts)
           end,
         }),
         sorter = papis_sorter,
-        attach_mappings = function(_, map)
-          actions.select_default:replace(papis_actions.ref_insert(format_string))
-          map("i", "<c-o>f", papis_actions.open_file(), { desc = "Open file" })
-          map("n", "of", papis_actions.open_file(), { desc = "Open file" })
-          map("i", "<c-o>n", papis_actions.open_note(), { desc = "Open note" })
-          map("n", "on", papis_actions.open_note(), { desc = "Open note" })
-          map("i", "<c-e>", papis_actions.open_info(), { desc = "Open info.yaml file" })
-          map("n", "e", papis_actions.open_info(), { desc = "Open info.yaml file" })
-          map("n", "f", papis_actions.ref_insert_formatted(), { desc = "Insert formatted reference" })
-          map("i", "<c-f>", papis_actions.ref_insert_formatted(), { desc = "Insert formatted reference" })
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(
+            function() papis_actions.ref_insert(prompt_bufnr) end)
+          map("i", "<c-o>f",
+            function() papis_actions.open_file(prompt_bufnr) end,
+            { desc = "Open file" })
+          map("n", "of",
+            function() papis_actions.open_file(prompt_bufnr) end,
+            { desc = "Open file" })
+          map("i", "<c-o>n",
+            function() papis_actions.open_note(prompt_bufnr) end,
+            { desc = "Open note" })
+          map("n", "on",
+            function() papis_actions.open_note(prompt_bufnr) end,
+            { desc = "Open note" })
+          map("i", "<c-e>",
+            function() papis_actions.open_info(prompt_bufnr) end,
+            { desc = "Open info.yaml file" })
+          map("n", "e",
+            function() papis_actions.open_info(prompt_bufnr) end,
+            { desc = "Open info.yaml file" })
+          map("n", "f",
+            function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
+            { desc = "Insert formatted reference" })
+          map("i", "<c-f>",
+            function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
+            { desc = "Insert formatted reference" })
           -- Makes sure that the other defaults are still applied
           return true
         end,
