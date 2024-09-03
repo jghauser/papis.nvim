@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.7.0](https://github.com/jghauser/papis.nvim/compare/v0.6.1...v0.7.0) (2024-09-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* don't use autocmd to format new notes
+* enable inserting multiple refs at once
+
+### Features
+
+* enable acting on multiple selections in telescope ([091e6df](https://github.com/jghauser/papis.nvim/commit/091e6df0ae29bf8749df0e004b93665f86a23311))
+* enable inserting multiple refs at once ([16a0e56](https://github.com/jghauser/papis.nvim/commit/16a0e565c7a5d5515b794f1e9ef698e00a999a2d))
+* **health:** add check for completion ([4492155](https://github.com/jghauser/papis.nvim/commit/44921556aaa5aa774342ce14713e83949c3b712f))
+* **health:** add check for papis-storage ([82eef18](https://github.com/jghauser/papis.nvim/commit/82eef188f7babf4d64549b32d3ba93925e5c687f))
+* **search:** only insert ref_prefix + ref if inserting into existing citation ([1c513b2](https://github.com/jghauser/papis.nvim/commit/1c513b2f3420e5fa46779bb83514a307a37edf3d))
+* **utils:** handle opening multiple notes ([70dea91](https://github.com/jghauser/papis.nvim/commit/70dea91c3867069d0207d5d420bd42d9dddb7cc2))
+
+
+### Bug Fixes
+
+* **at-cursor:** bring file icon in line with search module ([71a32b1](https://github.com/jghauser/papis.nvim/commit/71a32b1aae54931781d7a5c7f981d30d8f34cda1))
+* **health:** don't force start papis ([8c6d53b](https://github.com/jghauser/papis.nvim/commit/8c6d53ba2ddb64d200a1b382a13fbc29e68ce309))
+
+
+### Code Refactoring
+
+* don't use autocmd to format new notes ([3c5bb86](https://github.com/jghauser/papis.nvim/commit/3c5bb8621d666e0813f2900fb46cc85631b8713e))
+
 ## [0.6.1](https://github.com/jghauser/papis.nvim/compare/v0.6.0...v0.6.1) (2024-07-29)
 
 
