@@ -84,6 +84,8 @@ function M.start()
   log.debug("Setting up commands")
   require("papis.commands").setup()
 
+  require("papis.new-entry.init")
+
   -- setup enabled modules
   for module_name, _ in pairs(config.enable_modules) do
     log.debug(module_name .. " is enabled")
