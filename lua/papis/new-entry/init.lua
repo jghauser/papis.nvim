@@ -33,6 +33,82 @@ local function open_floating_terminal(cmd)
   vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
 end
 
+-- Function to create floating window
+local function create_form_window()
+  local buf = vim.api.nvim_create_buf(false, true) -- Create a buffer
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = 40,
+    height = 10,
+    col = math.floor((vim.o.columns - 40) / 2),
+    row = math.floor((vim.o.lines - 10) / 2),
+    style = "minimal",
+  })
+  return buf, win
+end
+
+-- Function to populate the form in the buffer
+local function populate_form(buf)
+  local form = {
+    "Title: ",
+    "Authors: ",
+    "Year: ",
+    "Tags: ",
+  }
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, form)
+  vim.api.nvim_buf_set_option(buf, "modifiable", true)
+end
+
+-- Function to extract form data
+local function get_form_data(buf)
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local form_data = {
+    title = lines[1]:sub(8), -- Strip "Title: "
+    authors = lines[2]:sub(10), -- Strip "Authors: "
+    year = lines[3]:sub(7), -- Strip "Year: "
+    tags = lines[4]:sub(7), -- Strip "Tags: "
+  }
+  return form_data
+end
+
+-- Function to construct the papis command and execute it
+local function submit_form(data)
+  -- Construct the papis command with the user input
+  local papis_command = string.format(
+    "papis add --title '%s' --authors '%s' --year '%s' --tags '%s'",
+    data.title,
+    data.authors,
+    data.year,
+    data.tags
+  )
+
+  -- Execute the papis command
+  vim.fn.system(papis_command)
+
+  -- Print the command to confirm it's correct (for debugging)
+  print("Executed Command: ", papis_command)
+end
+
+-- Function to open the form and handle submission
+local function open_form()
+  local buf, win = create_form_window()
+  populate_form(buf)
+
+  -- Bind <Enter> to submit the form
+  vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
+    callback = function()
+      local data = get_form_data(buf)
+      submit_form(data)
+      vim.api.nvim_win_close(win, true)
+    end,
+    noremap = true,
+    silent = true,
+  })
+end
+
+-- Create command to open the form
+vim.api.nvim_create_user_command("OpenForm", open_form, {})
+
 -- Function to create a popup window for DOI input
 local function create_doi_popup()
   local buf = api.nvim_create_buf(false, true)
@@ -66,14 +142,35 @@ local function create_doi_popup()
   api.nvim_command("startinsert")
 end
 
--- Command to trigger the DOI popup
-commands:add_commands({
-  add = {
-    impl = function(_, _)
-      create_doi_popup()
-    end,
-  },
-})
+-- Function to handle manual entry via form
+local function manual_entry()
+  local buf, win = create_form_window() -- Create the floating window for the form
+  populate_form(buf) -- Populate form with fields: Title, Authors, Year, Tags
 
--- Keymap to trigger the DOI popup
+  -- Bind <Enter> to submit the form
+  vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
+    callback = function()
+      local data = get_form_data(buf) -- Extract form data (Title, Authors, Year, Tags)
+      submit_form(data) -- Construct and execute the papis command
+      vim.api.nvim_win_close(win, true) -- Close the floating window after submission
+    end,
+    noremap = true,
+    silent = true,
+  })
+end
+
+-- Command to handle Papis subcommands
+vim.api.nvim_create_user_command("Papis", function(opts)
+  local subcommand = opts.args
+  if subcommand == "add auto" then
+    create_doi_popup() -- Assuming you have this function elsewhere
+  elseif subcommand == "add manual" then
+    manual_entry() -- Calls the manual entry form
+  else
+    print("Unknown subcommand: " .. subcommand)
+  end
+end, { nargs = 1 })
+
+-- Keymap to trigger the DOI popup and manual entry
 vim.api.nvim_set_keymap("n", "<leader>paa", ":Papis add auto<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>pam", ":Papis add manual<CR>", { noremap = true, silent = true })
