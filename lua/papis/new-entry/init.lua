@@ -1,9 +1,12 @@
 local api = vim.api
 local log = require("papis.log")
 local commands = require("papis.commands")
+local keymaps = require("papis.keymaps")
+
+local M = {}
 
 local function open_floating_terminal(cmd)
-  -- Define the size and position of the floating window
+  -- Terminal to be opened for data entry
   local width = math.floor(vim.o.columns * 0.8)
   local height = math.floor(vim.o.lines * 0.8)
   local row = math.floor((vim.o.lines - height) / 2)
@@ -29,8 +32,8 @@ local function open_floating_terminal(cmd)
   vim.fn.termopen(cmd)
 
   -- Set some options for the terminal buffer
-  vim.api.nvim_buf_set_option(buf, "bufhidden", "wipe")
-  vim.api.nvim_buf_set_option(buf, "filetype", "terminal")
+  vim.api.set_option(buf, "bufhidden", "wipe")
+  vim.api.nvim_set_option_value("filetype", "terminal", { buf = buf })
 end
 
 -- Function to create floating window
@@ -56,7 +59,7 @@ local function populate_form(buf)
     "Tags: ",
   }
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, form)
-  vim.api.nvim_buf_set_option(buf, "modifiable", true)
+  vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
 end
 
 -- Function to extract form data
@@ -75,7 +78,7 @@ end
 local function submit_form(data)
   -- Construct the papis command with the user input
   local papis_command = string.format(
-    "papis add --title '%s' --authors '%s' --year '%s' --tags '%s'",
+    "papis add --set title '%s' --set author '%s' --set year '%s' --set tags '%s'",
     data.title,
     data.authors,
     data.year,
@@ -84,8 +87,9 @@ local function submit_form(data)
 
   -- Execute the papis command
   vim.fn.system(papis_command)
+  print("Entry added to Papis library.")
 
-  -- Print the command to confirm it's correct (for debugging)
+  -- Give user the executed command
   print("Executed Command: ", papis_command)
 end
 
@@ -125,7 +129,7 @@ local function create_doi_popup()
   }
 
   api.nvim_open_win(buf, true, opts)
-  api.nvim_buf_set_option(buf, "buftype", "prompt")
+  api.nvim_set_option_value("buftype", "prompt", { buf = buf })
   vim.fn.prompt_setprompt(buf, "Enter DOI: ")
   vim.fn.prompt_setcallback(buf, function(input)
     api.nvim_win_close(0, true)
@@ -142,7 +146,7 @@ local function create_doi_popup()
   api.nvim_command("startinsert")
 end
 
--- Function to handle manual entry via form
+-- Function to handle manall entry via form
 local function manual_entry()
   local buf, win = create_form_window() -- Create the floating window for the form
   populate_form(buf) -- Populate form with fields: Title, Authors, Year, Tags
@@ -159,18 +163,58 @@ local function manual_entry()
   })
 end
 
--- Command to handle Papis subcommands
-vim.api.nvim_create_user_command("Papis", function(opts)
-  local subcommand = opts.args
-  if subcommand == "add auto" then
-    create_doi_popup() -- Assuming you have this function elsewhere
-  elseif subcommand == "add manual" then
-    manual_entry() -- Calls the manual entry form
-  else
-    print("Unknown subcommand: " .. subcommand)
-  end
-end, { nargs = 1 })
+---@class PapisSubcommand
+local module_subcommands = {
+  ["add"] = {
+    impl = function(args, _)
+      if args[1] == "auto" then
+        create_doi_popup()
+      elseif args[1] == "manual" then
+        manual_entry()
+      end
+    end,
+    description = "Add a new entry to the library",
+    options = {
+      auto = {
+        description = "Add a new entry using a DOI",
+        execute = function()
+          create_doi_popup()
+        end,
+      },
+      manual = {
+        description = "Add a new entry manually",
+        execute = function()
+          manual_entry()
+        end,
+      },
+    },
+  },
+}
 
--- Keymap to trigger the DOI popup and manual entry
-vim.api.nvim_set_keymap("n", "<leader>paa", ":Papis add auto<CR>", { noremap = true, silent = true })
-vim.api.nvim_set_keymap("n", "<leader>pam", ":Papis add manual<CR>", { noremap = true, silent = true })
+---@class PapisKeymaps
+local module_keymaps = {
+  add_auto = {
+    mode = "n",
+    lhs = "<leader>paa",
+    rhs = function()
+      vim.cmd("Papis add auto")
+    end,
+    opts = { desc = "Papis: add entry using DOI" },
+  },
+  add_manual = {
+    mode = "n",
+    lhs = "<leader>pam",
+    rhs = function()
+      vim.cmd("Papis add manual")
+    end,
+    opts = { desc = "Papis: add entry manually" },
+  },
+}
+
+function M.setup()
+  log.debug("Setting up new-entry module")
+  commands:add_commands(module_subcommands)
+  keymaps:add_keymaps(module_keymaps)
+end
+
+return M
