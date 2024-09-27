@@ -14,6 +14,8 @@ local default_config = {
     ["formatter"] = true,
     ["colors"] = true,
     ["base"] = true,
+    ["new-entry"] = true,
+    ["keymaps"] = true,
     ["debug"] = false,
     ["testing"] = false,
   }, -- can be set to nil or false or left out
@@ -25,14 +27,14 @@ local default_config = {
     },
     markdown = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     rmd = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     plain = {
-      separator_str = ", "
+      separator_str = ", ",
     },
     org = {
       start_str = "[cite:",
@@ -87,9 +89,9 @@ local default_config = {
   ["formatter"] = {
     format_notes = function(entry)
       local title_format = {
-        { "author", "%s ",   "" },
-        { "year",   "(%s) ", "" },
-        { "title",  "%s",    "" },
+        { "author", "%s ", "" },
+        { "year", "(%s) ", "" },
+        { "title", "%s", "" },
       }
       local title = require("papis.utils"):format_display_strings(entry, title_format, true)
       for k, v in ipairs(title) do
@@ -105,12 +107,12 @@ local default_config = {
     end,
     format_references = function(entry)
       local reference_format = {
-        { "author",  "%s ",    "" },
-        { "year",    "(%s). ", "" },
-        { "title",   "%s. ",   "" },
-        { "journal", "%s. ",   "" },
-        { "volume",  "%s",     "" },
-        { "number",  "(%s)",   "" },
+        { "author", "%s ", "" },
+        { "year", "(%s). ", "" },
+        { "title", "%s. ", "" },
+        { "journal", "%s. ", "" },
+        { "volume", "%s", "" },
+        { "number", "(%s)", "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
       for k, v in ipairs(reference_data) do
@@ -128,7 +130,7 @@ local default_config = {
         { "files", { "󰈙 ", "F " }, "PapisResultsFiles" },
         { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
       },
-      { "year",  "%s", "PapisPopupYear" },
+      { "year", "%s", "PapisPopupYear" },
       { "title", "%s", "PapisPopupTitle" },
     },
   },
@@ -175,7 +177,7 @@ function M:get_cite_format()
   local cite_formats_fallback = self.cite_formats_fallback
 
   local fallback = {
-    separator_str = ", "
+    separator_str = ", ",
   }
 
   if self.always_use_plain then
