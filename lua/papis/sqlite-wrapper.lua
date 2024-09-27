@@ -12,7 +12,7 @@ if not has_sqlite then
   log.error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
   return nil
 end
-local sqlite_utils = require "sqlite.utils"
+local sqlite_utils = require("sqlite.utils")
 
 local Path = require("pathlib")
 local config = require("papis.config")
@@ -22,6 +22,21 @@ local papis_conf_keys = config.papis_conf_keys
 
 if not db_uri:exists() then
   db_uri:parent_assert():mkdir(Path.permission("rwxr-xr-x"), true)
+end
+
+-- Function to handle database insertion with error checking
+local function safe_insert(tbl, data)
+  local success, err = pcall(function()
+    tbl:insert(data)
+  end)
+
+  if not success then
+    if string.match(err, "UNIQUE constraint failed") then
+      vim.notify("Duplicate record detected in the database.", vim.log.levels.ERROR)
+    else
+      vim.notify("An error occurred: " .. err, vim.log.levels.ERROR)
+    end
+  end
 end
 
 ---Queries Papis to get various options.
@@ -52,8 +67,8 @@ end
 ---Table that contains all table methods (defined below)
 local tbl_methods = {
   for_each = {}, -- all tables get these methods
-  state = {},    -- the state table gets these methods
-  config = {},   -- the config table gets these methods
+  state = {}, -- the state table gets these methods
+  config = {}, -- the config table gets these methods
 }
 
 ---General sqlite get function
@@ -144,7 +159,7 @@ end
 ---@return table #The config table schema
 local function get_config_tbl_schema()
   ---@type table<string, boolean|table>
-  local tbl_schema = { id = true, }
+  local tbl_schema = { id = true }
   for _, key in ipairs(config.papis_conf_keys) do
     local sanitized_key = string.gsub(key, "-", "_")
     tbl_schema[sanitized_key] = { "text" }
