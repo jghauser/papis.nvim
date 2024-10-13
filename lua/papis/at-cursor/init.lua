@@ -35,7 +35,7 @@ local function get_ref_under_cursor()
   local line_until_cursor = current_line:sub(1, cursor_col)
   local word_start_col = line_until_cursor:find("[^%s,;]*$") or 1
   local line_after_cursor = current_line:sub(cursor_col)
-  local word_end_col = cursor_col + (line_after_cursor:find("[%s,;]") or #line_after_cursor) - 1
+  local word_end_col = cursor_col + (line_after_cursor:find("[%s,;%]]") or #line_after_cursor) - 1
 
   -- Extract the word
   local ref = current_line:sub(word_start_col, word_end_col)
