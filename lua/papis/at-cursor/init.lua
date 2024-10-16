@@ -58,8 +58,8 @@ local function get_ref_under_cursor()
     end
   end
 
-  -- remove all punctuation characters at the beginning and end of string
-  ref = ref:gsub("^[%p]*(.-)[%p]*$", "%1")
+  -- remove all punctuation characters and white space at the beginning and end of string
+  ref = ref:gsub("^[%p%s]*(.-)[%p%s]*$", "%1")
 
   return ref
 end
