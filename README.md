@@ -207,7 +207,7 @@ require("papis").setup({
   -- Enable the default keymaps (defaults to `false`)
   enable_keymaps = true,
   -- You might want to change the filetypes activating papis.nvim
-  -- init_filetypes = { "markdown", "norg", "yaml" },
+  -- init_filetypes = { "markdown", "norg", "yaml", "typst" },
   -- If you don't have an appropriate font (like Nerd Font), you
   -- may want to disable icons. This may require a `:Papis reload data`.
   -- to take effect.
@@ -269,6 +269,10 @@ cite_formats = {
     end_str = "}",
     separator_str = "; ",
   },
+  typst = {
+    ref_prefix = "@",
+    separator_str = " ",
+  },
 },
 
 -- What citation format to use when none is defined for the current filetype.
@@ -323,7 +327,7 @@ create_new_note_fn = function(papis_id, notes_name)
 end,
 
 -- Filetypes that start papis.nvim.
-init_filetypes = { "markdown", "norg", "yaml" },
+init_filetypes = { "markdown", "norg", "yaml", "typst" },
 
 -- Papis options to import into papis.nvim.
 papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
@@ -362,7 +366,7 @@ enable_icons = true,
   --      configuration (e.g. `title = Critique of Pure Reason`)).
   -- An element may also just contain `empty_line`. This is used to insert an empty line
   -- Strings that define the formatting (such as in 2. and 4. above) can optionally
-  -- be a table, defining, first, an icon, and second, a non-icon version. The 
+  -- be a table, defining, first, an icon, and second, a non-icon version. The
   -- `enable_icons` option determines what is used.
   preview_format = {
     { "author", "%s", "PapisPreviewAuthor" },

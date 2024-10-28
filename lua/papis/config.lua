@@ -45,6 +45,10 @@ local default_config = {
       end_str = "}",
       separator_str = "; ",
     },
+    typst = {
+      ref_prefix = "@",
+      separator_str = " ",
+    },
   },
   cite_formats_fallback = "plain",
   always_use_plain = false,
@@ -81,7 +85,7 @@ local default_config = {
       )
     )
   end,
-  init_filetypes = { "markdown", "norg", "yaml" },
+  init_filetypes = { "markdown", "norg", "yaml", "typst" },
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
   ["formatter"] = {
