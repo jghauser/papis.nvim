@@ -62,19 +62,18 @@ end
 ---@param path string #The path to the info file
 ---@return boolean #True if valid entry, false otherwise
 local function is_valid_entry(entry, path)
-  local is_valid = false
+  local is_valid = true
   if entry then
     for _, key in ipairs(required_keys) do
-      if entry[key] then
-        is_valid = true
-      else
+      if not entry[key] then
         vim.notify(string.format("The entry at '%s' is missing the key '%s' and will not be added.", path, key),
           vim.log.levels.WARN)
-        break
+        is_valid = false
       end
     end
   else
     vim.notify(string.format("The entry at '%s' is faulty and will not be added.", path), vim.log.levels.WARN)
+    is_valid = false
   end
   return is_valid
 end
@@ -94,7 +93,11 @@ local function read_yaml(path)
     -- only add an entry if the yaml file could be decoded without issues
     if ok then
       entry = decoded_entry
+    else
+      vim.notify(string.format("Failed to decode JSON for the file at '%s'.", path), vim.log.levels.WARN)
     end
+  else
+    vim.notify(string.format("Failed to read the file at '%s'.", path), vim.log.levels.WARN)
   end
   return entry
 end
