@@ -545,7 +545,7 @@ papis.nvim will import some configuration values from Papis and save them in
 the database. It will then prompt you to run `:Papis reload data` to import all
 of your library into the database. If you update your Papis configuration, you
 should re-import the configuration into papis.nvim with `:Papis reload config`
-and run `:Papis relad data` again.
+and run `:Papis reload data` again.
 
 
 KEYMAPS                                                        *papis-keymaps*
