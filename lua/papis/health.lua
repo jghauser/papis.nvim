@@ -90,7 +90,8 @@ reports["papis-storage"] = function()
     if is_yq_go then
       health.ok(string.format("The go version of the '%s' executable was found in path.", yq))
     else
-      health.error(string.format("The python version of the '%s' executable was not found in path.", yq))
+      health.error(string.format(
+        "The python version of the '%s' executable was found in path. However, we need the go version.", yq))
     end
   else
     health.error(string.format("The '%s' executable was not found in path.", yq))
