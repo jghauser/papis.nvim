@@ -154,7 +154,7 @@ use({
 
 ### Nix
 
-The `flake.nix` provides an overlay that can be used to install `papis.nvim`. With `home-manager`, this can be achieved with something along the following lines:
+The released version of papis.nvim can be installed with the `vimPlugins.papis-nvim` package. Alternatively, you can use the included flake to install the development version via an overlay. With `home-manager`, this can be achieved with something along the following lines:
 
 <details>
   <summary>Nix configuration</summary>
