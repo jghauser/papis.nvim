@@ -150,8 +150,7 @@ function M:reset_db()
   -- HACK because `on_delete = cascade` doesn't work
   for module_name, _ in pairs(enable_modules) do
     module_name = string.gsub(module_name, "-", "_")
-    local has_module, _ = pcall(require, "papis." .. module_name .. ".data")
-    if has_module then
+    if db[module_name] then
       db[module_name]:drop()
     end
   end
