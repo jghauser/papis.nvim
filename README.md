@@ -538,7 +538,7 @@ Papis.nvim defines and links a number of default highlight groups. In order to c
 
 ## Issues/Troubleshooting
 
-You can use `:checkhealth papis` for some basic troubleshooting. In addition, you can enable the `debug` module, which exposes the following commands and a log:
+You can use `:checkhealth papis` for some basic troubleshooting. Make sure to open a file of a type configured in `init_filetypes` before calling `checkhealth`, so that Papis.nvim is properly loaded. In addition, you can enable the `debug` module, which exposes the following commands and a log:
 
 - `:Papis debug info`: Get the path to the log file
 - `:Papis debug stop-watchers`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
