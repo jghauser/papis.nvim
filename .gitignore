@@ -1,4 +1,4 @@
-/doc
+doc/
 .devenv/
 .direnv/
 .envrc
