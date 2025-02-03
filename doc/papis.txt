@@ -588,7 +588,7 @@ ISSUES/TROUBLESHOOTING                          *papis-issues/troubleshooting*
 
 You can use `:checkhealth papis` for some basic troubleshooting. Make sure to
 open a file of a type configured in `init_filetypes` before calling
-`checkhealth`, so that Papis.nvim is properly loaded. In addition, you can
+`checkhealth`, so that papis.nvim is properly loaded. In addition, you can
 enable the `debug` module, which exposes the following commands and a log:
 
 - `:Papis debug info`: Get the path to the log file
