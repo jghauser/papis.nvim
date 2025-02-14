@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.7.1](https://github.com/jghauser/papis.nvim/compare/v0.7.0...v0.7.1) (2025-02-14)
+
+
+### Features
+
+* add typst support ([490bce4](https://github.com/jghauser/papis.nvim/commit/490bce48530b1379a4a11c10810ed0e36669040f))
+* **papis-storage:** robust handling of library import errors ([4b274a2](https://github.com/jghauser/papis.nvim/commit/4b274a2e315396202f6754cce5147e6e200a2c7c))
+
+
+### Bug Fixes
+
+* **at-cursor:** also strip white space at beginning and end of ref ([788bbab](https://github.com/jghauser/papis.nvim/commit/788bbabd60fbbea184555fe3dd550fd30ded8953))
+* **at-cursor:** refs are also terminated by `]` ([bf1ee96](https://github.com/jghauser/papis.nvim/commit/bf1ee966268fd128a9133d7d3a887744f5a16c76))
+* **data:** make reset_db more robust ([c7fd4e7](https://github.com/jghauser/papis.nvim/commit/c7fd4e7bdf01647a24d0ec60d4fa238fd142bb77))
+* **health:** correct error message about wrong yq ([657089e](https://github.com/jghauser/papis.nvim/commit/657089e007f6c99dfcf61585b9c73b6367d31faa))
+
 ## [0.7.0](https://github.com/jghauser/papis.nvim/compare/v0.6.1...v0.7.0) (2024-09-03)
 
 
