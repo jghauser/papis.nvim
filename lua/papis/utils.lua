@@ -127,8 +127,7 @@ end
 function M:do_open_text_file(papis_id, type)
   local db = require("papis.sqlite-wrapper")
   if not db then
-    log.error("Sqlite-wrapper has not been initialised properly. Aborting...")
-    return nil
+    error("Sqlite-wrapper has not been initialised properly. Aborting...")
   end
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
