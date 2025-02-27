@@ -63,8 +63,7 @@ function M.start()
   -- set up db
   local db = require("papis.sqlite-wrapper")
   if not db then
-    log.error("Requiring `sqlite-wrapper.lua` failed. Aborting...")
-    return nil
+    error("Requiring `sqlite-wrapper.lua` failed. Aborting...")
   end
   db:init()
 
@@ -76,8 +75,7 @@ function M.start()
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
   local data = require("papis.data")
   if not data then
-    log.error("Requiring `data.lua` failed. Aborting...")
-    return nil
+    error("Requiring `data.lua` failed. Aborting...")
   end
 
   -- setup commands

@@ -5,12 +5,6 @@
 --
 
 local log = require("papis.log")
-local has_telescope, telescope = pcall(require, "telescope")
-if not has_telescope then
-  log.error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
-  return nil
-end
-local entry_display = require("telescope.pickers.entry_display")
 local config = require("papis.config")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -20,8 +14,6 @@ if not db then
 end
 
 local papis_entry_display = {}
-setmetatable(papis_entry_display, { __index = entry_display })
-papis_entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
 
 local telescope_precalc = {}
 local precalc_last_updated = 0
@@ -106,6 +98,15 @@ end
 ---Sets up the papis.nvim telescope extension
 function M.setup()
   log.debug("Search: setting up module")
+  local has_telescope, telescope = pcall(require, "telescope")
+  if not has_telescope then
+    error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
+  end
+
+  local entry_display = require("telescope.pickers.entry_display")
+  setmetatable(papis_entry_display, { __index = entry_display })
+  papis_entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
+
   require("papis.search.data").init()
   telescope.setup({
     extensions = {

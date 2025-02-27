@@ -9,8 +9,7 @@ local log = require("papis.log")
 
 local has_sqlite, sqlite = pcall(require, "sqlite")
 if not has_sqlite then
-  log.error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
-  return nil
+  error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
 end
 local sqlite_utils = require "sqlite.utils"
 
