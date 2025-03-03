@@ -25,7 +25,7 @@ end
 local function get_ref_under_cursor()
   local cite_format = config:get_cite_format()
   local start_str = cite_format.start_str
-  local start_str_alt = cite_format.start_str_alt or {}
+  local start_pattern = cite_format.start_pattern
   local ref_prefix = cite_format.ref_prefix
 
   -- get current line and cursor position
@@ -41,17 +41,18 @@ local function get_ref_under_cursor()
   -- Extract the word
   local ref = current_line:sub(word_start_col, word_end_col)
 
-  -- Create a combined list of start strings to check, with start_str first
-  local all_start_strings = { start_str }
-  vim.list_extend(all_start_strings, start_str_alt)
-
-  -- Check all start strings and strip if found
-  for _, str in ipairs(all_start_strings) do
-    local escaped_str = str:gsub("%W", "%%%0")
-    local _, ref_start = string.find(ref, escaped_str)
+  -- First check if a start pattern is defined and try to use it
+  if start_pattern then
+    local _, pattern_end = ref:find(start_pattern)
+    if pattern_end then
+      ref = ref:sub(pattern_end + 1)
+    end
+  elseif start_str then
+    -- If no pattern, use start_str
+    local escaped_start_str = start_str:gsub("%W", "%%%0")
+    local _, ref_start = string.find(ref, escaped_start_str)
     if ref_start then
       ref = string.sub(ref, ref_start + 1)
-      break -- Exit the loop once we've found a match
     end
   end
 
