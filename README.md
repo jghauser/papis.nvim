@@ -236,7 +236,7 @@ enable_modules = {
 -- Defines citation formats for various filetypes. They define how citation strings
 -- are parsed and formatted when inserted. For each filetype, we may define:
 -- - `start_str`: Precedes the citation.
--- - `start_str_alt`: Alternatives of start string. Used only for parsing.
+-- - `start_pattern`: Alternative lua pattern for more complex parsing.
 -- - `end_str`: Appended after the citation.
 -- - `ref_prefix`: Precedes each `ref` in a citation.
 -- - `separator_str`: Gets added between `ref`s if there are multiple in a citation.
@@ -245,7 +245,7 @@ enable_modules = {
 cite_formats = {
   tex = {
     start_str = [[\cite{]],
-    start_str_alt = { [[\citep{]], [[\citet{]] },
+    start_pattern = [[\cite[pt]?%[?[^%{]*]],
     end_str = "}",
     separator_str = ", ",
   },
