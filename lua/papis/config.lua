@@ -20,6 +20,7 @@ local default_config = {
   cite_formats = {
     tex = {
       start_str = [[\cite{]],
+      start_str_alt = { [[\citep{]], [[\citet{]] },
       end_str = "}",
       separator_str = ", ",
     },

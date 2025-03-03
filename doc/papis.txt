@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.8.0           Last change: 2025 February 27
+*papis.txt*             For NVIM v0.8.0             Last change: 2025 March 03
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -274,15 +274,17 @@ All configuration options (with defaults) ~
     
     -- Defines citation formats for various filetypes. They define how citation strings
     -- are parsed and formatted when inserted. For each filetype, we may define:
-    -- - `start_str`: precedes the citation
-    -- - `end_str`: appended after the citation
-    -- - `ref_prefix`: precedes each `ref` in a citation
-    -- - `separator_str`: gets added between `ref`s if there are multiple in a citation
+    -- - `start_str`: Precedes the citation.
+    -- - `start_str_alt`: Alternatives of start string. Used only for parsing.
+    -- - `end_str`: Appended after the citation.
+    -- - `ref_prefix`: Precedes each `ref` in a citation.
+    -- - `separator_str`: Gets added between `ref`s if there are multiple in a citation.
     -- For example, for the `org` filetype if we insert a citation with `Ref1` and `Ref2`,
     -- we end up with `[cite:@Ref1;@Ref2]`.
     cite_formats = {
       tex = {
         start_str = [[\cite{]],
+        start_str_alt = { [[\citep{]], [[\citet{]] },
         end_str = "}",
         separator_str = ", ",
       },

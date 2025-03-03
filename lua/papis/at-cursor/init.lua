@@ -12,7 +12,6 @@ local nuiEvent = require("nui.utils.autocmd").event
 local log = require("papis.log")
 local config = require("papis.config")
 local popup_format = config["at-cursor"].popup_format
-local cite_format = config:get_cite_format()
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -24,7 +23,9 @@ end
 ---Tries to identify the ref under cursor
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref
 local function get_ref_under_cursor()
+  local cite_format = config:get_cite_format()
   local start_str = cite_format.start_str
+  local start_str_alt = cite_format.start_str_alt or {}
   local ref_prefix = cite_format.ref_prefix
 
   -- get current line and cursor position
@@ -40,14 +41,20 @@ local function get_ref_under_cursor()
   -- Extract the word
   local ref = current_line:sub(word_start_col, word_end_col)
 
-  -- if we found the cite_format prefix in the string, we need to strip it
-  if start_str then
-    local escaped_start_str = start_str:gsub("%W", "%%%0")
-    local _, ref_start = string.find(ref, escaped_start_str)
+  -- Create a combined list of start strings to check, with start_str first
+  local all_start_strings = { start_str }
+  vim.list_extend(all_start_strings, start_str_alt)
+
+  -- Check all start strings and strip if found
+  for _, str in ipairs(all_start_strings) do
+    local escaped_str = str:gsub("%W", "%%%0")
+    local _, ref_start = string.find(ref, escaped_str)
     if ref_start then
       ref = string.sub(ref, ref_start + 1)
+      break -- Exit the loop once we've found a match
     end
   end
+
   -- if we found the ref_prefix in the string, we need to strip it
   if ref_prefix then
     local escaped_ref_prefix = ref_prefix:gsub("%W", "%%%0")
