@@ -77,16 +77,16 @@ local function papis_picker(opts)
         attach_mappings = function(prompt_bufnr, map)
           actions.select_default:replace(
             function() papis_actions.ref_insert(prompt_bufnr) end)
-          map("i", "<c-o>f",
+          map("i", "<c-f>",
             function() papis_actions.open_file(prompt_bufnr) end,
             { desc = "Open file" })
-          map("n", "of",
+          map("n", "f",
             function() papis_actions.open_file(prompt_bufnr) end,
             { desc = "Open file" })
-          map("i", "<c-o>n",
+          map("i", "<c-n>",
             function() papis_actions.open_note(prompt_bufnr) end,
             { desc = "Open note" })
-          map("n", "on",
+          map("n", "n",
             function() papis_actions.open_note(prompt_bufnr) end,
             { desc = "Open note" })
           map("i", "<c-e>",
@@ -95,10 +95,10 @@ local function papis_picker(opts)
           map("n", "e",
             function() papis_actions.open_info(prompt_bufnr) end,
             { desc = "Open info.yaml file" })
-          map("n", "f",
+          map("n", "r",
             function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
             { desc = "Insert formatted reference" })
-          map("i", "<c-f>",
+          map("i", "<c-r>",
             function() papis_actions.ref_insert_formatted(prompt_bufnr) end,
             { desc = "Insert formatted reference" })
           -- Makes sure that the other defaults are still applied

@@ -156,7 +156,7 @@ local module_subcommands = {
 local module_keymaps = {
   open_file = {
     mode = "n",
-    lhs = "<leader>pof",
+    lhs = "<leader>pf",
     rhs = function()
       vim.cmd("Papis at-cursor open-file")
     end,
@@ -172,7 +172,7 @@ local module_keymaps = {
   },
   open_note = {
     mode = "n",
-    lhs = "<leader>pon",
+    lhs = "<leader>pn",
     rhs = function()
       vim.cmd("Papis at-cursor open-note")
     end,
