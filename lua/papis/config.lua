@@ -26,14 +26,14 @@ local default_config = {
     },
     markdown = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     rmd = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     plain = {
-      separator_str = ", "
+      separator_str = ", ",
     },
     org = {
       start_str = "[cite:",
@@ -138,6 +138,7 @@ local default_config = {
     },
   },
   ["search"] = {
+    provider = "telescope", ---@type "snacks" | "telescope"
     wrap = true,
     initial_sort_by_time_added = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
@@ -180,7 +181,7 @@ function M:get_cite_format()
   local cite_formats_fallback = self.cite_formats_fallback
 
   local fallback = {
-    separator_str = ", "
+    separator_str = ", ",
   }
 
   if self.always_use_plain then

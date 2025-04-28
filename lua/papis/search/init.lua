@@ -52,7 +52,7 @@ local module_subcommands = {
     impl = function(_, _)
       vim.cmd("Telescope papis")
     end,
-  }
+  },
 }
 
 ---@class PapisKeymaps
@@ -98,24 +98,54 @@ end
 ---Sets up the papis.nvim telescope extension
 function M.setup()
   log.debug("Search: setting up module")
-  local has_telescope, telescope = pcall(require, "telescope")
-  if not has_telescope then
-    error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
-  end
-
-  local entry_display = require("telescope.pickers.entry_display")
-  setmetatable(papis_entry_display, { __index = entry_display })
-  papis_entry_display.truncate = function(a) return a end -- HACK: there must better way to turn this off
-
   require("papis.search.data").init()
-  telescope.setup({
-    extensions = {
-      papis = config["search"],
-    },
-  })
-  telescope.load_extension("papis")
-  commands:add_commands(module_subcommands)
-  keymaps:add_keymaps(module_keymaps)
+  if config["search"].provider == "telescope" then
+    local has_telescope, telescope = pcall(require, "telescope")
+    if not has_telescope then
+      error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
+    end
+
+    local entry_display = require("telescope.pickers.entry_display")
+    setmetatable(papis_entry_display, { __index = entry_display })
+    papis_entry_display.truncate = function(a)
+      return a
+    end -- HACK: there must better way to turn this off
+
+    telescope.setup({
+      extensions = {
+        papis = config["search"],
+      },
+    })
+    telescope.load_extension("papis")
+    commands:add_commands(module_subcommands)
+    keymaps:add_keymaps(module_keymaps)
+  elseif config["search"].provider == "snacks" then
+    local has_snacks, _ = pcall(require, "snacks")
+    if not has_snacks then
+      error("The plugin snacks.nvim wasn't found but the search module is enabled and requires it.")
+    end
+
+    keymaps:add_keymaps({
+      open_search_normal = {
+        mode = "n",
+        lhs = "<leader>pp",
+        rhs = function()
+          require("papis.search.snacks").picker()
+        end,
+        opts = { desc = "Papis: search library" },
+      },
+      open_search_insert = {
+        mode = "i",
+        lhs = "<c-o>p",
+        rhs = function()
+          require("papis.search.snacks").picker()
+        end,
+        opts = { desc = "Papis: search library" },
+      },
+    })
+  else
+    error("The search module is enabled but no valid provider was specified.")
+  end
 end
 
 return M
