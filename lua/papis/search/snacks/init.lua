@@ -5,7 +5,7 @@
 
 ---@module 'snacks'
 
-local config_search = require("papis.config")["search"]
+local config = require("papis.config")
 local utils = require("papis.utils")
 local db = require("papis.sqlite-wrapper")
 local actions = require("papis.search.snacks.actions")
@@ -26,14 +26,14 @@ end
 ---@param item snacks.picker.Item
 function M.format(item, _)
   local entry = item.entry
-  local fstr = utils:format_display_strings(entry, config_search.results_format)
+  local fstr = utils:format_display_strings(entry, config["search"].results_format)
   return fstr
 end
 
 ---@type snacks.picker.preview
 function M.preview(ctx)
   local entry = ctx.item.entry
-  local preview_lines = utils:make_nui_lines(config_search.preview_format, entry)
+  local preview_lines = utils:make_nui_lines(config["search"].preview_format, entry)
 
   vim.bo[ctx.buf].modifiable = true
   for line_nr, line in ipairs(preview_lines) do
@@ -50,13 +50,7 @@ M.opts = {
   preview = M.preview,
   win = {
     input = {
-      keys = {
-        ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
-        ["<C-R>"] = { "ref_insert_formatted", mode = { "n", "i" }, desc = "(Papis) Insert formatted ref" },
-        ["<C-F>"] = { "open_file", mode = { "n", "i" }, desc = "(Papis) Open file" },
-        ["<C-N>"] = { "open_note", mode = { "n", "i" }, desc = "(Papis) Open note" },
-        ["<C-E>"] = { "open_info", mode = { "n", "i" }, desc = "(Papis) Open info.yaml file" },
-      },
+      keys = config["search"].snacks_picker_keymaps,
     },
   },
   actions = actions,

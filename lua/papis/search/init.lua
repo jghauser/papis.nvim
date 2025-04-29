@@ -95,7 +95,7 @@ function M.get_precalc()
   return telescope_precalc
 end
 
----Sets up the papis.nvim telescope extension
+---Sets up the papis.nvim picker
 function M.setup()
   log.debug("Search: setting up module")
   require("papis.search.data").init()

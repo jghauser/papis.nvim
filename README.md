@@ -35,9 +35,11 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 Papis.nvim integrates with telescope to easily and quickly search one's bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
 Commands:
-- `:Papis search`: Opens the papis.nvim telescope picker
+
+- `:Papis search`: Opens the papis.nvim telescope or snacks picker
 
 With the picker open, the following (currently hardcoded) keymaps become available:
+
 - `f` (normal) / `<c-f>` (insert): Opens files attached to the entry
 - `n` (normal) / `<c-n>` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
 - `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
@@ -56,6 +58,7 @@ When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
 
 Commands:
+
 - `:Papis at-cursor show-popup`: Opens a floating window with information about the entry
 - `:Papis at-cursor open-file`: Opens files attached to the entry
 - `:Papis at-cursor open-note`: Opens notes attached to the entry (asks for the creation of a new one if none exists)
@@ -78,10 +81,12 @@ Note that fiddling with the plugin's options can leave the database in a messy s
 Note that papis.nvim is only tested with the latest stable version of Neovim. It should work across various OSs, but most development has been done on Linux (do feel free to open issues if you run into trouble on non-Linux systems). An installation of Papis is required.
 
 To run, papis.nvim requires:
+
 - [`yq`](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 - `sqlite`. Needed by the `sqlite.lua` dependency.
 
 Optionally, you'll need:
+
 - [Nerd Fonts](https://github.com/ryanoasis/nerd-fonts) for increased prettiness.
 
 ### Neovim package managers
@@ -112,8 +117,11 @@ Additionally, may want to install `telescope` (for search) and `cmp` (for comple
     "pysan3/pathlib.nvim",
     "nvim-neotest/nvim-nio",
     -- if not already installed, you may also want:
-    -- "nvim-telescope/telescope.nvim",
     -- "hrsh7th/nvim-cmp",
+
+    -- choose one of the following two if not already installed:
+    -- "nvim-telescope/telescope.nvim",
+    -- "folke/snacks.nvim",
 
   },
   config = function()
@@ -340,6 +348,22 @@ enable_icons = true,
 -- Configuration of the search module.
 ["search"] = {
 
+  -- Picker provider. Currently support `telescope` and `snacks`
+  provider = "telescope",
+
+  -- Snacks picker keymaps if using `provider = "snacks"`
+  snacks_picker_keymaps = {
+    ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
+    ["r"] = { "ref_insert_formatted", mode = "n", desc = "(Papis) Insert formatted ref" },
+    ["<c-r>"] = { "ref_insert_formatted", mode = "i", desc = "(Papis) Insert formatted ref" },
+    ["f"] = { "open_file", mode = "n", desc = "(Papis) Open file" },
+    ["<c-f>"] = { "open_file", mode = "i", desc = "(Papis) Open file" },
+    ["n"] = { "open_note", mode = "n", desc = "(Papis) Open note" },
+    ["<c-n>"] = { "open_note", mode = "i", desc = "(Papis) Open note" },
+    ["e"] = { "open_info", mode = "n", desc = "(Papis) Open info.yaml file" },
+    ["<c-e>"] = { "open_info", mode = "i", desc = "(Papis) Open info.yaml file" },
+  },
+
   -- Whether to enable line wrap in the telescope previewer.
   wrap = true,
 
@@ -507,7 +531,7 @@ Papis.nvim will start automatically according to the filetypes defined in `init_
 
 ## Keymaps
 
-By default, papis.nvim doesn't set any keymaps (except in Telescope). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
+By default, papis.nvim doesn't set any keymaps (except in Telescope or Snacks picker). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
 
 - `<leader>pp` (normal) / `<c-o>p` (insert): Open the telescope picker
 - `<leader>pf` (normal): Open file under cursor

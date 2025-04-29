@@ -92,9 +92,9 @@ local default_config = {
   ["formatter"] = {
     format_notes = function(entry)
       local title_format = {
-        { "author", "%s ",   "" },
-        { "year",   "(%s) ", "" },
-        { "title",  "%s",    "" },
+        { "author", "%s ", "" },
+        { "year", "(%s) ", "" },
+        { "title", "%s", "" },
       }
       local title = require("papis.utils"):format_display_strings(entry, title_format, true)
       for k, v in ipairs(title) do
@@ -110,12 +110,12 @@ local default_config = {
     end,
     format_references = function(entry)
       local reference_format = {
-        { "author",  "%s ",    "" },
-        { "year",    "(%s). ", "" },
-        { "title",   "%s. ",   "" },
-        { "journal", "%s. ",   "" },
-        { "volume",  "%s",     "" },
-        { "number",  "(%s)",   "" },
+        { "author", "%s ", "" },
+        { "year", "(%s). ", "" },
+        { "title", "%s. ", "" },
+        { "journal", "%s. ", "" },
+        { "volume", "%s", "" },
+        { "number", "(%s)", "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
       for k, v in ipairs(reference_data) do
@@ -133,12 +133,23 @@ local default_config = {
         { "files", { "󰈙 ", "F " }, "PapisResultsFiles" },
         { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
       },
-      { "year",  "%s", "PapisPopupYear" },
+      { "year", "%s", "PapisPopupYear" },
       { "title", "%s", "PapisPopupTitle" },
     },
   },
   ["search"] = {
     provider = "telescope", ---@type "snacks" | "telescope"
+    snacks_picker_keymaps = {
+      ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
+      ["r"] = { "ref_insert_formatted", mode = "n", desc = "(Papis) Insert formatted ref" },
+      ["<c-r>"] = { "ref_insert_formatted", mode = "i", desc = "(Papis) Insert formatted ref" },
+      ["f"] = { "open_file", mode = "n", desc = "(Papis) Open file" },
+      ["<c-f>"] = { "open_file", mode = "i", desc = "(Papis) Open file" },
+      ["n"] = { "open_note", mode = "n", desc = "(Papis) Open note" },
+      ["<c-n>"] = { "open_note", mode = "i", desc = "(Papis) Open note" },
+      ["e"] = { "open_info", mode = "n", desc = "(Papis) Open info.yaml file" },
+      ["<c-e>"] = { "open_info", mode = "i", desc = "(Papis) Open info.yaml file" },
+    },
     wrap = true,
     initial_sort_by_time_added = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
