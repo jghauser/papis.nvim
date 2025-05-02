@@ -57,7 +57,7 @@ M.opts = {
 }
 
 function M.picker()
-  return Snacks.picker("Papis", M.opts)
+  return Snacks.picker("Papis References", M.opts)
 end
 
 return M

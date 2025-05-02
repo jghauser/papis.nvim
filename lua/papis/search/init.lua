@@ -50,7 +50,11 @@ end
 local module_subcommands = {
   search = {
     impl = function(_, _)
-      vim.cmd("Telescope papis")
+      if config["search"].provider == "telescope" then
+        vim.cmd("Telescope papis")
+      elseif config["search"].provider == "snacks" then
+        require("papis.search.snacks").picker()
+      end
     end,
   },
 }
@@ -125,24 +129,8 @@ function M.setup()
       error("The plugin snacks.nvim wasn't found but the search module is enabled and requires it.")
     end
 
-    keymaps:add_keymaps({
-      open_search_normal = {
-        mode = "n",
-        lhs = "<leader>pp",
-        rhs = function()
-          require("papis.search.snacks").picker()
-        end,
-        opts = { desc = "Papis: search library" },
-      },
-      open_search_insert = {
-        mode = "i",
-        lhs = "<c-o>p",
-        rhs = function()
-          require("papis.search.snacks").picker()
-        end,
-        opts = { desc = "Papis: search library" },
-      },
-    })
+    commands:add_commands(module_subcommands)
+    keymaps:add_keymaps(module_keymaps)
   else
     error("The search module is enabled but no valid provider was specified.")
   end
