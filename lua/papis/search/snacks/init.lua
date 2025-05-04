@@ -44,7 +44,7 @@ end
 
 ---@type snacks.picker.Config
 M.opts = {
-  source = "test",
+  source = "papis",
   finder = M.find,
   format = M.format,
   preview = M.preview,
