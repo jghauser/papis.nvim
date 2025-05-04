@@ -13,20 +13,29 @@ local actions = require("papis.search.snacks.actions")
 local M = {}
 
 function M.find()
-  local precalc = db.data:get()
-  return vim.tbl_map(function(entry)
-    local entry_pre_calc = db.search:get(entry.id)[1]
+  local data = db.data:get()
+  local entries = vim.tbl_map(function(entry)
+    local entry_precalc = db.search:get(entry.id)[1]
     return {
       entry = entry,
-      text = entry_pre_calc.search_string
+      text = entry_precalc.search_string,
+      timestamp = entry_precalc.timestamp,
     }
-  end, precalc)
+  end, data)
+
+  -- Sort by time added if config option is enabled
+  if config["search"].initial_sort_by_time_added then
+    table.sort(entries, function(a, b)
+      return a.timestamp > b.timestamp
+    end)
+  end
+
+  return entries
 end
 
 ---@param item snacks.picker.Item
 function M.format(item, _)
-  local entry_pre_calc = db.search:get(item.entry.id)[1]
-  local fstr = entry_pre_calc.displayer_tbl
+  local fstr = db.search:get(item.entry.id)[1].displayer_tbl
   return fstr
 end
 
