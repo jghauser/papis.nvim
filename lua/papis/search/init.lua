@@ -55,7 +55,7 @@ function M.setup()
   if config["search"].provider == "telescope" then
     local has_telescope, telescope = pcall(require, "telescope")
     if not has_telescope then
-      error("The plugin telescope.nvim wasn't found but the search module is enabled and requires it.")
+      error("The plugin telescope.nvim wasn't found but the search module is enabled and configured to use it.")
     end
 
     commands:add_commands(module_subcommands)
@@ -63,7 +63,7 @@ function M.setup()
   elseif config["search"].provider == "snacks" then
     local has_snacks, _ = pcall(require, "snacks")
     if not has_snacks then
-      error("The plugin snacks.nvim wasn't found but the search module is enabled and requires it.")
+      error("The plugin snacks.nvim wasn't found but the search module is enabled and configured to use it.")
     end
 
     commands:add_commands(module_subcommands)
