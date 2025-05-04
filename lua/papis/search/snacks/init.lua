@@ -13,20 +13,20 @@ local actions = require("papis.search.snacks.actions")
 local M = {}
 
 function M.find()
-  -- local precalc = require("papis.search").get_precalc()
   local precalc = db.data:get()
   return vim.tbl_map(function(entry)
+    local entry_pre_calc = db.search:get(entry.id)[1]
     return {
       entry = entry,
-      text = entry.author .. " " .. entry.year .. " " .. entry.title,
+      text = entry_pre_calc.search_string
     }
   end, precalc)
 end
 
 ---@param item snacks.picker.Item
 function M.format(item, _)
-  local entry = item.entry
-  local fstr = utils:format_display_strings(entry, config["search"].results_format)
+  local entry_pre_calc = db.search:get(item.entry.id)[1]
+  local fstr = entry_pre_calc.displayer_tbl
   return fstr
 end
 
