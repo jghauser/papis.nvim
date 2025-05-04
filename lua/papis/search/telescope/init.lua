@@ -6,15 +6,15 @@
 --
 -- Adapted from: https://github.com/nvim-telescope/telescope-bibtex.nvim
 
-local telescope = require("telescope")
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local actions = require("telescope.actions")
 local previewers = require("telescope.previewers")
 local telescope_config = require("telescope.config").values
--- local papis_actions = require("telescope._extensions.papis.actions")
-local papis_actions = require("papis.search.telescope.actions")
 
+local papis_actions = require("papis.search.telescope.actions")
+local config = require("papis.config")
+local log = require("papis.log")
 local utils = require("papis.utils")
 local db = require("papis.sqlite-wrapper")
 if not db then
@@ -23,13 +23,71 @@ end
 
 local wrap, preview_format, initial_sort_by_time_added
 
+-- Telescope is quite slow, so we precalculate the relevant values
+local telescope_precalc = {}
+local precalc_last_updated = 0
+
+local papis_entry_display = {}
+local entry_display = require("telescope.pickers.entry_display")
+setmetatable(papis_entry_display, { __index = entry_display })
+papis_entry_display.truncate = function(a)
+  return a
+end -- HACK: there must better way to turn this off
+
+
+---Create a telescope entry for a given db entry
+---@param entry table #A entry in the library db
+---@return table #A telescope entry
+local entry_maker = function(entry)
+  local entry_pre_calc = db.search:get(entry.id)[1]
+  local timestamp = entry_pre_calc.timestamp
+  local items = entry_pre_calc.items
+
+  local displayer_tbl = entry_pre_calc.displayer_tbl
+  local displayer = papis_entry_display.create({
+    separator = "",
+    items = items,
+  })
+
+  local make_display = function()
+    return displayer(displayer_tbl)
+  end
+
+  local search_string = entry_pre_calc.search_string
+  return {
+    value = search_string,
+    ordinal = search_string,
+    display = make_display,
+    timestamp = timestamp,
+    id = entry,
+  }
+end
+
+---Get precalcuated telescope entries (or create them if they don't yet exist)
+---@return table #Table with precalculated telescope entries for all db entries
+local function get_precalc()
+  local db_last_modified = db.state:get_value({ id = 1 }, "db_last_modified")
+  if precalc_last_updated < db_last_modified then
+    log.debug("Updating precalc")
+    precalc_last_updated = db_last_modified
+    telescope_precalc = {}
+    local entries = db.data:get()
+    for _, entry in ipairs(entries) do
+      -- TODO: only update if mtime for entry indicates a recent change
+      local id = entry.id
+      telescope_precalc[id] = entry_maker(entry)
+    end
+  end
+  return telescope_precalc
+end
+
 ---Defines the papis.nvim telescope picker
 ---@param opts table #Options for the papis picker
 local function papis_picker(opts)
   opts = opts or {}
 
   -- get precalculated entries for the telescope picker
-  local telescope_precalc = require("papis.search").get_precalc()
+  telescope_precalc = get_precalc()
 
   -- amend the generic_sorter so that we can change initial sorting
   local generic_sorter = telescope_config.generic_sorter(opts)
@@ -54,62 +112,62 @@ local function papis_picker(opts)
   end
 
   pickers
-    .new(opts, {
-      prompt_title = "Papis References",
-      finder = finders.new_table({
-        results = telescope_precalc,
-        entry_maker = function(entry)
-          return entry
-        end,
-      }),
-      previewer = previewers.new_buffer_previewer({
-        define_preview = function(self, entry, status)
-          local preview_lines = utils:make_nui_lines(preview_format, entry.id)
+      .new(opts, {
+        prompt_title = "Papis References",
+        finder = finders.new_table({
+          results = telescope_precalc,
+          entry_maker = function(entry)
+            return entry
+          end,
+        }),
+        previewer = previewers.new_buffer_previewer({
+          define_preview = function(self, entry, status)
+            local preview_lines = utils:make_nui_lines(preview_format, entry.id)
 
-          for line_nr, line in ipairs(preview_lines) do
-            line:render(self.state.bufnr, -1, line_nr)
-          end
+            for line_nr, line in ipairs(preview_lines) do
+              line:render(self.state.bufnr, -1, line_nr)
+            end
 
-          vim.api.nvim_set_option_value("wrap", wrap, { win = status.preview_win })
+            vim.api.nvim_set_option_value("wrap", wrap, { win = status.preview_win })
+          end,
+        }),
+        sorter = papis_sorter,
+        attach_mappings = function(prompt_bufnr, map)
+          actions.select_default:replace(function()
+            papis_actions.ref_insert(prompt_bufnr)
+          end)
+          map("i", "<c-f>", function()
+            papis_actions.open_file(prompt_bufnr)
+          end, { desc = "Open file" })
+          map("n", "f", function()
+            papis_actions.open_file(prompt_bufnr)
+          end, { desc = "Open file" })
+          map("i", "<c-n>", function()
+            papis_actions.open_note(prompt_bufnr)
+          end, { desc = "Open note" })
+          map("n", "n", function()
+            papis_actions.open_note(prompt_bufnr)
+          end, { desc = "Open note" })
+          map("i", "<c-e>", function()
+            papis_actions.open_info(prompt_bufnr)
+          end, { desc = "Open info.yaml file" })
+          map("n", "e", function()
+            papis_actions.open_info(prompt_bufnr)
+          end, { desc = "Open info.yaml file" })
+          map("n", "r", function()
+            papis_actions.ref_insert_formatted(prompt_bufnr)
+          end, { desc = "Insert formatted reference" })
+          map("i", "<c-r>", function()
+            papis_actions.ref_insert_formatted(prompt_bufnr)
+          end, { desc = "Insert formatted reference" })
+          -- Makes sure that the other defaults are still applied
+          return true
         end,
-      }),
-      sorter = papis_sorter,
-      attach_mappings = function(prompt_bufnr, map)
-        actions.select_default:replace(function()
-          papis_actions.ref_insert(prompt_bufnr)
-        end)
-        map("i", "<c-f>", function()
-          papis_actions.open_file(prompt_bufnr)
-        end, { desc = "Open file" })
-        map("n", "f", function()
-          papis_actions.open_file(prompt_bufnr)
-        end, { desc = "Open file" })
-        map("i", "<c-n>", function()
-          papis_actions.open_note(prompt_bufnr)
-        end, { desc = "Open note" })
-        map("n", "n", function()
-          papis_actions.open_note(prompt_bufnr)
-        end, { desc = "Open note" })
-        map("i", "<c-e>", function()
-          papis_actions.open_info(prompt_bufnr)
-        end, { desc = "Open info.yaml file" })
-        map("n", "e", function()
-          papis_actions.open_info(prompt_bufnr)
-        end, { desc = "Open info.yaml file" })
-        map("n", "r", function()
-          papis_actions.ref_insert_formatted(prompt_bufnr)
-        end, { desc = "Insert formatted reference" })
-        map("i", "<c-r>", function()
-          papis_actions.ref_insert_formatted(prompt_bufnr)
-        end, { desc = "Insert formatted reference" })
-        -- Makes sure that the other defaults are still applied
-        return true
-      end,
-    })
-    :find()
+      })
+      :find()
 end
 
-return telescope.register_extension({
+local M = {
   setup = function(opts)
     wrap = opts.wrap
     initial_sort_by_time_added = opts.initial_sort_by_time_added
@@ -118,4 +176,9 @@ return telescope.register_extension({
   exports = {
     papis = papis_picker,
   },
-})
+}
+
+M.setup(config["search"])
+
+-- Return the extension definition instead of directly registering it
+return M
