@@ -14,7 +14,7 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 
 ![Papis search](https://github.com/jghauser/papis.nvim/assets/10319377/dd7bad33-762c-41dd-9eca-9538d6117ac1)
 
-- Search your bibliography with [telescope](https://github.com/nvim-telescope/telescope.nvim)
+- Search your bibliography
 - Place your cursor over a citation key and get information about the entry
 - Automatically format new notes
 - Tag completion in `info.yaml` files
@@ -32,11 +32,11 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 ![search (trimmed)](https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif)
 
-Papis.nvim integrates with telescope to easily and quickly search one's bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
+Papis.nvim integrates with telescope and snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
 Commands:
 
-- `:Papis search`: Opens the papis.nvim telescope or snacks picker
+- `:Papis search`: Opens the papis.nvim picker
 
 With the picker open, the following (currently hardcoded) keymaps become available:
 
@@ -101,7 +101,7 @@ In addition to the below snippets, you might also need to install:
 :Rocks install papis.nvim
 ```
 
-Additionally, may want to install `telescope` (for search) and `cmp` (for completion).
+Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search) and `nvim-cmp` (for completion).
 
 </details>
 
@@ -119,7 +119,7 @@ Additionally, may want to install `telescope` (for search) and `cmp` (for comple
     -- if not already installed, you may also want:
     -- "hrsh7th/nvim-cmp",
 
-    -- choose one of the following two if not already installed:
+    -- Choose one of the following two if not already installed:
     -- "nvim-telescope/telescope.nvim",
     -- "folke/snacks.nvim",
 
@@ -140,15 +140,18 @@ Additionally, may want to install `telescope` (for search) and `cmp` (for comple
 ```lua
 use({
   "jghauser/papis.nvim",
-  after = { "telescope.nvim", "nvim-cmp" },
+  after = { "telescope.nvim", "nvim-cmp" }, -- Amend if you're using snacks.nvim
   requires = {
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
     "pysan3/pathlib.nvim",
     "nvim-neotest/nvim-nio",
     -- if not already installed, you may also want:
-    -- "nvim-telescope/telescope.nvim",
     -- "hrsh7th/nvim-cmp",
+
+    -- Choose one of the following two if not already installed:
+    -- "nvim-telescope/telescope.nvim",
+    -- "folke/snacks.nvim",
   },
   config = function()
     require("papis").setup(
@@ -190,8 +193,11 @@ The released version of papis.nvim can be installed with the `vimPlugins.papis-n
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
                 # if not already installed, you may also want:
-                # telescope-nvim
                 # nvim-cmp",
+
+                # choose one of the following:
+                # telescope-nvim,
+                # snacks-nvim,
               ]
             };
           };
@@ -348,7 +354,7 @@ enable_icons = true,
 -- Configuration of the search module.
 ["search"] = {
 
-  -- Picker provider. Currently support `telescope` and `snacks`
+  -- Picker provider. Currently supports `telescope` and `snacks`
   provider = "telescope",
 
   -- Picker keymaps
@@ -364,7 +370,7 @@ enable_icons = true,
     ["<c-e>"] = { "open_info", mode = "i", desc = "(Papis) Open info.yaml file" },
   },
 
-  -- Whether to enable line wrap in the telescope previewer.
+  -- Whether to enable line wrap in picker previewer.
   wrap = true,
 
   -- Whether to initially sort entries by time-added.
@@ -470,7 +476,7 @@ enable_icons = true,
     return lines
   end,
   -- This function runs when inserting a formatted reference (currently by `f/c-f` in
-  -- Telescope). It works similarly to the `format_notes` above, except that the set
+  -- the picker). It works similarly to the `format_notes` above, except that the set
   -- of lines should only contain one line (references using multiple lines aren't
   -- currently supported).
   format_references = function(entry)
@@ -531,9 +537,9 @@ Papis.nvim will start automatically according to the filetypes defined in `init_
 
 ## Keymaps
 
-By default, papis.nvim doesn't set any keymaps (except in Telescope or Snacks picker). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
+By default, papis.nvim doesn't set any keymaps (except in the picker). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
 
-- `<leader>pp` (normal) / `<c-o>p` (insert): Open the telescope picker
+- `<leader>pp` (normal) / `<c-o>p` (insert): Open the picker
 - `<leader>pf` (normal): Open file under cursor
 - `<leader>pe` (normal): Edit entry under cursor
 - `<leader>pn` (normal): Open note under cursor
@@ -546,16 +552,16 @@ Papis.nvim defines and links a number of default highlight groups. In order to c
 <details>
   <summary>Highlight groups</summary>
 
-- `PapisPreviewAuthor`: The author field in the Telescope previewer
-- `PapisPreviewYear`: The year field in the Telescope previewer
-- `PapisPreviewTitle`: The title field in the Telescope previewer
-- `PapisPreviewKey`: The keys in the Telescope previewer (when set with `show_key`, see the setup section).
-- `PapisPreviewValue`: The values in the Telescope previewer (when set with `show_key`, see the setup section).
-- `PapisResultsAuthor`: The author in the Telescope results window
-- `PapisResultsYear`: The year in the Telescope results window
-- `PapisResultsTitle`: The title in the Telescope results window
-- `PapisResultsFiles`: The files in the Telescope results window
-- `PapisResultsNotes`: The notes in the Telescope results window
+- `PapisPreviewAuthor`: The author field in the picker previewer
+- `PapisPreviewYear`: The year field in the picker previewer
+- `PapisPreviewTitle`: The title field in the picker previewer
+- `PapisPreviewKey`: The keys in the picker previewer (when set with `show_key`, see the setup section).
+- `PapisPreviewValue`: The values in the picker previewer (when set with `show_key`, see the setup section).
+- `PapisResultsAuthor`: The author in the picker results window
+- `PapisResultsYear`: The year in the picker results window
+- `PapisResultsTitle`: The title in the picker results window
+- `PapisResultsFiles`: The files in the picker results window
+- `PapisResultsNotes`: The notes in the picker results window
 - `PapisPopupAuthor`: The author in the cursor action popup
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
