@@ -136,31 +136,15 @@ local function papis_picker(opts)
           actions.select_default:replace(function()
             papis_actions.ref_insert(prompt_bufnr)
           end)
-          map("i", "<c-f>", function()
-            papis_actions.open_file(prompt_bufnr)
-          end, { desc = "Open file" })
-          map("n", "f", function()
-            papis_actions.open_file(prompt_bufnr)
-          end, { desc = "Open file" })
-          map("i", "<c-n>", function()
-            papis_actions.open_note(prompt_bufnr)
-          end, { desc = "Open note" })
-          map("n", "n", function()
-            papis_actions.open_note(prompt_bufnr)
-          end, { desc = "Open note" })
-          map("i", "<c-e>", function()
-            papis_actions.open_info(prompt_bufnr)
-          end, { desc = "Open info.yaml file" })
-          map("n", "e", function()
-            papis_actions.open_info(prompt_bufnr)
-          end, { desc = "Open info.yaml file" })
-          map("n", "r", function()
-            papis_actions.ref_insert_formatted(prompt_bufnr)
-          end, { desc = "Insert formatted reference" })
-          map("i", "<c-r>", function()
-            papis_actions.ref_insert_formatted(prompt_bufnr)
-          end, { desc = "Insert formatted reference" })
-          -- Makes sure that the other defaults are still applied
+          -- Process mappings from config
+          for key, mapping_config in pairs(config.search.picker_keymaps) do
+            local action_name = mapping_config[1]
+            local modes = mapping_config.mode
+            local desc = mapping_config.desc or ""
+            map(modes, key, function()
+              papis_actions[action_name](prompt_bufnr)
+            end, { desc = desc })
+          end
           return true
         end,
       })

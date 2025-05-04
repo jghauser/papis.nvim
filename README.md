@@ -351,8 +351,8 @@ enable_icons = true,
   -- Picker provider. Currently support `telescope` and `snacks`
   provider = "telescope",
 
-  -- Snacks picker keymaps if using `provider = "snacks"`
-  snacks_picker_keymaps = {
+  -- Picker keymaps
+  picker_keymaps = {
     ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
     ["r"] = { "ref_insert_formatted", mode = "n", desc = "(Papis) Insert formatted ref" },
     ["<c-r>"] = { "ref_insert_formatted", mode = "i", desc = "(Papis) Insert formatted ref" },

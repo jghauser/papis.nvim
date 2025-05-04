@@ -59,7 +59,7 @@ M.opts = {
   preview = M.preview,
   win = {
     input = {
-      keys = config["search"].snacks_picker_keymaps,
+      keys = config["search"].picker_keymaps,
     },
   },
   actions = actions,
