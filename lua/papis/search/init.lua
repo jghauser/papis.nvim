@@ -13,16 +13,24 @@ if not db then
   return nil
 end
 
+---Get search function based on the configured provider
+---@return function
+local function get_search_function()
+  if config["search"].provider == "telescope" then
+    return function(_, _)
+      require("papis.search.telescope").exports.papis()
+    end
+  elseif config["search"].provider == "snacks" then
+    return function(_, _)
+      require("papis.search.snacks").picker()
+    end
+  end
+end
+
 ---@class PapisSubcommand
 local module_subcommands = {
   search = {
-    impl = function(_, _)
-      if config["search"].provider == "telescope" then
-        require("papis.search.telescope").exports.papis()
-      elseif config["search"].provider == "snacks" then
-        require("papis.search.snacks").picker()
-      end
-    end,
+    impl = get_search_function(),
   },
 }
 
