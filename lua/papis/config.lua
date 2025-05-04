@@ -92,9 +92,9 @@ local default_config = {
   ["formatter"] = {
     format_notes = function(entry)
       local title_format = {
-        { "author", "%s ", "" },
-        { "year", "(%s) ", "" },
-        { "title", "%s", "" },
+        { "author", "%s ",   "" },
+        { "year",   "(%s) ", "" },
+        { "title",  "%s",    "" },
       }
       local title = require("papis.utils"):format_display_strings(entry, title_format, true)
       for k, v in ipairs(title) do
@@ -110,12 +110,12 @@ local default_config = {
     end,
     format_references = function(entry)
       local reference_format = {
-        { "author", "%s ", "" },
-        { "year", "(%s). ", "" },
-        { "title", "%s. ", "" },
-        { "journal", "%s. ", "" },
-        { "volume", "%s", "" },
-        { "number", "(%s)", "" },
+        { "author",  "%s ",    "" },
+        { "year",    "(%s). ", "" },
+        { "title",   "%s. ",   "" },
+        { "journal", "%s. ",   "" },
+        { "volume",  "%s",     "" },
+        { "number",  "(%s)",   "" },
       }
       local reference_data = require("papis.utils"):format_display_strings(entry, reference_format)
       for k, v in ipairs(reference_data) do
@@ -133,7 +133,7 @@ local default_config = {
         { "files", { "󰈙 ", "F " }, "PapisResultsFiles" },
         { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
       },
-      { "year", "%s", "PapisPopupYear" },
+      { "year",  "%s", "PapisPopupYear" },
       { "title", "%s", "PapisPopupTitle" },
     },
   },
