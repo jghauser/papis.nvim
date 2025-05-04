@@ -21,7 +21,9 @@ if not db then
   return nil
 end
 
-local wrap, preview_format, initial_sort_by_time_added
+local wrap = config["search"].wrap
+local preview_format = config["search"].preview_format
+local initial_sort_by_time_added = config["search"].initial_sort_by_time_added
 
 -- Telescope is quite slow, so we precalculate the relevant values
 local telescope_precalc = {}
@@ -82,7 +84,7 @@ local function get_precalc()
 end
 
 ---Defines the papis.nvim telescope picker
----@param opts table #Options for the papis picker
+---@param opts table? #Options for the papis picker
 local function papis_picker(opts)
   opts = opts or {}
 
@@ -152,17 +154,9 @@ local function papis_picker(opts)
 end
 
 local M = {
-  setup = function(opts)
-    wrap = opts.wrap
-    initial_sort_by_time_added = opts.initial_sort_by_time_added
-    preview_format = opts.preview_format
-  end,
   exports = {
     papis = papis_picker,
   },
 }
 
-M.setup(config["search"])
-
--- Return the extension definition instead of directly registering it
 return M
