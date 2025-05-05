@@ -12,7 +12,7 @@ local db = require("papis.sqlite-wrapper")
 local utils = require("papis.utils")
 
 local get_multi = function(prompt_bufnr)
-  local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+  local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
   local multi = picker:get_multi_selection()
   return multi
 end
@@ -36,8 +36,8 @@ M.ref_insert = function(prompt_bufnr)
   local cursor_pos = vim.api.nvim_win_get_cursor(0)[2] + 1
 
   -- Check if the cursor is enclosed by start_str and end_str
-  local enclosed = current_line:sub(1, cursor_pos - 1):find(start_str, 1, true) and
-      current_line:sub(cursor_pos):find(end_str, 1, true)
+  local enclosed = current_line:sub(1, cursor_pos - 1):find(start_str, 1, true)
+    and current_line:sub(cursor_pos):find(end_str, 1, true)
 
   if not enclosed then
     string_to_insert = start_str

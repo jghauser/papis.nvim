@@ -26,14 +26,14 @@ local default_config = {
     },
     markdown = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     rmd = {
       ref_prefix = "@",
-      separator_str = "; "
+      separator_str = "; ",
     },
     plain = {
-      separator_str = ", "
+      separator_str = ", ",
     },
     org = {
       start_str = "[cite:",
@@ -138,6 +138,18 @@ local default_config = {
     },
   },
   ["search"] = {
+    provider = "telescope", ---@type "snacks" | "telescope"
+    picker_keymaps = {
+      ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
+      ["r"] = { "ref_insert_formatted", mode = "n", desc = "(Papis) Insert formatted ref" },
+      ["<c-r>"] = { "ref_insert_formatted", mode = "i", desc = "(Papis) Insert formatted ref" },
+      ["f"] = { "open_file", mode = "n", desc = "(Papis) Open file" },
+      ["<c-f>"] = { "open_file", mode = "i", desc = "(Papis) Open file" },
+      ["n"] = { "open_note", mode = "n", desc = "(Papis) Open note" },
+      ["<c-n>"] = { "open_note", mode = "i", desc = "(Papis) Open note" },
+      ["e"] = { "open_info", mode = "n", desc = "(Papis) Open info.yaml file" },
+      ["<c-e>"] = { "open_info", mode = "i", desc = "(Papis) Open info.yaml file" },
+    },
     wrap = true,
     initial_sort_by_time_added = true,
     search_keys = { "author", "editor", "year", "title", "tags" }, -- also possible: "type"
@@ -180,7 +192,7 @@ function M:get_cite_format()
   local cite_formats_fallback = self.cite_formats_fallback
 
   local fallback = {
-    separator_str = ", "
+    separator_str = ", ",
   }
 
   if self.always_use_plain then
