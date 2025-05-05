@@ -9,6 +9,7 @@ local config = require("papis.config")
 local utils = require("papis.utils")
 local db = require("papis.sqlite-wrapper")
 local actions = require("papis.search.snacks.actions")
+local wrap = config["search"].wrap
 
 local M = {}
 
@@ -49,6 +50,7 @@ function M.preview(ctx)
     line:render(ctx.buf, -1, line_nr)
   end
   vim.bo[ctx.buf].modifiable = false
+  vim.wo[ctx.win].wrap = wrap
 end
 
 ---@type snacks.picker.Config
