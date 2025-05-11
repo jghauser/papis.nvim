@@ -530,8 +530,10 @@ To use the blink.cmp source, you need to add it to the list of default sources:
 ```lua
 require("blink.cmp").setup({
   sources = {
-    -- add 'papis' to the list
-    default = { 'papis', 'dictionary', 'lsp', 'path', 'luasnip', 'buffer' },
+    -- add 'papis' to the list of sources for the yaml filetype
+    per_filetype = {
+      yaml = { "papis" }
+    },
 })
 ```
 
