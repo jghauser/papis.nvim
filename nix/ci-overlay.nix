@@ -113,7 +113,9 @@ let
             local blink = require("blink.cmp")
             blink.setup({
               sources = {
-                default = { 'papis' },
+                per_filetype = {
+                  yaml = { "papis" }
+                },
               },
             })
 
