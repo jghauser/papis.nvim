@@ -255,11 +255,13 @@ function M:make_nui_lines(lines_format_tbl, entry)
         end
       end
     end
-    -- add the width of the line just processed to the table of line_widths
-    line_widths[#lines + 1] = width
+    if not vim.tbl_isempty(line) then
+      -- add the width of the line just processed to the table of line_widths
+      line_widths[#lines + 1] = width
 
-    -- add the line just processed to the table of lines
-    lines[#lines + 1] = line
+      -- add the line just processed to the table of lines
+      lines[#lines + 1] = line
+    end
   end
 
   max_width = math.max(unpack(line_widths))
