@@ -525,10 +525,20 @@ enable_icons = true,
 },
 ```
 
-In order to use the cmp source, you need to add it to the sources loaded by cmp.
+To use the blink.cmp source, you need to add it to the list of default sources:
 
 ```lua
-cmp.setup({
+require("blink.cmp").setup({
+  sources = {
+    -- add 'papis' to the list
+    default = { 'papis', 'dictionary', 'lsp', 'path', 'luasnip', 'buffer' },
+})
+```
+
+Similarly, to use the cmp.nvim source:
+
+```lua
+require("cmp").setup({
   sources = cmp.config.sources({
   -- your other source
   { name = "papis" },
