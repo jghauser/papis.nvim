@@ -1,16 +1,19 @@
 {
   name,
   self,
-}: final: prev: let
+}:
+final: prev:
+let
   papis-nvim-luaPackage-override = luaself: luaprev: {
-    papis-nvim = luaself.callPackage ({
-      buildLuarocksPackage,
-      lua,
-      luaOlder,
-      nui-nvim,
-      sqlite,
-      pathlib-nvim,
-    }:
+    papis-nvim = luaself.callPackage (
+      {
+        buildLuarocksPackage,
+        lua,
+        luaOlder,
+        nui-nvim,
+        sqlite,
+        pathlib-nvim,
+      }:
       buildLuarocksPackage {
         pname = name;
         version = "scm-1";
@@ -22,7 +25,8 @@
           pathlib-nvim
         ];
         src = self;
-      }) {};
+      }
+    ) { };
   };
 
   lua5_1 = prev.lua5_1.override {
@@ -33,7 +37,8 @@
     packageOverrides = papis-nvim-luaPackage-override;
   };
   luajitPackages = prev.luajitPackages // final.luajit.pkgs;
-in {
+in
+{
   inherit
     lua5_1
     lua51Packages
@@ -41,13 +46,11 @@ in {
     luajitPackages
     ;
 
-  vimPlugins =
-    prev.vimPlugins
-    // {
-      papis-nvim = final.neovimUtils.buildNeovimPlugin {
-        pname = name;
-        src = self;
-        version = "dev";
-      };
+  vimPlugins = prev.vimPlugins // {
+    papis-nvim = final.neovimUtils.buildNeovimPlugin {
+      pname = name;
+      src = self;
+      version = "dev";
     };
+  };
 }
