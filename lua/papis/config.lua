@@ -138,7 +138,7 @@ local default_config = {
     },
   },
   ["search"] = {
-    provider = "telescope", ---@type "snacks" | "telescope"
+    provider = "auto", ---@type "auto" | "snacks" | "telescope"
     picker_keymaps = {
       ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
       ["r"] = { "ref_insert_formatted", mode = "n", desc = "(Papis) Insert formatted ref" },

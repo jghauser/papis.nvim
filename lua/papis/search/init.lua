@@ -6,33 +6,14 @@
 
 local log = require("papis.log")
 local config = require("papis.config")
+
+local provider = config.search.provider
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
-
----Get search function based on the configured provider
----@return function
-local function get_search_function()
-  if config["search"].provider == "telescope" then
-    return function(_, _)
-      require("papis.search.telescope").exports.papis()
-    end
-  elseif config["search"].provider == "snacks" then
-    return function(_, _)
-      require("papis.search.snacks").picker()
-    end
-  end
-end
-
----@class PapisSubcommand
-local module_subcommands = {
-  search = {
-    impl = get_search_function(),
-  },
-}
 
 ---@class PapisKeymaps
 local module_keymaps = {
@@ -54,30 +35,71 @@ local module_keymaps = {
   },
 }
 
+---Setup snacks search provider
+---@return boolean success Whether setup succeeded
+local function setup_snacks()
+  local has_snacks, _ = pcall(require, "snacks")
+  if not has_snacks then
+    return false
+  end
+
+  require("papis.search.data").init()
+  commands:add_commands({
+    search = {
+      impl = function(_, _)
+        require("papis.search.snacks").picker()
+      end,
+    },
+  })
+  keymaps:add_keymaps(module_keymaps)
+  return true
+end
+
+---Setup telescope search provider
+---@return boolean success Whether setup succeeded
+local function setup_telescope()
+  local has_telescope, _ = pcall(require, "telescope")
+  if not has_telescope then
+    return false
+  end
+
+  require("papis.search.data").init()
+  commands:add_commands({
+    search = {
+      impl = function(_, _)
+        require("papis.search.telescope").exports.papis()
+      end,
+    },
+  })
+  keymaps:add_keymaps(module_keymaps)
+  return true
+end
+
 local M = {}
 
 ---Sets up the papis.nvim picker
 function M.setup()
-  log.debug("Search: setting up module")
-  require("papis.search.data").init()
-  if config["search"].provider == "telescope" then
-    local has_telescope, telescope = pcall(require, "telescope")
-    if not has_telescope then
-      error("The plugin telescope.nvim wasn't found but the search module is enabled and configured to use it.")
-    end
+  log.debug("Search: setting up module with provider: " .. provider)
 
-    commands:add_commands(module_subcommands)
-    keymaps:add_keymaps(module_keymaps)
-  elseif config["search"].provider == "snacks" then
-    local has_snacks, _ = pcall(require, "snacks")
-    if not has_snacks then
-      error("The plugin snacks.nvim wasn't found but the search module is enabled and configured to use it.")
+  if provider == "auto" then
+    -- Try snacks first, then fall back to telescope
+    if not setup_snacks() and not setup_telescope() then
+      error("Neither snacks.nvim nor telescope.nvim was found. Please install one of \
+      them or change the search provider.")
     end
-
-    commands:add_commands(module_subcommands)
-    keymaps:add_keymaps(module_keymaps)
+  elseif provider == "snacks" then
+    if not setup_snacks() then
+      error("The plugin snacks.nvim wasn't found but it's configured as the \
+      search provider.")
+    end
+  elseif provider == "telescope" then
+    if not setup_telescope() then
+      error("The plugin telescope.nvim wasn't found but it's configured as the \
+      search provider.")
+    end
   else
-    error("The search module is enabled but no valid provider was specified.")
+    error("Invalid search provider: " .. provider .. ". Valid options are \
+    'auto', 'snacks', or 'telescope'.")
   end
 end
 

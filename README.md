@@ -354,8 +354,8 @@ enable_icons = true,
 -- Configuration of the search module.
 ["search"] = {
 
-  -- Picker provider. Currently supports `telescope` and `snacks`
-  provider = "telescope",
+  -- Picker provider
+  provider = "auto", ---@type "auto" | "snacks" | "telescope"
 
   -- Picker keymaps
   picker_keymaps = {
