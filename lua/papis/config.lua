@@ -172,6 +172,9 @@ local default_config = {
       { "title", "%s", "PapisResultsTitle" },
     },
   },
+  ["completion"] = {
+    provider = "auto", ---@type "auto" | "cmp" | "blink"
+  },
   ["papis-storage"] = {
     key_name_conversions = {
       time_added = "time-added",

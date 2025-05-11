@@ -49,7 +49,7 @@ With the picker open, the following (currently hardcoded) keymaps become availab
 
 ![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
 
-When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) source.
+When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) or [blink.cmp](https://github.com/Saghen/blink.cmp) source.
 
 ### *At-cursor* module
 
@@ -423,6 +423,13 @@ enable_icons = true,
     { "year", "(%s) ", "PapisResultsYear" },
     { "title", "%s", "PapisResultsTitle" },
   },
+},
+
+-- Configuration of the completion module.
+["completion"] = {
+
+  -- Set the completion provider.
+  provider = "auto", ---@type "auto" | "cmp" | "blink"
 },
 
 -- Configuration of the at-cursor module.
