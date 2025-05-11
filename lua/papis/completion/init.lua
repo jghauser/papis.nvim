@@ -22,9 +22,6 @@ local function setup_blink()
   blink.add_source_provider("papis", {
     name = "papis",
     module = "papis.completion.blink",
-    async = true,
-    opts = {},
-    enabled = true
   })
   return true
 end
