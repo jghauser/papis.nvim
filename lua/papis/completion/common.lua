@@ -1,19 +1,19 @@
 --
--- PAPIS | COMPLETION | SOURCE
+-- PAPIS | COMPLETION | COMMON
 --
 --
--- The cmp source.
+-- Common resources used by different providers.
 --
 
-local Path = require("pathlib")
-local ts = vim.treesitter
-local api = vim.api
-
-local log = require("papis.log")
 local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
+local log = require("papis.log")
+local ts = vim.treesitter
+local Path = require("pathlib")
+local api = vim.api
+
 local tag_delimiter
 
 -- Mapping table for tag delimiters
@@ -24,15 +24,6 @@ local tag_delimiters = {
   [" "] = " ",
 }
 
----Gets tag_delimiter for the tag_format
----@return string|nil #The delimiter between tags given the format
-local function get_tag_delimiter()
-  local tag_format = db.state:get_value({ id = 1 }, "tag_format")
-  -- Use the mapping table to get the tag_delimiter
-  tag_delimiter = tag_delimiters[tag_format]
-  return tag_delimiter
-end
-
 local parse_query = ts.query.parse(
   "yaml",
   [[
@@ -42,12 +33,18 @@ local parse_query = ts.query.parse(
   ]]
 )
 
+
 local M = {}
 
----Creates a new cmp source
----@return table
-function M.new()
-  return setmetatable({}, { __index = M })
+---Gets the tag delimiter
+---@return string #tag_delimiter
+function M.get_tag_delimiter()
+  if not tag_delimiter then
+    local tag_format = db.state:get_value({ id = 1 }, "tag_format")
+    tag_delimiter = tag_delimiters[tag_format]
+    log.debug("Tag delimiter: " .. tag_delimiter)
+  end
+  return tag_delimiter
 end
 
 ---Gets trigger characters
@@ -66,11 +63,8 @@ function M:is_available()
   local info_name = db.config:get_conf_value("info_name")
   if filename == info_name then
     log.trace("we are in a papis info file")
-    if not tag_delimiter then
-      tag_delimiter = get_tag_delimiter()
-    end
 
-    if tag_delimiter then
+    if M.get_tag_delimiter() then
       local parser = ts.get_parser(0, "yaml")
       local root = parser:parse()[1]:root()
       local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
@@ -92,25 +86,6 @@ function M:is_available()
     end
   end
   return is_available
-end
-
----Completes the current request
----@param request table
----@param callback function
-function M:complete(request, callback)
-  local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
-  log.debug("Request prefix: " .. prefix)
-
-  -- complete if after tag_delimiter
-  local comp_after_tag_delimiter = vim.endswith(prefix, tag_delimiter)
-  -- complete if after 'tags: ' keyword and not table tag format
-  local comp_after_keyword = (prefix == "tags: ") and not (tag_delimiter == "- ")
-
-  if comp_after_tag_delimiter or comp_after_keyword then
-    log.debug("Running cmp `complete()` function.")
-    self.items = db.completion:get()[1].tag_strings
-    callback(self.items)
-  end
 end
 
 return M
