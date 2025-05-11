@@ -29,8 +29,8 @@ let
         plugins = with vimPlugins; [
           # telescope-nvim
           snacks-nvim
-          nvim-cmp
-          # blink-cmp
+          # nvim-cmp
+          blink-cmp
           (nvim-treesitter.withPlugins (
             ps: with ps; [
               tree-sitter-yaml
@@ -141,9 +141,6 @@ let
                 enable_modules = {
                   ["debug"] = true,
                   ["testing"] = true,
-                },
-                search = {
-                  provider = "snacks"
                 },
                 enable_keymaps = true,
                 db_path = db_path,
