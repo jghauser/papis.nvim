@@ -1,28 +1,22 @@
-name: Push to Luarocks
+name: LuaRocks release
 on:
   push:
     tags:
       - '*'
-  release:
-    types:
-      - created
   pull_request: # Makes sure the luarocks package can build on PR
   workflow_dispatch: # Allow manual trigger (e.g. if a tagged build failed)
 jobs:
-  luarocks-upload:
-    runs-on: ubuntu-22.04
+  luarocks-release:
+    runs-on: ubuntu-latest
+    name: LuaRocks upload
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Required to count the commits
-      - name: Get Version
-        run: echo "LUAROCKS_VERSION=$(git describe --abbrev=0 --tags)" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v5
+        uses: nvim-neorocks/luarocks-tag-release@v7
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
-          version: ${{ env.LUAROCKS_VERSION }}
           dependencies: |
             sqlite
             nui.nvim
