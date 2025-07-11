@@ -138,6 +138,13 @@ function M.get_data_full(metadata)
           type_of_val = type_of_val[1]
         end
         if entry[key] then
+          -- determine tag_format when first coming across tags and format tags as table
+          if key == "tags" then
+            if type(entry[key]) ~= "table" then
+              error(
+                "The tag format isn't a list. Please convert your info.yaml files with `papis doctor -t key-type` to use papis.nvim.")
+            end
+          end
           if (key == "files") or (key == "notes") then
             local entry_path = Path(path):parent()
             entry[key] = make_full_paths(entry[key], entry_path)
