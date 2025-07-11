@@ -46,6 +46,7 @@ function M.preview(ctx)
   local preview_lines = utils:make_nui_lines(config["search"].preview_format, entry)
 
   vim.bo[ctx.buf].modifiable = true
+  vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, {})
   for line_nr, line in ipairs(preview_lines) do
     line:render(ctx.buf, -1, line_nr)
   end
