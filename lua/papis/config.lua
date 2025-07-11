@@ -179,7 +179,6 @@ local default_config = {
     key_name_conversions = {
       time_added = "time-added",
     },
-    tag_format = nil,
     required_keys = { "papis_id", "ref" },
   },
 }

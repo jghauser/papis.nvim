@@ -31,29 +31,20 @@ M.get_trigger_characters = common.get_trigger_characters
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
 ---@return boolean #True if info_name file, false otherwise
-function M:is_available()
-  local is_available = common:is_available()
-  return is_available
-end
+M.is_available = common.is_available
 
 ---Completes the current request
----@param request table
+---@param _ table #The request
 ---@param callback function
-function M:complete(request, callback)
-  log.debug("offset: " .. request.offset)
-  local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
-  log.debug("Request prefix: " .. prefix)
+function M:complete(_, callback)
+  -- Insert a space after the dash and move cursor
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { " " })
+  vim.api.nvim_win_set_cursor(0, { row, col + 1 })
 
-  -- complete if after tag_delimiter
-  local comp_after_tag_delimiter = vim.endswith(prefix, common.get_tag_delimiter())
-  -- complete if after 'tags: ' keyword and not table tag format
-  local comp_after_keyword = (prefix == "tags: ") and not (common.get_tag_delimiter() == "- ")
-
-  if comp_after_tag_delimiter or comp_after_keyword then
-    log.debug("Running cmp `complete()` function.")
-    self.items = db.completion:get()[1].tag_strings
-    callback(self.items)
-  end
+  log.debug("Running cmp `complete()` function.")
+  self.items = db.completion:get()[1].tag_strings
+  callback(self.items)
 end
 
 return M

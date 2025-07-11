@@ -513,11 +513,6 @@ enable_icons = true,
     time_added = "time-added",
   },
 
-  -- The format used for tags. Will be determined automatically if left empty.
-  -- Can be set to `tbl` (if a lua table), `,` (if comma-separated), `:` (if
-  -- semi-colon separated), ` ` (if space separated).
-  tag_format = nil,
-
   -- The keys which `.yaml` files are expected to always define. Files that are
   -- missing these keys will cause an error message and will not be added to
   -- the database.
