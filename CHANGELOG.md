@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.8.0...v0.8.0) (2025-07-27)
+
+
+### Miscellaneous Chores
+
+* release 0.8.0 ([62cc876](https://github.com/jghauser/papis.nvim/commit/62cc87673989c24c0cc3cc6bff0af2b0ebcf9e88))
+
 ## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.7.0...v0.8.0) (2025-07-27)
 
 
