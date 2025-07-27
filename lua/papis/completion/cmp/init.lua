@@ -36,17 +36,20 @@ end
 M.is_available = common.is_available
 
 ---Completes the current request
----@param _ table #The request
+---@param request table
 ---@param callback function
-function M:complete(_, callback)
-  -- Insert a space after the dash and move cursor
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { " " })
-  vim.api.nvim_win_set_cursor(0, { row, col + 1 })
+function M:complete(request, callback)
+  local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
+  log.debug("Request prefix: " .. prefix)
 
-  log.debug("Running cmp `complete()` function.")
-  self.items = db.completion:get()[1].tag_strings
-  callback(self.items)
+  -- complete if after tag_delimiter
+  local comp_after_tag_delimiter = vim.endswith(prefix, "- ")
+
+  if comp_after_tag_delimiter then
+    log.debug("Running cmp `complete()` function.")
+    self.items = db.completion:get()[1].tag_strings
+    callback(self.items)
+  end
 end
 
 return M
