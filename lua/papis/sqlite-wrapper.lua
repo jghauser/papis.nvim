@@ -220,7 +220,6 @@ local schemas = {
   state = {
     id = true,
     fw_running = { "integer" },
-    tag_format = { "text" },
     db_last_modified = { "integer", default = os.time() },
   },
   config = get_config_tbl_schema(),

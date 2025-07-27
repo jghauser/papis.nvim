@@ -13,49 +13,12 @@ local db = require("papis.sqlite-wrapper")
 if not db then
   return nil
 end
-local utils = require("papis.utils")
 local log = require("papis.log")
 local config = require("papis.config")
 local data_tbl_schema = config.data_tbl_schema
 local key_name_conversions = config["papis-storage"].key_name_conversions
 local required_keys = config["papis-storage"].required_keys
-local tag_format = config["papis-storage"].tag_format
-local have_determined_tag_format = false
 local yq_bin = config.yq_bin
-
----Determines if tag format is list, space separated, or comma separated
----@param tags any #Either a table or a string with tag(s)
-local function do_determine_tag_format(tags)
-  if type(tags) == "table" then
-    tag_format = "tbl"
-    have_determined_tag_format = true
-  elseif string.find(tags, ",") then
-    tag_format = ","
-    have_determined_tag_format = true
-  elseif string.find(tags, ";") then
-    tag_format = ";"
-    have_determined_tag_format = true
-  elseif string.find(tags, " ") then
-    tag_format = " "
-    have_determined_tag_format = true
-  end
-end
-
----Converts, if necessary, the tags into a table.
----@param tags any #Either a table or a string with tag(s)
----@return table #A table with tags
-local function ensure_tags_are_tbl(tags)
-  -- we haven't determined it, it must be a single string tag
-  if not have_determined_tag_format then
-    tags = { tags }
-    -- if it's a table we don't need to do anything
-  elseif tag_format == "tbl" then
-    -- otherwise split the string
-  else
-    tags = utils.do_split_str(tags, tag_format)
-  end
-  return tags
-end
 
 ---Checks if a decoded entry is valid
 ---@param entry table|nil #The entry as a table or nil if entry wasn't read properly before
@@ -135,12 +98,6 @@ end
 
 local M = {}
 
----Gets the opts determined by the papis-storage module
----@return table #A table of { k = v, ... } format
-function M.get_state()
-  return { tag_format = tag_format }
-end
-
 ---This function gets mtime of info_name files in a specific path or in all paths
 ---@param paths? table #A list with paths of papis entries
 ---@return table #A list of { path = path, mtime = mtime } values
@@ -183,12 +140,10 @@ function M.get_data_full(metadata)
         if entry[key] then
           -- determine tag_format when first coming across tags and format tags as table
           if key == "tags" then
-            if not have_determined_tag_format then
-              do_determine_tag_format(entry[key])
-            else
-              db.state:update({ id = 1 }, { tag_format = tag_format })
+            if type(entry[key]) ~= "table" then
+              error(
+                "The tag format isn't a list. Please convert your info.yaml files with `papis doctor -t key-type` to use papis.nvim.")
             end
-            entry[key] = ensure_tags_are_tbl(entry[key])
           end
           if (key == "files") or (key == "notes") then
             local entry_path = Path(path):parent()

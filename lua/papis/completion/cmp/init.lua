@@ -27,29 +27,25 @@ end
 
 ---Gets trigger characters
 ---@return table
-M.get_trigger_characters = common.get_trigger_characters
+function M:get_trigger_characters()
+  return { " " }
+end
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
 ---@return boolean #True if info_name file, false otherwise
-function M:is_available()
-  local is_available = common:is_available()
-  return is_available
-end
+M.is_available = common.is_available
 
 ---Completes the current request
 ---@param request table
 ---@param callback function
 function M:complete(request, callback)
-  log.debug("offset: " .. request.offset)
   local prefix = string.sub(request.context.cursor_before_line, 1, request.offset)
   log.debug("Request prefix: " .. prefix)
 
   -- complete if after tag_delimiter
-  local comp_after_tag_delimiter = vim.endswith(prefix, common.get_tag_delimiter())
-  -- complete if after 'tags: ' keyword and not table tag format
-  local comp_after_keyword = (prefix == "tags: ") and not (common.get_tag_delimiter() == "- ")
+  local comp_after_tag_delimiter = vim.endswith(prefix, "- ")
 
-  if comp_after_tag_delimiter or comp_after_keyword then
+  if comp_after_tag_delimiter then
     log.debug("Running cmp `complete()` function.")
     self.items = db.completion:get()[1].tag_strings
     callback(self.items)
