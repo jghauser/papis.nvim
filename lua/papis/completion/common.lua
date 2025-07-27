@@ -26,12 +26,6 @@ local parse_query = ts.query.parse(
 
 local M = {}
 
----Gets trigger characters
----@return table
-function M.get_trigger_characters()
-  return { "-" }
-end
-
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
 ---@return boolean #True if info_name file, false otherwise
 function M.is_available()
@@ -60,11 +54,8 @@ function M.is_available()
           local line = api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
           local trimmed_line_start = line:sub(1, cur_col):match("^%s*(.*)$")
 
-          -- Only proceed if we're at the start of a line (possibly with whitespace)
-          if trimmed_line_start == "-" then
-            log.trace("completion is available")
-            is_available = true
-          end
+          log.trace("completion is available")
+          is_available = true
         end
       end
     end

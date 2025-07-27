@@ -27,7 +27,9 @@ end
 
 ---Gets trigger characters
 ---@return table
-M.get_trigger_characters = common.get_trigger_characters
+function M:get_trigger_characters()
+  return { " " }
+end
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
 ---@return boolean #True if info_name file, false otherwise
