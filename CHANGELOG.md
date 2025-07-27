@@ -1,5 +1,53 @@
 # Changelog
 
+## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.7.0...v0.8.0) (2025-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* only handle tags as lists
+
+### Features
+
+* add snacks picker and move telescope codes to search ([355bd7c](https://github.com/jghauser/papis.nvim/commit/355bd7cfc7eb9b5add3db3b0dd665f28d74cbf8d))
+* add snacks picker and move telescope codes to search ([783fe55](https://github.com/jghauser/papis.nvim/commit/783fe551c69007bd3111ed328d90c2a7cad1b1be))
+* add typst support ([490bce4](https://github.com/jghauser/papis.nvim/commit/490bce48530b1379a4a11c10810ed0e36669040f))
+* **completion:** add blink.cmp completion provider ([288f626](https://github.com/jghauser/papis.nvim/commit/288f626b50d537a0a4d1858bca9f6a4a5d5e757f))
+* make keymaps less nested ([ab50f8c](https://github.com/jghauser/papis.nvim/commit/ab50f8c04ca4f383d342f773f0d51d8b95c60bf9))
+* make keymaps less nested ([22a30d8](https://github.com/jghauser/papis.nvim/commit/22a30d8c494b9f9009c01fa80533dfd707099ba5))
+* only handle tags as lists ([3990cef](https://github.com/jghauser/papis.nvim/commit/3990cefb47855029c3fcafc9e38b850b2dc427db))
+* **papis-storage:** add error when tags key type isn't a list ([f7fe3b2](https://github.com/jghauser/papis.nvim/commit/f7fe3b2132dec216b44c8f59204421cfd56fe212))
+* **papis-storage:** robust handling of library import errors ([11dff5a](https://github.com/jghauser/papis.nvim/commit/11dff5ac579616b8835f3d53fae8978bf4374617))
+* **papis-storage:** robust handling of library import errors ([4b274a2](https://github.com/jghauser/papis.nvim/commit/4b274a2e315396202f6754cce5147e6e200a2c7c))
+* **search:** pick provider automatically by default ([e90ac0f](https://github.com/jghauser/papis.nvim/commit/e90ac0f1900f8ac8d23b0db1d776679d0e700dc2))
+* **search:** sort by time_added for snacks picker ([5c290f3](https://github.com/jghauser/papis.nvim/commit/5c290f307168ab63496f3cdaf865829c7ffcef4e))
+* **search:** use keymaps from config for telescope and snacks ([c4566cb](https://github.com/jghauser/papis.nvim/commit/c4566cbfff7382ab5dd0c25a4dd43e49f10e6b02))
+
+
+### Bug Fixes
+
+* **at-cursor:** also strip white space at beginning and end of ref ([551920c](https://github.com/jghauser/papis.nvim/commit/551920cd8bcb5950d277a9627c6faf0cd6075977))
+* **at-cursor:** also strip white space at beginning and end of ref ([788bbab](https://github.com/jghauser/papis.nvim/commit/788bbabd60fbbea184555fe3dd550fd30ded8953))
+* **at-cursor:** correctly handle citet/citep in tex ([f8c0ec7](https://github.com/jghauser/papis.nvim/commit/f8c0ec7480d86f9105633557651e860f83a8c8ed))
+* **at-cursor:** correctly handle citet/citep in tex ([e6bea82](https://github.com/jghauser/papis.nvim/commit/e6bea82de8ad781e54727fd42939501fcf3f17e8))
+* **at-cursor:** get latex cite formats to work (v2) ([68457df](https://github.com/jghauser/papis.nvim/commit/68457df80b1330be656984e81d21755cfbd6952b))
+* **at-cursor:** get latex cite formats to work (v2) ([73accac](https://github.com/jghauser/papis.nvim/commit/73accac713caf7e2fac68670a145e53f38ed77b3))
+* **at-cursor:** refs are also terminated by `]` ([bf1ee96](https://github.com/jghauser/papis.nvim/commit/bf1ee966268fd128a9133d7d3a887744f5a16c76))
+* **completion:** make sure to clear preview buffer for snacks ([07ba445](https://github.com/jghauser/papis.nvim/commit/07ba4455d6e8cd1d5225000a39fb8ed597e21e68))
+* **completion:** remove some unnecessary source opts ([cd4f26c](https://github.com/jghauser/papis.nvim/commit/cd4f26c18c3bf085ff8c23ddc66649428ba8c8b3))
+* **data:** make reset_db more robust ([c7fd4e7](https://github.com/jghauser/papis.nvim/commit/c7fd4e7bdf01647a24d0ec60d4fa238fd142bb77))
+* **health:** correct error message about wrong yq ([5adfba2](https://github.com/jghauser/papis.nvim/commit/5adfba24b622a63f5a65ea0e6e85e7ebd040b572))
+* **health:** correct error message about wrong yq ([657089e](https://github.com/jghauser/papis.nvim/commit/657089e007f6c99dfcf61585b9c73b6367d31faa))
+* Papis search command for snacks ([e3e664d](https://github.com/jghauser/papis.nvim/commit/e3e664d1ae9420764fa57ed29b7825fe4c0b1cde))
+* proper error handling ([96a30da](https://github.com/jghauser/papis.nvim/commit/96a30daa1ef5575393ac1b257cc2d6e60facf9af))
+* restore cmp functionality for triggering after space ([9395828](https://github.com/jghauser/papis.nvim/commit/9395828c0d4ba37b2d8b7b39369140853b01b2f8))
+* **search:** better error messages ([4d4d6b2](https://github.com/jghauser/papis.nvim/commit/4d4d6b2a9bbc5ff20ad8f280cb5c1daa1d821d4b))
+* **search:** make snacks use precalculated values ([d2042b2](https://github.com/jghauser/papis.nvim/commit/d2042b2dab604a6a82ce8ab90cf3490e1bbfdd33))
+* **search:** snacks source name ([e873c78](https://github.com/jghauser/papis.nvim/commit/e873c78e1a2719ce978278d7263592de35c04883))
+* **search:** wrap snacks preview window if configured ([8b02402](https://github.com/jghauser/papis.nvim/commit/8b024028bb73bd7128e77b62b2ac1792b9b7677d))
+* use different trigger characters for blink and cmp ([bd2bb27](https://github.com/jghauser/papis.nvim/commit/bd2bb27be46b9d07683b797dc9a39e5bff8363fe))
+* **utils:** don't insert empty lines in preview window etc ([bf86ab7](https://github.com/jghauser/papis.nvim/commit/bf86ab7d4eef65a63297fef733d9a13f447dd928))
+
 ## [0.7.0](https://github.com/jghauser/papis.nvim/compare/v0.6.1...v0.7.0) (2024-09-03)
 
 
