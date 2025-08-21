@@ -80,10 +80,7 @@ end
 ---Open an entry's attached files
 ---@param papis_id string #The `papis_id` of the entry
 function M:do_open_attached_files(papis_id)
-  local db = require("papis.sqlite-wrapper")
-  if not db then
-    return nil
-  end
+  local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   local entry = db.data:get({ papis_id = papis_id }, { "files", "id" })[1]
   local filenames = self.get_filenames(entry.files)
   local lookup_tbl = {}
@@ -125,10 +122,7 @@ end
 ---@param papis_id string #The `papis_id` of the entry
 ---@param type string #Either "note" or "info", specifying the type of file
 function M:do_open_text_file(papis_id, type)
-  local db = require("papis.sqlite-wrapper")
-  if not db then
-    error("Sqlite-wrapper has not been initialised properly. Aborting...")
-  end
+  local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
   local info_path = Path(db.metadata:get_value({ entry = entry.id }, "path"))
@@ -180,6 +174,7 @@ function M:do_open_text_file(papis_id, type)
         local notes_name = db.config:get_conf_value("notes_name")
         create_new_note_fn(papis_id, notes_name)
         local entry_has_note = new_timer()
+        assert(entry_has_note, "Failed to create libuv timer")
         local file_opened = false
         entry_has_note:start(
           0,

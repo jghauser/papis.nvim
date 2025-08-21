@@ -5,10 +5,7 @@
 -- Common resources used by different providers.
 --
 
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local ts = vim.treesitter
 local Path = require("pathlib")
@@ -38,6 +35,7 @@ function M.is_available()
     log.trace("we are in a papis info file")
 
     local parser = ts.get_parser(0, "yaml")
+    assert(parser, "No parser found for yaml. Please ensure you have the yaml treesitter parser installed.")
     local root = parser:parse()[1]:root()
     local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
     local cur_row, cur_col = unpack(api.nvim_win_get_cursor(0))

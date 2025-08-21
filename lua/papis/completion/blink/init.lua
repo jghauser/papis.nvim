@@ -6,14 +6,8 @@
 --
 
 local log = require("papis.log")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
-local common = require("papis.completion.common")
-if not common then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
+local common = assert(require("papis.completion.common"), "Failed to load papis.completion.common")
 
 --- @module 'blink.cmp completion source'
 --- @class papis.completion.blink

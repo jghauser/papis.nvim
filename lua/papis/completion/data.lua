@@ -5,10 +5,7 @@
 -- Defines the sqlite table and associated methods for the completion module.
 --
 
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Makes a list of all tags
 ---@return table #Has structure { tag1, tag2, ... } and contains all tags

@@ -13,16 +13,10 @@ local uv = vim.uv
 local fs_stat = uv.fs_stat
 local new_timer = uv.new_timer
 local api = vim.api
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local does_pid_exist = require("papis.utils").does_pid_exist
-local data = require("papis.data")
-if not data then
-  return nil
-end
+local data = assert(require("papis.data"), "Failed to load papis.data")
 local file_read_timer
 local autocmd_id
 local handles = {}
@@ -190,6 +184,7 @@ local function start_fs_watch_active_timer()
   log.debug("Timer started to check if need to take over fswatch")
   if not file_read_timer then
     file_read_timer = new_timer()
+    assert(file_read_timer, "Failed to create libuv timer")
   end
   uv.timer_start(
     file_read_timer,

@@ -16,10 +16,7 @@ local papis_actions = require("papis.search.telescope.actions")
 local config = require("papis.config")
 local log = require("papis.log")
 local utils = require("papis.utils")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 local wrap = config["search"].wrap
 local preview_format = config["search"].preview_format

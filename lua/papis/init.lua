@@ -61,10 +61,7 @@ function M.start()
   has_run = true
 
   -- set up db
-  local db = require("papis.sqlite-wrapper")
-  if not db then
-    error("Requiring `sqlite-wrapper.lua` failed. Aborting...")
-  end
+  local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   db:init()
 
   -- check for dependencies
@@ -73,10 +70,7 @@ function M.start()
   end
 
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
-  local data = require("papis.data")
-  if not data then
-    error("Requiring `data.lua` failed. Aborting...")
-  end
+  local data = assert(require("papis.data"), "Failed to load papis.data")
 
   -- setup commands
   log.debug("Setting up commands")

@@ -15,10 +15,7 @@ local popup_format = config["at-cursor"].popup_format
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Tries to identify the ref under cursor
 ---@return string|nil #Nil if nothing is found, otherwise is the identified ref

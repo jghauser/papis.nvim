@@ -5,16 +5,10 @@
 -- Manages the data. Talks to storage and database.
 --
 
-local papis_storage = require("papis.papis-storage")
-if not papis_storage then
-  return nil
-end
 local enable_modules = require("papis.config").enable_modules
+local papis_storage = assert(require("papis.papis-storage"), "Failed to load papis.papis-storage")
 local log = require("papis.log")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Updates the module tables. Either it will update the entries in `ids` or, if
 ---the module table is empty, all entries

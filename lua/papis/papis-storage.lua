@@ -9,10 +9,7 @@ local Path = require("pathlib")
 
 local fs_stat = vim.uv.fs_stat
 
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local config = require("papis.config")
 local data_tbl_schema = config.data_tbl_schema
