@@ -207,7 +207,7 @@ function M:do_open_text_file(papis_id, type)
         )
       end, { noremap = true, nowait = true })
 
-      popup:map("n", { "N", "n", "<esc>", "q" }, function(_)
+      popup:map("n", { "N", "n", "<esc>", "q" }, function()
         popup:unmount()
         popup = nil
         self:on_popup_close()
@@ -353,10 +353,21 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
     local icon_keys = { 2, 5 }
     for _, icon_key in ipairs(icon_keys) do
       if type(line_item_copy[icon_key]) == "table" then
-        if enable_icons then
-          line_item_copy[icon_key] = line_item_copy[icon_key][1]
+        local value = entry[line_item_copy[1]]
+        local icon_map = line_item_copy[icon_key]
+        local icon_entry = icon_map[value]
+        if icon_entry then
+          if enable_icons then
+            line_item_copy[icon_key] = icon_entry[1]
+          else
+            line_item_copy[icon_key] = icon_entry[2]
+          end
         else
-          line_item_copy[icon_key] = line_item_copy[icon_key][2]
+          if enable_icons then
+            line_item_copy[icon_key] = icon_map.fallback[1]
+          else
+            line_item_copy[icon_key] = icon_map.fallback[2]
+          end
         end
       end
     end
@@ -416,7 +427,7 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
       end
     elseif entry[line_item_copy[1]] then -- add other elements if they exist in the entry
       local input = entry[line_item_copy[1]]
-      if line_item_copy[1] == ("notes" or "files") then
+      if line_item_copy[1] == "notes" or line_item_copy[1] == "files" then
         -- get only file names (not full path)
         input = self.get_filenames(entry[line_item_copy[1]])
       end

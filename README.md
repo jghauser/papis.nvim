@@ -376,20 +376,24 @@ enable_icons = true,
   --      formatting of the key and its highlight group. The key is shown *before*
   --      the value in the preview (even though it is defined after it in this
   --      configuration (e.g. `title = Critique of Pure Reason`)).
-  -- An element may also just contain `empty_line`. This is used to insert an empty line
+  -- An element may also just contain `empty_line`. This is used to insert an empty line.
   -- Strings that define the formatting (such as in 2. and 4. above) can optionally
-  -- be a table, defining, first, an icon, and second, a non-icon version. The
-  -- `enable_icons` option determines what is used.
+  -- be a table mapping strings onto tables that define first, an icon, and second, a
+  -- non-icon version. So, a field `some_string = { "󱀁  ", "%s: " }` would mean that if
+  -- the value is `some_string` it will get replaced with the defined icon (or non-icon
+  -- version). The special key `fallback` is used to define how to handle strings that
+  -- aren't explicitly configured. The `enable_icons` option determines whether the
+  -- icon or non-icon version is used.
   preview_format = {
     { "author", "%s", "PapisPreviewAuthor" },
     { "year", "%s", "PapisPreviewYear" },
     { "title", "%s", "PapisPreviewTitle" },
     { "empty_line" },
-    { "journal", "%s", "PapisPreviewValue", "show_key", { "󱀁  ", "%s: " }, "PapisPreviewKey" },
-    { "type", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
-    { "ref", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
-    { "tags", "%s", "PapisPreviewValue", "show_key", { "  ", "%s: " }, "PapisPreviewKey" },
-    { "abstract", "%s", "PapisPreviewValue", "show_key", { "󰭷  ", "%s: " }, "PapisPreviewKey" },
+    { "journal", "%s", "PapisPreviewValue", "show_key", { fallback = { "󱀁  ", "%s: " } }, "PapisPreviewKey" },
+    { "type", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰀼  ", "%s: " } }, "PapisPreviewKey" },
+    { "ref", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰌋  ", "%s: " } }, "PapisPreviewKey" },
+    { "tags", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰓹  ", "%s: " } }, "PapisPreviewKey" },
+    { "abstract", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰭷  ", "%s: " } }, "PapisPreviewKey" },
   },
 
   -- The format of each line in the the results window. Here, everything is show on
@@ -397,8 +401,8 @@ enable_icons = true,
   -- value is used to force whitespace for icons (so that if e.g. a file is absent, it will
   -- show "  ", ensuring that columns are aligned.)
   results_format = {
-    { "files", { " ", "F " }, "PapisResultsFiles", "force_space" },
-    { "notes", { "󰆈 ", "N " }, "PapisResultsNotes", "force_space" },
+    { "files", { fallback = { "󰈙 ", "F " } }, "PapisResultsFiles", "force_space" },
+    { "notes", { fallback = { "󰆈 ", "N " } }, "PapisResultsNotes", "force_space" },
     { "author", "%s ", "PapisResultsAuthor" },
     { "year", "(%s) ", "PapisResultsYear" },
     { "title", "%s", "PapisResultsTitle" },
@@ -430,8 +434,8 @@ enable_icons = true,
     {
       { "author", "%s", "PapisPopupAuthor" },
       { "vspace", "vspace" },
-      { "files", { " ", "F " }, "PapisResultsFiles" },
-      { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
+      { "files", { fallback = { "󰈙 ", "F " } }, "PapisResultsFiles" },
+      { "notes", { fallback = { "󰆈 ", "N " } }, "PapisResultsNotes" },
     },
     { "year",  "%s", "PapisPopupYear" },
     { "title", "%s", "PapisPopupTitle" },
