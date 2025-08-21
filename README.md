@@ -38,13 +38,6 @@ Commands:
 
 - `:Papis search`: Opens the papis.nvim picker
 
-With the picker open, the following (currently hardcoded) keymaps become available:
-
-- `f` (normal) / `<c-f>` (insert): Opens files attached to the entry
-- `n` (normal) / `<c-n>` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
-- `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
-- `r` (normal) / `c-r` (insert): Insert a formatted reference
-
 ### *Completion* module
 
 ![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
@@ -325,22 +318,13 @@ data_tbl_schema = {
 },
 
 -- Path to the papis.nvim database.
-db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
+db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
 
 -- Name of the `yq` executable.
 yq_bin = "yq",
 
--- Function to execute when adding a new note. `ref` is the citation key of the
--- relevant entry and `notes_name` is the name of the notes file.
-create_new_note_fn = function(papis_id, notes_name)
-  vim.fn.system(
-    string.format(
-      "papis update --set notes %s papis_id:%s",
-      vim.fn.shellescape(notes_name),
-      vim.fn.shellescape(papis_id)
-    )
-  )
-end,
+-- Base papis command (can for example be used to change the config file used).
+papis_cmd_base = { "papis" },
 
 -- Filetypes that start papis.nvim.
 init_filetypes = { "markdown", "norg", "yaml", "typst" },

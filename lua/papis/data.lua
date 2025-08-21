@@ -5,16 +5,10 @@
 -- Manages the data. Talks to storage and database.
 --
 
-local papis_storage = require("papis.papis-storage")
-if not papis_storage then
-  return nil
-end
 local enable_modules = require("papis.config").enable_modules
+local papis_storage = assert(require("papis.papis-storage"), "Failed to load papis.papis-storage")
 local log = require("papis.log")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Updates the module tables. Either it will update the entries in `ids` or, if
 ---the module table is empty, all entries
@@ -49,7 +43,7 @@ local function update_module_tbls(metadata)
 end
 
 ---Updates the main tables for an entry specified by `metadata`
----@param metadata table #Has structure { path = path, mtime = mtime }
+---@param metadata table Has structure { path = path, mtime = mtime }
 local function update_main_tbls(metadata)
   log.debug("Updating main tables")
   if metadata.mtime then
@@ -96,8 +90,7 @@ local function update_main_tbls(metadata)
   end
 end
 
----Synchronises the main data and metadata tables from storage files and inits
----updates in module tables
+---Synchronises the main data and metadata tables and updates the module tables
 local function sync_storage_data()
   local new_metadata = papis_storage.get_metadata()
   local old_metadata = db.metadata:get()
@@ -134,7 +127,7 @@ end
 local M = {}
 
 ---Updates the database for a given entry specified by `metadata`
----@param metadata table #Has structure { path = path, mtime = mtime } and specifies the entry
+---@param metadata table Has structure { path = path, mtime = mtime } and specifies the entry
 function M.update_db(metadata)
   log.debug("Updating the database")
   update_main_tbls(metadata)

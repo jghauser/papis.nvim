@@ -26,6 +26,7 @@ local function make_start_autocmd()
 end
 
 ---Checks whether dependencies are available
+---@return boolean #True if all dependencies are available, false otherwise
 local function are_dependencies_available()
   local dependencies = { "papis", config.yq_bin }
   for _, dependency in ipairs(dependencies) do
@@ -43,7 +44,7 @@ end
 local M = {}
 
 ---This function is run when neovim starts and sets up papis.nvim.
----@param opts table #User configuration
+---@param opts table User configuration
 function M.setup(opts)
   -- update config with user config
   config:update(opts)
@@ -61,10 +62,7 @@ function M.start()
   has_run = true
 
   -- set up db
-  local db = require("papis.sqlite-wrapper")
-  if not db then
-    error("Requiring `sqlite-wrapper.lua` failed. Aborting...")
-  end
+  local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   db:init()
 
   -- check for dependencies
@@ -73,10 +71,7 @@ function M.start()
   end
 
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading
-  local data = require("papis.data")
-  if not data then
-    error("Requiring `data.lua` failed. Aborting...")
-  end
+  local data = assert(require("papis.data"), "Failed to load papis.data")
 
   -- setup commands
   log.debug("Setting up commands")

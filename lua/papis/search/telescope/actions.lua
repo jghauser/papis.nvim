@@ -1,5 +1,5 @@
 --
--- PAPIS | TELESCOPE | ACTIONS
+-- PAPIS | SEARCH | TELESCOPE | ACTIONS
 --
 --
 -- With some code from: https://github.com/nvim-telescope/telescope-bibtex.nvim
@@ -7,7 +7,7 @@
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local config = require("papis.config")
-local db = require("papis.sqlite-wrapper")
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 local utils = require("papis.utils")
 

@@ -11,7 +11,7 @@ local provider = require("papis.config").completion.provider
 local M = {}
 
 ---Setup blink completion provider
----@return boolean success Whether setup succeeded
+---@return boolean #Whether setup succeeded
 local function setup_blink()
   local has_blink, blink = pcall(require, "blink.cmp")
   if not has_blink then
@@ -27,7 +27,7 @@ local function setup_blink()
 end
 
 ---Setup cmp completion provider
----@return boolean success Whether setup succeeded
+---@return boolean #Whether setup succeeded
 local function setup_cmp()
   local has_cmp, cmp = pcall(require, "cmp")
   if not has_cmp then
@@ -39,7 +39,7 @@ local function setup_cmp()
   return true
 end
 
----Sets up the papis.nvim completion source
+---Sets up the completion module
 function M.setup()
   log.debug("Completion: setting up module with provider: " .. provider)
 

@@ -5,10 +5,7 @@
 -- Defines the sqlite table and associated methods for the completion module.
 --
 
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Makes a list of all tags
 ---@return table #Has structure { tag1, tag2, ... } and contains all tags
@@ -26,7 +23,7 @@ local function get_all_tags()
 end
 
 ---Makes a list of strings ready for use by completion
----@return table #Has structure {{ word = str, label = str, insertText = str, filterText = str } ...}
+---@return table completion_items Has structure {{ word = str, label = str, insertText = str, filterText = str } ...}
 local function make_completion_items()
   local completion_items = {}
   local tags = get_all_tags()
@@ -47,7 +44,7 @@ local function init_tbl()
   })
 
   ---Gets the list of all tags
-  ---@return table #Has structure {{ tag_strings = tbl_of_tags }}
+  ---@return table Has structure {{ tag_strings = tbl_of_tags }}
   function db.completion:get()
     return self:__get({
       where = { id = 1 },

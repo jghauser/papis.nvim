@@ -36,7 +36,7 @@ local module_keymaps = {
 }
 
 ---Setup snacks search provider
----@return boolean success Whether setup succeeded
+---@return boolean #Whether setup succeeded
 local function setup_snacks()
   local has_snacks, _ = pcall(require, "snacks")
   if not has_snacks then
@@ -56,7 +56,7 @@ local function setup_snacks()
 end
 
 ---Setup telescope search provider
----@return boolean success Whether setup succeeded
+---@return boolean #Whether setup succeeded
 local function setup_telescope()
   local has_telescope, _ = pcall(require, "telescope")
   if not has_telescope then

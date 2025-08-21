@@ -11,10 +11,7 @@ local uv = vim.uv
 
 local config = require("papis.config")
 local utils = require("papis.utils")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local health
 
 local reports = {}

@@ -21,7 +21,6 @@ local subcommand_tbl = {
       end
     end,
     complete = function(subcmd_arg_lead)
-      -- Simplified example
       local reload_args = {
         "config",
         "data",

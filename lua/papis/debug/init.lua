@@ -37,6 +37,7 @@ local module_subcommands = {
 
 local M = {}
 
+---Sets up the debug module
 function M.setup()
   log.debug("Setting up debug module")
   commands:add_commands(module_subcommands)

@@ -14,6 +14,7 @@ local M = {}
 ---@type table<string, table>
 local keymaps_tbl = {}
 
+--- Sets papis.nvim keymaps
 local function create_keymaps()
   for _, module_keymaps in pairs(keymaps_tbl) do
     for _, keymap in pairs(module_keymaps) do
@@ -25,7 +26,7 @@ local function create_keymaps()
   end
 end
 
----Creates the `autocmd` that starts papis.nvim when configured conditions are fulfilled
+---Creates the `autocmd` that sets keymaps for configured buffers
 local function make_keymap_autocmd()
   local create_papis_keymap = api.nvim_create_augroup("createPapisKeymap", { clear = true })
   api.nvim_create_autocmd("FileType", {
@@ -36,7 +37,7 @@ local function make_keymap_autocmd()
   })
 end
 
----Sets up the keymaps for all enabled modules
+---Sets up the keymaps and autocmds for keymaps
 function M:setup()
   -- create keymaps for the buffer when papis is first started
   create_keymaps()
@@ -44,8 +45,8 @@ function M:setup()
   make_keymap_autocmd()
 end
 
---- Recursively merges the provided table with the keymaps table.
----@param module_keymaps table #A table with a module's keymaps
+---Recursively merges a module's keymap table with the general keymaps table
+---@param module_keymaps table A table with a module's keymaps
 function M:add_keymaps(module_keymaps)
   if config.enable_keymaps then
     table.insert(keymaps_tbl, module_keymaps)

@@ -15,7 +15,6 @@ local default_config = {
     ["colors"] = true,
     ["base"] = true,
     ["debug"] = false,
-    ["testing"] = false,
   }, -- can be set to nil or false or left out
   cite_formats = {
     tex = {
@@ -75,17 +74,9 @@ local default_config = {
     tags = "luatable",
     files = "luatable",
   },
-  db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
+  db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
   yq_bin = "yq",
-  create_new_note_fn = function(papis_id, notes_name)
-    vim.fn.system(
-      string.format(
-        "papis update --set notes %s papis_id:%s",
-        vim.fn.shellescape(notes_name),
-        vim.fn.shellescape(papis_id)
-      )
-    )
-  end,
+  papis_cmd_base = { "papis" },
   init_filetypes = { "markdown", "norg", "yaml", "typst" },
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
@@ -186,7 +177,7 @@ local default_config = {
 local M = vim.deepcopy(default_config)
 
 ---Get the cite_format for the current filetype
----@return table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
+---@return table cite_format The citation format to be used for the filetype. If table, then first is for inserting, second for parsing
 function M:get_cite_format()
   local filetype = vim.bo.filetype
 
@@ -207,7 +198,7 @@ function M:get_cite_format()
 end
 
 ---Updates the default configuration with user supplied options and gets conf from Papis
----@param opts table #Same format as default_config and contains user config
+---@param opts table Same format as default_config and contains user config
 function M:update(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
@@ -228,18 +219,6 @@ function M:update(opts)
       use_console = "false",
       use_file = "true",
     }
-  end
-
-  if newconf.enable_modules["testing"] == true then
-    newconf.create_new_note_fn = function(papis_id, notes_name)
-      vim.fn.system(
-        string.format(
-          "papis -c ./tests/papis_config update --set notes %s papis_id:%s",
-          vim.fn.shellescape(notes_name),
-          vim.fn.shellescape(papis_id)
-        )
-      )
-    end
   end
 
   -- set main config table

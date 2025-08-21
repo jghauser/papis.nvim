@@ -5,10 +5,7 @@
 -- Common resources used by different providers.
 --
 
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local ts = vim.treesitter
 local Path = require("pathlib")
@@ -27,7 +24,7 @@ local parse_query = ts.query.parse(
 local M = {}
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
----@return boolean #True if info_name file, false otherwise
+---@return boolean is_available True if info_name file, false otherwise
 function M.is_available()
   local is_available = false
   local current_filepath = Path(api.nvim_buf_get_name(0))
@@ -38,9 +35,10 @@ function M.is_available()
     log.trace("we are in a papis info file")
 
     local parser = ts.get_parser(0, "yaml")
+    assert(parser, "No parser found for yaml. Please ensure you have the yaml treesitter parser installed.")
     local root = parser:parse()[1]:root()
     local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
-    local cur_row, cur_col = unpack(api.nvim_win_get_cursor(0))
+    local cur_row, _ = unpack(api.nvim_win_get_cursor(0))
     -- check all captured nodes
     for id, node, _ in parse_query:iter_captures(root, 0, start_row, end_row) do
       local name = parse_query.captures[id]
@@ -51,9 +49,6 @@ function M.is_available()
         -- check if cursor line is within captured node
         if node_start <= cur_row and (node_end + 1) >= cur_row then
           -- Check if current character is a dash and if it's at the beginning of a line
-          local line = api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
-          local trimmed_line_start = line:sub(1, cur_col):match("^%s*(.*)$")
-
           log.trace("completion is available")
           is_available = true
         end

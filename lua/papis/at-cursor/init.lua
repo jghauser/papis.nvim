@@ -15,13 +15,10 @@ local popup_format = config["at-cursor"].popup_format
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Tries to identify the ref under cursor
----@return string|nil #Nil if nothing is found, otherwise is the identified ref
+---@return string|nil ref Nil if nothing is found, otherwise is the identified ref
 local function get_ref_under_cursor()
   local cite_format = config:get_cite_format()
   local start_str = cite_format.start_str
@@ -73,9 +70,9 @@ local function get_ref_under_cursor()
 end
 
 ---Runs function if there is a valid ref under cursor which exists in the database
----@param fun function #The function to be run with the papis_id
----@param self? table #Self argument to be passed to fun
----@param type? string #Type argument to be passed to fun
+---@param fun function The function to be run with the papis_id
+---@param self? table Self argument to be passed to fun
+---@param type? string Type argument to be passed to fun
 local function if_ref_valid_run_fun(fun, self, type)
   local ref = get_ref_under_cursor()
   local entry = db.data:get({ ref = ref }, { "papis_id" })
@@ -92,7 +89,7 @@ local function if_ref_valid_run_fun(fun, self, type)
 end
 
 ---Creates a popup with information regarding the entry specified by `ref`
----@param papis_id string #The `papis_id` of the entry
+---@param papis_id string The `papis_id` of the entry
 local function create_hover_popup(papis_id)
   local entry = db.data:get({ papis_id = papis_id })[1]
   local popup_lines, width = utils:make_nui_lines(popup_format, entry)
@@ -190,6 +187,7 @@ local module_keymaps = {
 
 local M = {}
 
+---Sets up the at-cursor module
 function M.setup()
   log.debug("Setting up at-cursor")
   commands:add_commands(module_subcommands)

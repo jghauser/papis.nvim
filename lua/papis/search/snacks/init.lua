@@ -54,7 +54,7 @@ function M.preview(ctx)
   vim.wo[ctx.win].wrap = wrap
 end
 
----@type snacks.picker.Config
+---@type snacks.picker.Config Snacks picker configuration
 M.opts = {
   source = "papis",
   finder = M.find,
@@ -68,6 +68,8 @@ M.opts = {
   actions = actions,
 }
 
+---Open the search picker
+---@return snacks.Picker #The snacks picker instance
 function M.picker()
   return Snacks.picker("Papis References", M.opts)
 end

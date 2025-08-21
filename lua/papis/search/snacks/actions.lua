@@ -9,6 +9,9 @@ local utils = require("papis.utils")
 
 local M = {}
 
+---Inserts ref(s) into the current buffer
+---@param picker snacks.Picker The picker instance
+---@param item snacks.picker.Item The item that was selected
 ---@type snacks.picker.Action.fn
 function M.ref_insert(picker, item)
   ---@type snacks.picker.Item[]
@@ -28,7 +31,7 @@ function M.ref_insert(picker, item)
 
   -- Check if the cursor is enclosed by start_str and end_str
   local enclosed = current_line:sub(1, cursor_pos - 1):find(start_str, 1, true)
-    and current_line:sub(cursor_pos):find(end_str, 1, true)
+      and current_line:sub(cursor_pos):find(end_str, 1, true)
 
   if not enclosed then
     string_to_insert = start_str
@@ -52,6 +55,9 @@ function M.ref_insert(picker, item)
   vim.api.nvim_put({ string_to_insert }, "", false, true)
 end
 
+---Inserts full reference(s) into the buffer
+---@param picker snacks.Picker The picker instance
+---@param item snacks.picker.Item The item that was selected
 ---@type snacks.picker.Action.fn
 function M.ref_insert_formatted(picker, item)
   ---@type snacks.picker.Item[]
@@ -72,6 +78,9 @@ function M.ref_insert_formatted(picker, item)
   vim.api.nvim_put({ string_to_insert }, "", false, true)
 end
 
+---Opens attached file(s)
+---@param picker snacks.Picker The picker instance
+---@param item snacks.picker.Item The item that was selected
 ---@type snacks.picker.Action.fn
 function M.open_file(picker, item)
   local selected = picker.list.selected
@@ -86,6 +95,9 @@ function M.open_file(picker, item)
   end
 end
 
+---Opens attached note(s)
+---@param picker snacks.Picker The picker instance
+---@param item snacks.picker.Item The item that was selected
 ---@type snacks.picker.Action.fn
 function M.open_note(picker, item)
   local selected = picker.list.selected
@@ -100,6 +112,9 @@ function M.open_note(picker, item)
   end
 end
 
+---Opens metadata info file(s)
+---@param picker snacks.Picker The picker instance
+---@param item snacks.picker.Item The item that was selected
 ---@type snacks.picker.Action.fn
 function M.open_info(picker, item)
   local selected = picker.list.selected

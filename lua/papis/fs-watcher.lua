@@ -13,16 +13,10 @@ local uv = vim.uv
 local fs_stat = uv.fs_stat
 local new_timer = uv.new_timer
 local api = vim.api
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
+local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local does_pid_exist = require("papis.utils").does_pid_exist
-local data = require("papis.data")
-if not data then
-  return nil
-end
+local data = assert(require("papis.data"), "Failed to load papis.data")
 local file_read_timer
 local autocmd_id
 local handles = {}
@@ -30,9 +24,9 @@ local fs_watching_stopped = false
 local event_timestamps = {}
 
 ---Uses libuv to start file system watchers
----@param path string #The path to watch
----@param on_event function #Function to run on file system event
----@param on_error function #Function to run on error
+---@param path string The path to watch
+---@param on_event function Function to run on file system event
+---@param on_error function Function to run on error
 local function do_watch(path, on_event, on_error)
   local handle = uv.new_fs_event()
   if not handle then
@@ -53,7 +47,7 @@ local function do_watch(path, on_event, on_error)
 end
 
 ---Gets all directories in the library_dir
----@return table #A list of all directories in library_dir
+---@return table library_dirs A list of all directories in library_dir
 local function get_library_dirs()
   local library_dir = Path(db.config:get_conf_value("dir"))
   local library_dirs = {}
@@ -64,8 +58,8 @@ local function get_library_dirs()
 end
 
 ---Initialises file system watchers for papis.nvim
----@param dir_to_watch string #The directory to watch
----@param is_library_root? boolean #True if the supplied directory is the library root directory
+---@param dir_to_watch string The directory to watch
+---@param is_library_root? boolean True if the supplied directory is the library root directory
 local function init_fs_watcher(dir_to_watch, is_library_root)
   is_library_root = is_library_root or false
 
@@ -190,6 +184,7 @@ local function start_fs_watch_active_timer()
   log.debug("Timer started to check if need to take over fswatch")
   if not file_read_timer then
     file_read_timer = new_timer()
+    assert(file_read_timer, "Failed to create libuv timer")
   end
   uv.timer_start(
     file_read_timer,
