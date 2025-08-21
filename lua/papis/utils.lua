@@ -28,23 +28,23 @@ end
 local M = {}
 
 ---Splits string by `inputstr` and trims whitespace
----@param inputstr string #String to be split
----@param sep? string #String giving each character by which to split
----@return table #List of split elements
+---@param inputstr string String to be split
+---@param sep? string String giving each character by which to split
+---@return table string_parts List of split elements
 function M.do_split_str(inputstr, sep)
   if sep == nil then
     sep = "%s"
   end
-  local t = {}
+  local string_parts = {}
   for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
     str = str:match("^()%s*$") and "" or str:match("^%s*(.*%S)")
-    t[#t + 1] = str
+    string_parts[#string_parts + 1] = str
   end
-  return t
+  return string_parts
 end
 
 -- Open file outside neovim
----@param path string #Path to the file
+---@param path string Path to the file
 function M:do_open_file_external(path)
   local opentool = require("papis.sqlite-wrapper").config:get_conf_value("opentool")
   local opentool_table = self.do_split_str(opentool, " ")
@@ -53,6 +53,7 @@ function M:do_open_file_external(path)
   args[#args + 1] = path
 
   local handle
+  ---@diagnostic disable-next-line: missing-fields
   handle = vim.uv.spawn(command, {
     args = args,
     stdio = { nil, nil, nil }
@@ -64,8 +65,8 @@ function M:do_open_file_external(path)
 end
 
 ---Gets the file names given a list of full paths
----@param full_paths table|nil #A list of paths or nil
----@return table #A list of file names
+---@param full_paths table? A list of paths or nil
+---@return table filenames A list of file names
 function M.get_filenames(full_paths)
   local filenames = {}
   if full_paths then
@@ -78,7 +79,7 @@ function M.get_filenames(full_paths)
 end
 
 ---Open an entry's attached files
----@param papis_id string #The `papis_id` of the entry
+---@param papis_id string The `papis_id` of the entry
 function M:do_open_attached_files(papis_id)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   local entry = db.data:get({ papis_id = papis_id }, { "files", "id" })[1]
@@ -119,8 +120,8 @@ function M:on_popup_close()
 end
 
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
----@param papis_id string #The `papis_id` of the entry
----@param type string #Either "note" or "info", specifying the type of file
+---@param papis_id string The `papis_id` of the entry
+---@param type string Either "note" or "info", specifying the type of file
 function M:do_open_text_file(papis_id, type)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   log.debug("Opening a text file")
@@ -220,10 +221,10 @@ function M:do_open_text_file(papis_id, type)
 end
 
 ---Makes nui lines ready to be displayed
----@param lines_format_tbl table #A format table defining multiple lines
----@param entry table #An entry
----@return table #A list of nui lines
----@return integer #The maximum character length of the nui lines
+---@param lines_format_tbl table A format table defining multiple lines
+---@param entry table An entry
+---@return table nui_lines A list of nui lines
+---@return integer max_width The maximum character length of the nui lines
 function M:make_nui_lines(lines_format_tbl, entry)
   local lines = {}
   local line_widths = {}
@@ -290,8 +291,8 @@ function M:make_nui_lines(lines_format_tbl, entry)
 end
 
 ---Determine whether there's a process with a given pid
----@param pid? number #pid of the process
----@return boolean #True if process exists, false otherwise
+---@param pid? number pid of the process
+---@return boolean pid_exists True if process exists, false otherwise
 function M.does_pid_exist(pid)
   local output
   local cmd
@@ -316,11 +317,11 @@ function M.does_pid_exist(pid)
 end
 
 ---Creates a table of formatted strings to be displayed in a line (e.g. Telescope results pane)
----@param entry table #A papis entry
----@param line_format_tbl table #A table containing format strings defining the line
----@param use_shortitle? boolean #If true, use short titles
----@param remove_editor_if_author? boolean #If true, remove editor if author exists
----@return table #A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
+---@param entry table A papis entry
+---@param line_format_tbl table A table containing format strings defining the line
+---@param use_shortitle? boolean If true, use short titles
+---@param remove_editor_if_author? boolean If true, remove editor if author exists
+---@return table formatted_str_and_hl A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
 function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_editor_if_author)
   local enable_icons = require("papis.config").enable_icons
 
@@ -417,7 +418,7 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
       end
     elseif line_item_copy[4] == "force_space" then
       -- set icon to empty space
-      line_item_copy[2] = "  " -- TODO: this only works for icons, hardcoded because luajit doesn't support utf8.len
+      line_item_copy[2] = "  " -- NOTE: this only works for icons, hardcoded because luajit doesn't support utf8.len
       -- add dummy element
       processed_string = "dummy"
     elseif line_item_copy[1] == "vspace" then

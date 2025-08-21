@@ -24,7 +24,7 @@ local parse_query = ts.query.parse(
 local M = {}
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
----@return boolean #True if info_name file, false otherwise
+---@return boolean is_available True if info_name file, false otherwise
 function M.is_available()
   local is_available = false
   local current_filepath = Path(api.nvim_buf_get_name(0))

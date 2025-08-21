@@ -26,11 +26,11 @@ function M.get_trigger_characters()
 end
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
----@return boolean #True if info_name file, false otherwise
+---@return boolean is_available True if info_name file, false otherwise
 M.enabled = common.is_available
 
 ---Completes the current request
----@param _ table #The ctx table
+---@param _ table The ctx table
 ---@param callback function
 function M:get_completions(_, callback)
   -- Insert a space after the dash and move cursor

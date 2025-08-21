@@ -24,9 +24,9 @@ local fs_watching_stopped = false
 local event_timestamps = {}
 
 ---Uses libuv to start file system watchers
----@param path string #The path to watch
----@param on_event function #Function to run on file system event
----@param on_error function #Function to run on error
+---@param path string The path to watch
+---@param on_event function Function to run on file system event
+---@param on_error function Function to run on error
 local function do_watch(path, on_event, on_error)
   local handle = uv.new_fs_event()
   if not handle then
@@ -47,7 +47,7 @@ local function do_watch(path, on_event, on_error)
 end
 
 ---Gets all directories in the library_dir
----@return table #A list of all directories in library_dir
+---@return table library_dirs A list of all directories in library_dir
 local function get_library_dirs()
   local library_dir = Path(db.config:get_conf_value("dir"))
   local library_dirs = {}
@@ -58,8 +58,8 @@ local function get_library_dirs()
 end
 
 ---Initialises file system watchers for papis.nvim
----@param dir_to_watch string #The directory to watch
----@param is_library_root? boolean #True if the supplied directory is the library root directory
+---@param dir_to_watch string The directory to watch
+---@param is_library_root? boolean True if the supplied directory is the library root directory
 local function init_fs_watcher(dir_to_watch, is_library_root)
   is_library_root = is_library_root or false
 

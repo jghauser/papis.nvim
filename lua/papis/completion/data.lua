@@ -23,7 +23,7 @@ local function get_all_tags()
 end
 
 ---Makes a list of strings ready for use by completion
----@return table #Has structure {{ word = str, label = str, insertText = str, filterText = str } ...}
+---@return table completion_items Has structure {{ word = str, label = str, insertText = str, filterText = str } ...}
 local function make_completion_items()
   local completion_items = {}
   local tags = get_all_tags()
@@ -44,7 +44,7 @@ local function init_tbl()
   })
 
   ---Gets the list of all tags
-  ---@return table #Has structure {{ tag_strings = tbl_of_tags }}
+  ---@return table Has structure {{ tag_strings = tbl_of_tags }}
   function db.completion:get()
     return self:__get({
       where = { id = 1 },

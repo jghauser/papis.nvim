@@ -186,7 +186,7 @@ local default_config = {
 local M = vim.deepcopy(default_config)
 
 ---Get the cite_format for the current filetype
----@return table #cite_format to be used for the filetype. If table, then first is for inserting, second for parsing
+---@return table cite_format The citation format to be used for the filetype. If table, then first is for inserting, second for parsing
 function M:get_cite_format()
   local filetype = vim.bo.filetype
 
@@ -207,7 +207,7 @@ function M:get_cite_format()
 end
 
 ---Updates the default configuration with user supplied options and gets conf from Papis
----@param opts table #Same format as default_config and contains user config
+---@param opts table Same format as default_config and contains user config
 function M:update(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 

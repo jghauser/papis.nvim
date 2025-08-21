@@ -80,7 +80,7 @@ local function get_precalc()
   return telescope_precalc
 end
 
----Defines the papis.nvim telescope picker
+---Defines the papis search telescope picker
 ---@param opts table? #Options for the papis picker
 local function papis_picker(opts)
   opts = opts or {}

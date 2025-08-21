@@ -26,6 +26,7 @@ local function make_start_autocmd()
 end
 
 ---Checks whether dependencies are available
+---@return boolean #True if all dependencies are available, false otherwise
 local function are_dependencies_available()
   local dependencies = { "papis", config.yq_bin }
   for _, dependency in ipairs(dependencies) do
@@ -43,7 +44,7 @@ end
 local M = {}
 
 ---This function is run when neovim starts and sets up papis.nvim.
----@param opts table #User configuration
+---@param opts table User configuration
 function M.setup(opts)
   -- update config with user config
   config:update(opts)

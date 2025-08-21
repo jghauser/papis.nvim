@@ -1,5 +1,5 @@
 --
--- PAPIS | TELESCOPE | ACTIONS
+-- PAPIS | SEARCH | TELESCOPE | ACTIONS
 --
 --
 -- With some code from: https://github.com/nvim-telescope/telescope-bibtex.nvim

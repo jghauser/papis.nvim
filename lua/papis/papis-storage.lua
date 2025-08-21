@@ -39,8 +39,8 @@ local function is_valid_entry(entry, path)
 end
 
 ---Reads the info file at the path, converts it to json and decodes that
----@param path string #The path to the info file
----@return table|nil #The entry as a table, or nil if something goes wrong
+---@param path string The path to the info file
+---@return table|nil entry The entry as a table, or nil if something goes wrong
 local function read_yaml(path)
   log.trace("Reading path: " .. path)
   local entry
@@ -62,10 +62,9 @@ local function read_yaml(path)
   return entry
 end
 
----Converts the names of certain keys in an entry to the format expected
----by papis.nvim
----@param entry table #The entry as read from the info file
----@return table #The entry with converted key names
+---Converts the names of certain keys in an entry to the format expected by papis.nvim
+---@param entry table The entry as read from the info file
+---@return table entry The entry with converted key names
 local function do_convert_entry_keys(entry)
   for key_tbl, key_storage in pairs(key_name_conversions) do
     if entry[key_storage] then
@@ -77,9 +76,9 @@ local function do_convert_entry_keys(entry)
 end
 
 ---Creates full paths from filenames and a path
----@param filenames string|table #Filename as string if single path, otherwise table of filename strings
----@param path string #Path to files
----@return table #Table of string with full paths
+---@param filenames string|table Filename as string if single path, otherwise table of filename strings
+---@param path string Path to files
+---@return table full_paths Table of string with full paths
 local function make_full_paths(filenames, path)
   if type(filenames) == "string" then
     filenames = { filenames }
@@ -96,8 +95,8 @@ end
 local M = {}
 
 ---This function gets mtime of info_name files in a specific path or in all paths
----@param paths? table #A list with paths of papis entries
----@return table #A list of { path = path, mtime = mtime } values
+---@param paths? table A list with paths of papis entries
+---@return table metadata A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
   local library_dir = Path(db.config:get_conf_value("dir"))
   local info_name = db.config:get_conf_value("info_name")
@@ -118,8 +117,8 @@ function M.get_metadata(paths)
 end
 
 ---This function is used to get info for some or all papis entries. Only valid entries are returned.
----@param metadata? table #A list with { path = path, mtime = mtime } values
----@return table #A list of {{ papis_id = papis_id, key = val, ...}, { path = path, mtime = mtime }} values.
+---@param metadata? table A list with { path = path, mtime = mtime } values
+---@return table data_complete A list of {{ papis_id = papis_id, key = val, ...}, { path = path, mtime = mtime }} values.
 function M.get_data_full(metadata)
   metadata = metadata or M.get_metadata()
   local data_complete = {}

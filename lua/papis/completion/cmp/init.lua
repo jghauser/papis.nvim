@@ -26,7 +26,7 @@ function M:get_trigger_characters()
 end
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
----@return boolean #True if info_name file, false otherwise
+---@return boolean is_available True if info_name file, false otherwise
 M.is_available = common.is_available
 
 ---Completes the current request

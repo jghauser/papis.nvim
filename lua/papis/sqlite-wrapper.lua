@@ -56,8 +56,8 @@ local tbl_methods = {
 }
 
 ---General sqlite get function
----@param where? table #The sqlite where clause defining which rows' data to return
----@param select? table #The sqlite select statement defining which columns to return
+---@param where? table The sqlite where clause defining which rows' data to return
+---@param select? table The sqlite select statement defining which columns to return
 ---@return table #Has structure { { col1 = value1, col2 = value2 ... } ... } giving queried data
 function tbl_methods.for_each:get(where, select)
   return self:__get({
@@ -67,9 +67,9 @@ function tbl_methods.for_each:get(where, select)
 end
 
 ---General sqlite get single value function
----@param where table #The sqlite where clause defining which rows' data to return
----@param key string #The key of which to return the value
----@return unknown #The value queried
+---@param where table The sqlite where clause defining which rows' data to return
+---@param key string The key of which to return the value
+---@return unknown result The value queried
 function tbl_methods.for_each:get_value(where, key)
   if type(key) ~= "string" then
     error("get_value() needs to be be called with a single key name")
@@ -87,8 +87,8 @@ function tbl_methods.for_each:get_value(where, key)
 end
 
 ---Updates a row
----@param where table #The sqlite where clause defining which rows' data to return
----@param new_values table #The new row to be inserted
+---@param where table The sqlite where clause defining which rows' data to return
+---@param new_values table The new row to be inserted
 ---@return boolean #Whether update successful
 function tbl_methods.for_each:update(where, new_values)
   return self:__update({
@@ -98,8 +98,8 @@ function tbl_methods.for_each:update(where, new_values)
 end
 
 ---Updates a row, deleting fields that don't exist in `new_row`
----@param where table #The sqlite where clause defining which rows' data to return
----@param new_values table #The new row to be inserted
+---@param where table The sqlite where clause defining which rows' data to return
+---@param new_values table The new row to be inserted
 function tbl_methods.for_each:clean_update(where, new_values)
   local id = self:get_value(where, "id")
   new_values.id = id
@@ -120,7 +120,7 @@ function tbl_methods.config:get_conf_value(key)
 end
 
 ---Gets the pid of the neovim instance that is running file watchers
----@return number? #Pid of the relevant process if they are running, nil if not
+---@return number? is_running Pid of the relevant process if they are running, nil if not
 function tbl_methods.state:get_fw_running()
   local is_running
   if not self:empty() then
@@ -140,7 +140,7 @@ function tbl_methods.state:set_fw_running(pid)
 end
 
 ---Creates the schema of the config table
----@return table #The config table schema
+---@return table tbl_schema The config table schema
 local function get_config_tbl_schema()
   ---@type table<string, boolean|table>
   local tbl_schema = { id = true, }
@@ -152,8 +152,8 @@ local function get_config_tbl_schema()
 end
 
 ---Checks whether the schema has changed.
----@param new_schema table #The new schema
----@param old_schema table #The old schema
+---@param new_schema table The new schema
+---@param old_schema table The old schema
 ---@return boolean #True if schema has changed, false otherwise
 local function has_schema_changed(new_schema, old_schema)
   local old_schema_okays = sqlite_utils.okeys(old_schema)
@@ -231,9 +231,9 @@ local M = sqlite({
   opts = { busy_timeout = 30000 },
 })
 
----Creates a table with methods
----@param tbl_name string #The name of the table
----@return table #The table with methods
+---Creates a sqlite table with methods
+---@param tbl_name string The name of the table
+---@return table tbl The table with methods
 function M:create_tbl_with_methods(tbl_name)
   local tbl = self:tbl(tbl_name, schemas[tbl_name])
   for method_name, method in pairs(tbl_methods.for_each) do
