@@ -114,8 +114,8 @@ local default_config = {
       {
         { "author", "%s", "PapisPopupAuthor" },
         { "vspace", "vspace" },
-        { "files", { "󰈙 ", "F " }, "PapisResultsFiles" },
-        { "notes", { "󰆈 ", "N " }, "PapisResultsNotes" },
+        { "files", { fallback = { "󰈙 ", "F " } }, "PapisResultsFiles" },
+        { "notes", { fallback = { "󰆈 ", "N " } }, "PapisResultsNotes" },
       },
       { "year",  "%s", "PapisPopupYear" },
       { "title", "%s", "PapisPopupTitle" },
@@ -143,15 +143,15 @@ local default_config = {
       { "year", "%s", "PapisPreviewYear" },
       { "title", "%s", "PapisPreviewTitle" },
       { "empty_line" },
-      { "journal", "%s", "PapisPreviewValue", "show_key", { "󱀁  ", "%s: " }, "PapisPreviewKey" },
-      { "type", "%s", "PapisPreviewValue", "show_key", { "󰀼  ", "%s: " }, "PapisPreviewKey" },
-      { "ref", "%s", "PapisPreviewValue", "show_key", { "󰌋  ", "%s: " }, "PapisPreviewKey" },
-      { "tags", "%s", "PapisPreviewValue", "show_key", { "󰓹  ", "%s: " }, "PapisPreviewKey" },
-      { "abstract", "%s", "PapisPreviewValue", "show_key", { "󰭷  ", "%s: " }, "PapisPreviewKey" },
+      { "journal", "%s", "PapisPreviewValue", "show_key", { fallback = { "󱀁  ", "%s: " } }, "PapisPreviewKey" },
+      { "type", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰀼  ", "%s: " } }, "PapisPreviewKey" },
+      { "ref", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰌋  ", "%s: " } }, "PapisPreviewKey" },
+      { "tags", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰓹  ", "%s: " } }, "PapisPreviewKey" },
+      { "abstract", "%s", "PapisPreviewValue", "show_key", { fallback = { "󰭷  ", "%s: " } }, "PapisPreviewKey" },
     },
     results_format = {
-      { "files", { "󰈙 ", "F " }, "PapisResultsFiles", "force_space" },
-      { "notes", { "󰆈 ", "N " }, "PapisResultsNotes", "force_space" },
+      { "files", { fallback = { "󰈙 ", "F " } }, "PapisResultsFiles", "force_space" },
+      { "notes", { fallback = { "󰆈 ", "N " } }, "PapisResultsNotes", "force_space" },
       { "author", "%s ", "PapisResultsAuthor" },
       { "year", "(%s) ", "PapisResultsYear" },
       { "title", "%s", "PapisResultsTitle" },
@@ -160,6 +160,36 @@ local default_config = {
   ["completion"] = {
     enable = true,
     provider = "auto", ---@type "auto" | "cmp" | "blink"
+  },
+  ["ask"] = {
+    enable = false,
+    provider = "auto", ---@type "auto" | "snacks" | "telescope"
+    slash_command_args = {
+      ask = { "ask", "--output", "json", "{input}" },
+      shortask = { "ask", "--output", "json", "--evidence-k", "5", "--max-sources", "3", "{input}" },
+      longask = { "ask", "--output", "json", "--evidence-k", "20", "--max-sources", "10", "{input}" },
+      index = { "ask", "index" },
+    },
+    initial_sort_by_time_added = true,
+    picker_keymaps = {
+      ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
+      ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
+      ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+    },
+    preview_format = {
+      { "question", "%s", "PapisPreviewQuestion", "show_key", { fallback = { "󰍉  ", "Question: " } }, "PapisPreviewKey" },
+      { "empty_line" },
+      { "answer", "%s", "PapisPreviewAnswer", "show_key", { fallback = { "󱆀  ", "Answer: " } }, "PapisPreviewKey" },
+    },
+    results_format = {
+      { "slash", {
+        ask = { "󰪡  ", "M " },
+        shortask = { "󰄰  ", "S" },
+        longask = { "󰪥  ", "L " },
+      }, "PapisResultsFiles", "force_space" },
+      { "question",   "%s ",   "PapisResultsQuestion" },
+      { "time_added", "(%s) ", "PapisResultsCreatedAt" },
+    },
   },
   ["papis-storage"] = {
     enable = true,

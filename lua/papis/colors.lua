@@ -13,6 +13,8 @@ local links = {
   PreviewTitle = "@variable",
   PreviewKey = "@property",
   PreviewValue = "@variable",
+  PreviewQuestion = "Title",
+  PreviewAnswer = "@variable",
   PopupAuthor = "Title",
   PopupYear = "@string",
   PopupTitle = "@variable",
@@ -21,6 +23,11 @@ local links = {
   ResultsTitle = "@variable",
   ResultsFiles = "@property",
   ResultsNotes = "@comment.warning",
+  ResultsQuestion = "Title",
+  ResultsCreatedAt = "@string",
+  AskQuestion = "@constant",
+  AskAnswer = "@variable",
+  AskDate = "@comment",
 }
 
 ---Sets up all the default highlight groups
