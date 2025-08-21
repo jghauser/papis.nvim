@@ -24,28 +24,28 @@ if not db_uri:exists() then
 end
 
 ---Queries Papis to get various options.
----@return table #A table { info_name = val, dir = val }
+---@return table papis_py_conf A table with Papis configuration fields: { info_name = val, dir = val }
 local function get_papis_py_conf()
-  local papis_py_conf_new = {}
-  local testing_conf_path = ""
-  if is_testing_session then
-    testing_conf_path = "-c ./tests/papis_config "
-  end
+  local papis_py_conf = {}
   for _, key in ipairs(papis_conf_keys) do
-    local handle = io.popen("papis " .. testing_conf_path .. "config " .. key)
-    if handle then
-      papis_py_conf_new[string.gsub(key, "-", "_")] = string.gsub(handle:read("*a"), "\n", "")
-      handle:close()
+    local cmd = vim.list_extend(vim.deepcopy(config.papis_cmd_base), { "config", key })
+    local result = vim.system(cmd, { text = true }):wait()
+
+    if result.code == 0 and result.stdout then
+      papis_py_conf[string.gsub(key, "-", "_")] = string.gsub(result.stdout, "\n", "")
+    else
+      vim.notify(string.format("Failed to get papis config for key '%s': %s", key, result.stderr or "unknown error"),
+        vim.log.levels.WARN)
     end
   end
-  if papis_py_conf_new.dir then
-    local dir = papis_py_conf_new.dir
+  if papis_py_conf.dir then
+    local dir = papis_py_conf.dir
     if string.sub(dir, 1, 1) == "~" then
       dir = os.getenv("HOME") .. string.sub(dir, 2, #dir)
     end
-    papis_py_conf_new.dir = dir
+    papis_py_conf.dir = dir
   end
-  return papis_py_conf_new
+  return papis_py_conf
 end
 
 ---Table that contains all table methods (defined below)

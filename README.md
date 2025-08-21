@@ -334,6 +334,8 @@ create_new_note_fn = function(papis_id, notes_name)
     )
   )
 end,
+-- Base papis command (can for example be used to change the config file used).
+papis_cmd_base = { "papis" },
 
 -- Filetypes that start papis.nvim.
 init_filetypes = { "markdown", "norg", "yaml", "typst" },

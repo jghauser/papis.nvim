@@ -86,6 +86,7 @@ local default_config = {
       )
     )
   end,
+  papis_cmd_base = { "papis" },
   init_filetypes = { "markdown", "norg", "yaml", "typst" },
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
