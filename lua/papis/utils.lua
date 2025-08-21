@@ -168,12 +168,22 @@ function M:do_open_text_file(papis_id, type)
         },
       })
 
-      popup:map("n", { "Y", "y", "<cr>" }, function(_)
+      popup:map("n", { "Y", "y", "<cr>" }, function()
         popup:unmount()
         local config = require("papis.config")
-        local create_new_note_fn = config.create_new_note_fn
         local notes_name = db.config:get_conf_value("notes_name")
-        create_new_note_fn(papis_id, notes_name)
+
+        local new_note_cmd = vim.list_extend(vim.deepcopy(config.papis_cmd_base),
+          { "update", "--set", "notes", notes_name, "papis_id:" .. papis_id })
+        local result = vim.system(new_note_cmd, { text = true }):wait()
+        if result.code ~= 0 then
+          vim.notify(
+            string.format("Failed to create new note for entry with papis_id: '%s': %s", papis_id,
+              result.stderr or "unknown error"),
+            vim.log.levels.ERROR)
+          return
+        end
+
         local entry_has_note = new_timer()
         assert(entry_has_note, "Failed to create libuv timer")
         local file_opened = false

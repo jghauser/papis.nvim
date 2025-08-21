@@ -323,17 +323,6 @@ db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
 -- Name of the `yq` executable.
 yq_bin = "yq",
 
--- Function to execute when adding a new note. `ref` is the citation key of the
--- relevant entry and `notes_name` is the name of the notes file.
-create_new_note_fn = function(papis_id, notes_name)
-  vim.fn.system(
-    string.format(
-      "papis update --set notes %s papis_id:%s",
-      vim.fn.shellescape(notes_name),
-      vim.fn.shellescape(papis_id)
-    )
-  )
-end,
 -- Base papis command (can for example be used to change the config file used).
 papis_cmd_base = { "papis" },
 

@@ -77,15 +77,6 @@ local default_config = {
   },
   db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
   yq_bin = "yq",
-  create_new_note_fn = function(papis_id, notes_name)
-    vim.fn.system(
-      string.format(
-        "papis update --set notes %s papis_id:%s",
-        vim.fn.shellescape(notes_name),
-        vim.fn.shellescape(papis_id)
-      )
-    )
-  end,
   papis_cmd_base = { "papis" },
   init_filetypes = { "markdown", "norg", "yaml", "typst" },
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
@@ -229,18 +220,6 @@ function M:update(opts)
       use_console = "false",
       use_file = "true",
     }
-  end
-
-  if newconf.enable_modules["testing"] == true then
-    newconf.create_new_note_fn = function(papis_id, notes_name)
-      vim.fn.system(
-        string.format(
-          "papis -c ./tests/papis_config update --set notes %s papis_id:%s",
-          vim.fn.shellescape(notes_name),
-          vim.fn.shellescape(papis_id)
-        )
-      )
-    end
   end
 
   -- set main config table
