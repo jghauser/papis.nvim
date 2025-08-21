@@ -49,6 +49,15 @@ function M.setup(opts)
   -- update config with user config
   config:update(opts)
 
+  -- check if old `enable_modules` option was used
+  if config.enable_modules then
+    vim.notify(
+      [[The 'enable_module' option is deprecated. Please use e.g. `["ask"] = { enable = true, }` instead. The papis.nvim plugin will abort now.]],
+      vim.log.levels.ERROR
+    )
+    return
+  end
+
   -- create autocmd that starts papis.nvim for configured filetypes
   make_start_autocmd()
 end
