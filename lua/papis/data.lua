@@ -10,34 +10,14 @@ local enabled_modules = require("papis.config").enabled_modules
 local log = require("papis.log")
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
----Updates the module tables. Either it will update the entries in `ids` or, if
----the module table is empty, all entries
----@param metadata table #Has structure { path = path, mtime = mtime }
-local function update_module_tbls(metadata)
-  for module_name, _ in pairs(enable_modules) do
-    local has_module, module = pcall(require, "papis." .. module_name .. ".data")
+---Updates the module tables
+local function update_module_tbls()
+  for module_name, _ in pairs(enabled_modules) do
+    local has_module, _ = pcall(require, "papis." .. module_name .. ".data")
     if has_module then
       log.debug(string.format("Updating module '%s' sqlite table", module_name))
       module_name = string.gsub(module_name, "-", "_")
-      if module.opts.has_row_for_each_main_tbl_row then
-        -- this is to handle modules newly activated
-        if db[module_name]:empty() then
-          db.data:each(function(row)
-            db[module_name]:update(row.id)
-          end)
-        else
-          -- we're adding or editing an entry (deletions cascade)
-          if metadata.mtime then
-            local id = db.metadata:get_value({ path = metadata.path }, "entry")
-            -- check if metadata exists (which it might not if the .yaml couldnt be read and wasn't added to db)
-            if id then
-              db[module_name]:update(id)
-            end
-          end
-        end
-      else
-        db[module_name]:update()
-      end
+      db[module_name]:update()
     end
   end
 end
@@ -81,10 +61,6 @@ local function update_main_tbls(metadata)
       db.metadata:remove({ entry = id })
       for module_name, _ in pairs(enabled_modules) do
         module_name = string.gsub(module_name, "-", "_")
-        local has_module, module = pcall(require, "papis." .. module_name .. ".data")
-        if has_module and module.opts.has_row_for_each_main_tbl_row then
-          db[module_name]:remove({ entry = id })
-        end
       end
     end
   end
@@ -109,7 +85,7 @@ local function sync_storage_data()
       log.debug("An entry on disk has been deleted. Remove from database...")
       metadata_entry = { path = path_old, mtime = nil }
       update_main_tbls(metadata_entry)
-      update_module_tbls(metadata_entry)
+      update_module_tbls()
     end
   end
   -- handle changed and new files
@@ -119,7 +95,7 @@ local function sync_storage_data()
     if mtime_new ~= mtime_old then
       log.debug("An entry on disk is new or has changed. Updating from yaml...")
       update_main_tbls(metadata_entry)
-      update_module_tbls(metadata_entry)
+      update_module_tbls()
     end
   end
 end
@@ -131,7 +107,7 @@ local M = {}
 function M.update_db(metadata)
   log.debug("Updating the database")
   update_main_tbls(metadata)
-  update_module_tbls(metadata)
+  update_module_tbls()
   local db_last_modified = os.time()
   db.state:update({ id = 1 }, { db_last_modified = db_last_modified })
 end
@@ -141,7 +117,7 @@ function M:reset_db()
   db.data:drop()
   db.metadata:drop()
   -- HACK because `on_delete = cascade` doesn't work
-  for module_name, _ in pairs(enable_modules) do
+  for module_name, _ in pairs(enabled_modules) do
     module_name = string.gsub(module_name, "-", "_")
     if db[module_name] then
       db[module_name]:drop()
