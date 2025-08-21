@@ -31,7 +31,7 @@ function M.ref_insert(picker, item)
 
   -- Check if the cursor is enclosed by start_str and end_str
   local enclosed = current_line:sub(1, cursor_pos - 1):find(start_str, 1, true)
-    and current_line:sub(cursor_pos):find(end_str, 1, true)
+      and current_line:sub(cursor_pos):find(end_str, 1, true)
 
   if not enclosed then
     string_to_insert = start_str
