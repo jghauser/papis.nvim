@@ -158,6 +158,7 @@ local default_config = {
     },
   },
   ["completion"] = {
+    enable = true,
     provider = "auto", ---@type "auto" | "cmp" | "blink"
   },
   ["papis-storage"] = {
