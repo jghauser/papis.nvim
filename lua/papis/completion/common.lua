@@ -38,7 +38,7 @@ function M.is_available()
     assert(parser, "No parser found for yaml. Please ensure you have the yaml treesitter parser installed.")
     local root = parser:parse()[1]:root()
     local start_row, _, _, end_row, _, _ = unpack(ts.get_range(root))
-    local cur_row, cur_col = unpack(api.nvim_win_get_cursor(0))
+    local cur_row, _ = unpack(api.nvim_win_get_cursor(0))
     -- check all captured nodes
     for id, node, _ in parse_query:iter_captures(root, 0, start_row, end_row) do
       local name = parse_query.captures[id]
@@ -49,9 +49,6 @@ function M.is_available()
         -- check if cursor line is within captured node
         if node_start <= cur_row and (node_end + 1) >= cur_row then
           -- Check if current character is a dash and if it's at the beginning of a line
-          local line = api.nvim_buf_get_lines(0, cur_row - 1, cur_row, false)[1]
-          local trimmed_line_start = line:sub(1, cur_col):match("^%s*(.*)$")
-
           log.trace("completion is available")
           is_available = true
         end
