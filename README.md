@@ -19,6 +19,7 @@ Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for 
 - Automatically format new notes
 - Tag completion in `info.yaml` files
 - Insert formatted references
+- Use an LLM to ask questions about your library (requires the [Papis-ask](https://github.com/jghauser/papis-ask) plugin)
 
 And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
 
@@ -62,6 +63,16 @@ Commands:
 ![formatter_trimmed](https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif)
 
 When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
+
+### *Ask* module
+
+Ask questions about your library and browse the LLM-generated answers with the picker. This functionality depends on the [Papis-ask](https://github.com/jghauser/papis-ask) plugin.
+
+Commands:
+
+- `:Papis ask`: Opens a picker to questions and browse existing answers
+
+You can ask questions with (user-configurable) slash commands, for instance `/ask What is de se thought?`. In addition to `/ask`, papis.nvim by default ships with `/shortask` (limited number of sources), `/longask` (more sources), and `/index` (index new documents).
 
 ## The database
 
@@ -495,6 +506,54 @@ enable_icons = true,
     local lines = { table.concat(reference_data) }
     return lines
   end,
+},
+
+-- Configuration of the at-cursor module.
+["ask"] = {
+
+  -- Whether to enable this module.
+  enable = false,
+
+  -- Picker provider
+  provider = "auto", ---@type "auto" | "snacks" | "telescope"
+
+  -- Defines the arguments for available slash commands (they get added to `papis_cmd_base`).
+  -- You can call them with e.g. `/ask`. The {input} value gets replaced with the your input
+  -- (e.g. /ask MY INPUT).
+  slash_command_args = {
+    ask = { "ask", "--output", "json", "{input}" },
+    shortask = { "ask", "--output", "json", "--evidence-k", "5", "--max-sources", "3", "{input}" },
+    longask = { "ask", "--output", "json", "--evidence-k", "20", "--max-sources", "10", "{input}" },
+    index = { "ask", "index" },
+  },
+
+  -- Whether to initially sort entries by time-added.
+  initial_sort_by_time_added = true,
+
+  -- Picker keymaps
+  picker_keymaps = {
+    ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
+    ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
+    ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+  },
+
+  -- The format of the picker preview (see above for details).
+  preview_format = {
+    { "question", "%s", "PapisPreviewQuestion", "show_key", { fallback = { "󰍉  ", "Question: " } }, "PapisPreviewKey" },
+    { "empty_line" },
+    { "answer", "%s", "PapisPreviewAnswer", "show_key", { fallback = { "󱆀  ", "Answer: " } }, "PapisPreviewKey" },
+  },
+
+  -- The format of each line in the the picker results (see above for details).
+  results_format = {
+    { "slash", {
+      ask = { "󰪡  ", "M " },
+      shortask = { "󰄰  ", "S" },
+      longask = { "󰪥  ", "L " },
+    }, "PapisResultsFiles", "force_space" },
+    { "question",   "%s ",   "PapisResultsQuestion" },
+    { "time_added", "(%s) ", "PapisResultsCreatedAt" },
+  },
 },
 
 -- Configurations relevant for parsing `info.yaml` files.

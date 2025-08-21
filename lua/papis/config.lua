@@ -161,6 +161,36 @@ local default_config = {
     enable = true,
     provider = "auto", ---@type "auto" | "cmp" | "blink"
   },
+  ["ask"] = {
+    enable = false,
+    provider = "auto", ---@type "auto" | "snacks" | "telescope"
+    slash_command_args = {
+      ask = { "ask", "--output", "json", "{input}" },
+      shortask = { "ask", "--output", "json", "--evidence-k", "5", "--max-sources", "3", "{input}" },
+      longask = { "ask", "--output", "json", "--evidence-k", "20", "--max-sources", "10", "{input}" },
+      index = { "ask", "index" },
+    },
+    initial_sort_by_time_added = true,
+    picker_keymaps = {
+      ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
+      ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
+      ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+    },
+    preview_format = {
+      { "question", "%s", "PapisPreviewQuestion", "show_key", { fallback = { "󰍉  ", "Question: " } }, "PapisPreviewKey" },
+      { "empty_line" },
+      { "answer", "%s", "PapisPreviewAnswer", "show_key", { fallback = { "󱆀  ", "Answer: " } }, "PapisPreviewKey" },
+    },
+    results_format = {
+      { "slash", {
+        ask = { "󰪡  ", "M " },
+        shortask = { "󰄰  ", "S" },
+        longask = { "󰪥  ", "L " },
+      }, "PapisResultsFiles", "force_space" },
+      { "question",   "%s ",   "PapisResultsQuestion" },
+      { "time_added", "(%s) ", "PapisResultsCreatedAt" },
+    },
+  },
   ["papis-storage"] = {
     enable = true,
     key_name_conversions = {
