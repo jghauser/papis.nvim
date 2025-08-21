@@ -44,8 +44,8 @@ let
           vim.opt.runtimepath:prepend(vim.fn.getcwd())
 
           -- Read configuration from environment
-          local completion_provider = os.getenv("PAPIS_TEST_COMPLETION")
-          local search_provider = os.getenv("PAPIS_TEST_SEARCH")
+          local completion_provider = os.getenv("PAPIS_TEST_COMPLETION_PROVIDER")
+          local picker_provider = os.getenv("PAPIS_TEST_PICKER_PROVIDER")
           local load_papis = os.getenv("PAPIS_TEST_LOAD_PAPIS")
 
           -- Completion setup
@@ -75,14 +75,14 @@ let
           end
 
           -- Picker setup
-          if search_provider == "telescope" then
+          if picker_provider == "telescope" then
             local telescope = require("telescope")
             telescope.setup({
               defaults = {
                 layout_strategy = "vertical",
               },
             })
-          elseif search_provider == "snacks" then
+          elseif picker_provider == "snacks" then
             require("snacks").setup({
               picker = {},
             })
@@ -103,7 +103,7 @@ let
               enable_keymaps = true,
               db_path = db_path,
               ["search"] = {
-                provider = search_provider,
+                provider = picker_provider,
               },
               ["completion"] = {
                 provider = completion_provider

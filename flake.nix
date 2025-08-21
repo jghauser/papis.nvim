@@ -61,7 +61,7 @@
                     ''
                       # Default values
                       COMPLETION_PROVIDER="blink"
-                      SEARCH_PROVIDER="snacks"
+                      PICKER_PROVIDER="snacks"
                       LOAD_PAPIS=true
                       RM_DB=false
 
@@ -72,8 +72,8 @@
                             COMPLETION_PROVIDER="$2"
                             shift 2
                             ;;
-                          --search|-s)
-                            SEARCH_PROVIDER="$2"
+                          --picker|-p)
+                            PICKER_PROVIDER="$2"
                             shift 2
                             ;;
                           --no-papis|-n)
@@ -88,7 +88,7 @@
                             echo "Usage: nvim-test [options]"
                             echo "Options:"
                             echo "  -c, --completion ENGINE    Completion engine (cmp, blink)"
-                            echo "  -s, --search ENGINE        Picker engine (telescope, snacks)"
+                            echo "  -p, --picker ENGINE        Picker engine (telescope, snacks)"
                             echo "  -n, --no-papis             Do not load papis.nvim"
                             echo "  -r, --rm-db                Clear the papis.nvim db before start"
                             echo "  -h, --help                 Show this help"
@@ -112,17 +112,17 @@
                           ;;
                       esac
 
-                      case "$SEARCH_PROVIDER" in
+                      case "$PICKER_PROVIDER" in
                         telescope|snacks) ;;
                         *)
-                          echo "Invalid picker engine: $SEARCH_PROVIDER"
+                          echo "Invalid picker engine: $PICKER_PROVIDER"
                           echo "Valid options: telescope, snacks"
                           exit 1
                           ;;
                       esac
 
                       echo "Using completion engine: $COMPLETION_PROVIDER"
-                      echo "Using picker engine: $SEARCH_PROVIDER"
+                      echo "Using picker engine: $PICKER_PROVIDER"
                       echo "Loading papis.nvim: $LOAD_PAPIS"
 
                       if [ "$RM_DB" = true ]; then
@@ -135,8 +135,8 @@
                       ${pkgs.coreutils}/bin/cp -r ./tests/files/library ${test-lib-dir}
 
                       # Export configuration as environment variables
-                      export PAPIS_TEST_COMPLETION="$COMPLETION_PROVIDER"
-                      export PAPIS_TEST_SEARCH="$SEARCH_PROVIDER"
+                      export PAPIS_TEST_COMPLETION_PROVIDER="$COMPLETION_PROVIDER"
+                      export PAPIS_TEST_PICKER_PROVIDER="$PICKER_PROVIDER"
                       export PAPIS_TEST_LOAD_PAPIS="$LOAD_PAPIS"
 
                       echo "Starting Neovim..."
