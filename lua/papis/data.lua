@@ -5,8 +5,8 @@
 -- Manages the data. Talks to storage and database.
 --
 
-local enable_modules = require("papis.config").enable_modules
 local papis_storage = assert(require("papis.papis-storage"), "Failed to load papis.papis-storage")
+local enabled_modules = require("papis.config").enabled_modules
 local log = require("papis.log")
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
@@ -79,7 +79,7 @@ local function update_main_tbls(metadata)
       db.data:remove({ id = id })
       -- HACK because `on_delete = cascade` doesn't work
       db.metadata:remove({ entry = id })
-      for module_name, _ in pairs(enable_modules) do
+      for module_name, _ in pairs(enabled_modules) do
         module_name = string.gsub(module_name, "-", "_")
         local has_module, module = pcall(require, "papis." .. module_name .. ".data")
         if has_module and module.opts.has_row_for_each_main_tbl_row then

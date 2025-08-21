@@ -213,12 +213,19 @@ Minimal setup:
 require("papis").setup({
   -- Enable the default keymaps (defaults to `false`)
   enable_keymaps = true,
+
   -- You might want to change the filetypes activating papis.nvim
   -- init_filetypes = { "markdown", "norg", "yaml", "typst" },
+
   -- If you don't have an appropriate font (like Nerd Font), you
   -- may want to disable icons. This may require a `:Papis reload data`.
   -- to take effect.
   -- enable_icons = false,
+
+  -- You can enable disabled modules (e.g. the 'ask' module) like so:
+  -- ["ask"] = {
+  --   enable = true,
+  -- },
 })
 ```
 
@@ -226,20 +233,6 @@ require("papis").setup({
   <summary>All configuration options (with defaults)</summary>
 
 ```lua
--- List of enabled papis.nvim modules.
-enable_modules = {
-  ["search"] = true,          -- Enables/disables the search module
-  ["completion"] = true,      -- Enables/disables the completion module
-  ["at-cursor"] = true,  -- Enables/disables the at-cursor module
-  ["formatter"] = true,       -- Enables/disables the formatter module
-  ["colors"] = true,          -- Enables/disables default highlight groups (you
-                              -- probably want this)
-  ["base"] = true,            -- Enables/disables the base module (you definitely
-                              -- want this)
-  ["debug"] = false,          -- Enables/disables the debug module (useful to
-                              -- troubleshoot and diagnose issues)
-},
-
 -- Defines citation formats for various filetypes. They define how citation strings
 -- are parsed and formatted when inserted. For each filetype, we may define:
 -- - `start_str`: Precedes the citation.
@@ -338,6 +331,9 @@ enable_icons = true,
 -- Configuration of the search module.
 ["search"] = {
 
+  -- Whether to enable this module.
+  enable = true,
+
   -- Picker provider
   provider = "auto", ---@type "auto" | "snacks" | "telescope"
 
@@ -412,12 +408,18 @@ enable_icons = true,
 -- Configuration of the completion module.
 ["completion"] = {
 
+  -- Whether to enable this module.
+  enable = true,
+
   -- Set the completion provider.
   provider = "auto", ---@type "auto" | "cmp" | "blink"
 },
 
 -- Configuration of the at-cursor module.
 ["at-cursor"] = {
+
+  -- Whether to enable this module.
+  enable = true,
 
   -- The format of the popup shown on `:Papis at-cursor show-popup` (equivalent to points 1-3
   -- of `preview_format`). Note that one of the lines is composed of multiple elements. Note
@@ -438,6 +440,9 @@ enable_icons = true,
 
 -- Configuration of formatter module.
 ["formatter"] = {
+
+  -- Whether to enable this module.
+  enable = true,
 
   -- This function runs when first opening a new note. The `entry` arg is a table
   -- containing all the information about the entry (see above `data_tbl_schema`).
@@ -491,6 +496,9 @@ enable_icons = true,
 -- Configurations relevant for parsing `info.yaml` files.
 ["papis-storage"] = {
 
+  -- Whether to enable this module.
+  enable = true,
+
   -- As lua doesn't deal well with '-', we define conversions between the format
   -- in the `info.yaml` and the format in papis.nvim's internal database.
   key_name_conversions = {
@@ -501,6 +509,20 @@ enable_icons = true,
   -- missing these keys will cause an error message and will not be added to
   -- the database.
   required_keys = { "papis_id", "ref" },
+},
+
+-- Configuration of custom HL groups
+["colors"] = {
+
+  -- Whether to enable this module.
+  enable = true,
+},
+
+-- Configuration of the debug module
+["debug"] = {
+
+  -- Whether to enable this module.
+  enable = false,
 },
 ```
 
