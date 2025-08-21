@@ -18,24 +18,22 @@ local required_keys = config["papis-storage"].required_keys
 local yq_bin = config.yq_bin
 
 ---Checks if a decoded entry is valid
----@param entry table|nil #The entry as a table or nil if entry wasn't read properly before
----@param path string #The path to the info file
----@return boolean #True if valid entry, false otherwise
-local function is_valid_entry(entry, path)
-  local is_valid = true
-  if entry then
-    for _, key in ipairs(required_keys) do
-      if not entry[key] then
-        vim.notify(string.format("The entry at '%s' is missing the key '%s' and will not be added.", path, key),
-          vim.log.levels.WARN)
-        is_valid = false
-      end
-    end
-  else
-    vim.notify(string.format("The entry at '%s' is faulty and will not be added.", path), vim.log.levels.WARN)
-    is_valid = false
+---@param entry table? The entry as a table or nil if entry wasn't read properly before
+---@param path string The path to the info file
+---@return table|nil entry True if valid entry, false otherwise
+local function validate_entry(entry, path)
+  if not entry then
+    vim.notify(("The entry at '%s' is faulty and will not be added."):format(path), vim.log.levels.WARN)
+    return nil
   end
-  return is_valid
+  for _, key in ipairs(required_keys) do
+    if not entry[key] then
+      vim.notify(("The entry at '%s' is missing the key '%s' and will not be added."):format(path, key),
+        vim.log.levels.WARN)
+      return nil
+    end
+  end
+  return entry
 end
 
 ---Reads the info file at the path, converts it to json and decodes that
@@ -125,9 +123,9 @@ function M.get_data_full(metadata)
   for _, metadata_v in ipairs(metadata) do
     local path = metadata_v.path
     local mtime = metadata_v.mtime
-    local entry = read_yaml(path)
-    if is_valid_entry(entry, path) then
-      entry = do_convert_entry_keys(entry) --NOTE: entry is never nil because of `is_valid_entry()`
+    local entry = validate_entry(read_yaml(path), path)
+    if entry then
+      entry = do_convert_entry_keys(entry)
       local data = {}
       for key, type_of_val in pairs(data_tbl_schema) do
         if type(type_of_val) == "table" then
