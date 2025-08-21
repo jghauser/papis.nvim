@@ -16,7 +16,6 @@ local sqlite_utils = require "sqlite.utils"
 local Path = require("pathlib")
 local config = require("papis.config")
 local db_uri = Path(config.db_path)
-local is_testing_session = config.enable_modules["testing"]
 local papis_conf_keys = config.papis_conf_keys
 
 if not db_uri:exists() then

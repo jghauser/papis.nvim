@@ -98,7 +98,6 @@ let
             local default_config = {
               enable_modules = {
                 ["debug"] = true,
-                ["testing"] = true,
               },
               papis_cmd_base = { "papis", "-c", "./tests/papis_config" },
               enable_keymaps = true,
