@@ -325,7 +325,7 @@ data_tbl_schema = {
 },
 
 -- Path to the papis.nvim database.
-db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
+db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
 
 -- Name of the `yq` executable.
 yq_bin = "yq",

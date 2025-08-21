@@ -75,7 +75,7 @@ local default_config = {
     tags = "luatable",
     files = "luatable",
   },
-  db_path = vim.fn.stdpath("data") .. "/papis_db/papis-nvim.sqlite3",
+  db_path = vim.fn.stdpath("data") .. "/papis/papis-nvim.sqlite3",
   yq_bin = "yq",
   create_new_note_fn = function(papis_id, notes_name)
     vim.fn.system(

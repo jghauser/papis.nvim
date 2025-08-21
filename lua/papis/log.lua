@@ -8,6 +8,8 @@
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
 
+local uv = vim.loop
+
 --- @alias LogLevel
 --- | "trace"
 --- | "debug"
@@ -67,7 +69,7 @@ M.new = function(config, standalone)
   config = vim.tbl_deep_extend("force", default_config, config)
   config.plugin = "papis.nvim" -- Force the plugin name to be papis.nvim
 
-  outfile = string.format("%s/%s.log", vim.api.nvim_call_function("stdpath", { "data" }), config.plugin)
+  outfile = string.format("%s/papis/%s.log", vim.api.nvim_call_function("stdpath", { "cache" }), config.plugin)
 
   local obj = standalone ~= nil and M or {}
 
@@ -113,8 +115,6 @@ M.new = function(config, standalone)
 
     -- Output to console
     if config.use_console == true then
-      local v = string.format("(%s)\n%s\n%s", os.date("%H:%M:%S"), lineinfo, msg)
-
       if config.highlights and level_config.hl then
         (vim.schedule_wrap(function()
           vim.cmd(string.format("echohl %s", level_config.hl))
@@ -134,6 +134,12 @@ M.new = function(config, standalone)
 
     -- Output to log file
     if config.use_file then
+      -- create parent folder if missing
+      local log_dir = outfile:match("(.+)/[^/]+$")
+      if log_dir and not uv.fs_stat(log_dir) then
+        uv.fs_mkdir(log_dir, 493) -- 0755 permissions
+      end
+
       local fp = assert(io.open(outfile, "a"))
       local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
       fp:write(str)
