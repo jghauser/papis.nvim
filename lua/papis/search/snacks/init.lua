@@ -7,56 +7,47 @@
 
 local config = require("papis.config")
 local utils = require("papis.utils")
-local db = require("papis.sqlite-wrapper")
 local actions = require("papis.search.snacks.actions")
-local wrap = config["search"].wrap
+local picker_common = assert(require("papis.search.picker_common"), "Failed to load papis.search.picker_common")
 
 local M = {}
 
+---Format a search entry for display in the picker
+---@param item snacks.picker.Item
+---@return table display_strings Formatted display strings
+function M.format(item, _)
+  local entry = item.entry
+  local results_format = config["search"].results_format
+  local display_strings = utils:format_display_strings(entry, results_format, false, true)
+  return display_strings
+end
+
+---Preview function for search entries
+---@type snacks.picker.preview
+---@param ctx snacks.picker.preview.ctx
+function M.preview(ctx)
+  picker_common.create_preview(ctx.item.entry, ctx.buf, ctx.win)
+end
+
+---Finder function for search entries
+---@type snacks.picker.finder
+---@return snacks.picker.Item[] items List of items for the picker
 function M.find()
-  local data = db.data:get()
-  local entries = vim.tbl_map(function(entry)
-    local entry_precalc = db.search:get(entry.id)[1]
+  local entries = picker_common.load_entries()
+
+  local items = vim.tbl_map(function(entry)
     return {
       entry = entry,
-      text = entry_precalc.search_string,
-      timestamp = entry_precalc.timestamp,
+      text = picker_common.create_search_string(entry),
     }
-  end, data)
+  end, entries)
 
-  -- Sort by time added if config option is enabled
-  if config["search"].initial_sort_by_time_added then
-    table.sort(entries, function(a, b)
-      return a.timestamp > b.timestamp
-    end)
-  end
-
-  return entries
-end
-
----@param item snacks.picker.Item
-function M.format(item, _)
-  local fstr = db.search:get(item.entry.id)[1].displayer_tbl
-  return fstr
-end
-
----@type snacks.picker.preview
-function M.preview(ctx)
-  local entry = ctx.item.entry
-  local preview_lines = utils:make_nui_lines(config["search"].preview_format, entry)
-
-  vim.bo[ctx.buf].modifiable = true
-  vim.api.nvim_buf_set_lines(ctx.buf, 0, -1, false, {})
-  for line_nr, line in ipairs(preview_lines) do
-    line:render(ctx.buf, -1, line_nr)
-  end
-  vim.bo[ctx.buf].modifiable = false
-  vim.wo[ctx.win].wrap = wrap
+  return items
 end
 
 ---@type snacks.picker.Config Snacks picker configuration
 M.opts = {
-  source = "papis",
+  source = "papis-search",
   finder = M.find,
   format = M.format,
   preview = M.preview,

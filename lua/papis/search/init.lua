@@ -10,10 +10,6 @@ local config = require("papis.config")
 local provider = config.search.provider
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
-local db = require("papis.sqlite-wrapper")
-if not db then
-  return nil
-end
 
 ---@class PapisKeymaps
 local module_keymaps = {
@@ -43,7 +39,6 @@ local function setup_snacks()
     return false
   end
 
-  require("papis.search.data").init()
   commands:add_commands({
     search = {
       impl = function(_, _)
@@ -63,11 +58,10 @@ local function setup_telescope()
     return false
   end
 
-  require("papis.search.data").init()
   commands:add_commands({
     search = {
       impl = function(_, _)
-        require("papis.search.telescope").exports.papis()
+        require("papis.search.telescope").exports.papis_ask()
       end,
     },
   })
