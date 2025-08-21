@@ -78,11 +78,11 @@ function M.start()
   require("papis.commands").setup()
 
   -- setup enabled modules
-  for module_name, _ in pairs(config.enable_modules) do
+  for _, module_name in ipairs(config.enabled_modules) do
     log.debug(module_name .. " is enabled")
-    local has_module, module = pcall(require, "papis." .. module_name)
-    if has_module then
-      if module.setup then
+    if config[module_name].enable then
+      local has_module, module = pcall(require, "papis." .. module_name)
+      if has_module and module.setup then
         module.setup()
       end
     end

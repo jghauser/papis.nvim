@@ -7,15 +7,6 @@
 
 -- default configuration values
 local default_config = {
-  enable_modules = {
-    ["at-cursor"] = true,
-    ["search"] = true,
-    ["completion"] = true,
-    ["formatter"] = true,
-    ["colors"] = true,
-    ["base"] = true,
-    ["debug"] = false,
-  }, -- can be set to nil or false or left out
   cite_formats = {
     tex = {
       start_str = [[\cite{]],
@@ -81,6 +72,7 @@ local default_config = {
   papis_conf_keys = { "info-name", "notes-name", "dir", "opentool" },
   enable_icons = true,
   ["formatter"] = {
+    enable = true,
     format_notes = function(entry)
       local title_format = {
         { "author", "%s ",   "" },
@@ -117,6 +109,7 @@ local default_config = {
     end,
   },
   ["at-cursor"] = {
+    enable = true,
     popup_format = {
       {
         { "author", "%s", "PapisPopupAuthor" },
@@ -129,6 +122,7 @@ local default_config = {
     },
   },
   ["search"] = {
+    enable = true,
     provider = "auto", ---@type "auto" | "snacks" | "telescope"
     picker_keymaps = {
       ["<CR>"] = { "ref_insert", mode = { "n", "i" }, desc = "(Papis) Insert ref" },
@@ -167,10 +161,17 @@ local default_config = {
     provider = "auto", ---@type "auto" | "cmp" | "blink"
   },
   ["papis-storage"] = {
+    enable = true,
     key_name_conversions = {
       time_added = "time-added",
     },
     required_keys = { "papis_id", "ref" },
+  },
+  ["colors"] = {
+    enable = true,
+  },
+  ["debug"] = {
+    enable = false,
   },
 }
 
@@ -202,10 +203,21 @@ end
 function M:update(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
-  -- set disabled modules to nil if false
-  for module_name, is_enabled in pairs(newconf.enable_modules) do
-    if is_enabled == false then
-      newconf.enable_modules[module_name] = nil
+  -- check what modules are enabled
+  local modules = {
+    "formatter",
+    "at-cursor",
+    "search",
+    "completion",
+    "ask",
+    "papis-storage",
+    "colors",
+    "debug",
+  }
+  newconf.enabled_modules = {}
+  for _, module_name in ipairs(modules) do
+    if newconf[module_name].enable then
+      table.insert(newconf.enabled_modules, module_name)
     end
   end
 
@@ -213,7 +225,7 @@ function M:update(opts)
   table.insert(newconf.init_filetypes, "checkhealth")
 
   -- if debug mode is on, log level should be at least debug
-  if newconf.enable_modules["debug"] == true then
+  if newconf["debug"] == true then
     newconf.log = {
       level = "trace",
       use_console = "false",

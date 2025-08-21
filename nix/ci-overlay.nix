@@ -96,9 +96,6 @@ let
             local db_path = vim.fn.stdpath("cache") .. "/papis_db/papis-nvim-test.sqlite3"
 
             local default_config = {
-              enable_modules = {
-                ["debug"] = true,
-              },
               papis_cmd_base = { "papis", "-c", "./tests/papis_config" },
               enable_keymaps = true,
               db_path = db_path,
@@ -107,6 +104,13 @@ let
               },
               ["completion"] = {
                 provider = completion_provider
+              },
+              ["ask"] = {
+                enable = true,
+                provider = picker_provider,
+              },
+              ["debug"] = {
+                enable = true,
               },
             }
             local init_result = require("papis").setup(default_config)
