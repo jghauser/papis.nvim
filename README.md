@@ -38,13 +38,6 @@ Commands:
 
 - `:Papis search`: Opens the papis.nvim picker
 
-With the picker open, the following (currently hardcoded) keymaps become available:
-
-- `f` (normal) / `<c-f>` (insert): Opens files attached to the entry
-- `n` (normal) / `<c-n>` (insert): Opens notes attached to the entry (asks for the creation of a new one if none exists)
-- `e` (normal) / `c-e` (insert): Opens the `info.yaml` file
-- `r` (normal) / `c-r` (insert): Insert a formatted reference
-
 ### *Completion* module
 
 ![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
