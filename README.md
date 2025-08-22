@@ -158,7 +158,7 @@ In addition to the below snippets, you might also need to install:
 :Rocks install papis.nvim
 ```
 
-Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search) and `nvim-cmp` (for completion).
+Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search) and `nvim-cmp` or `blink.cmp` (for completion).
 
 </details>
 
