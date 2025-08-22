@@ -124,7 +124,7 @@ end
 function M:do_open_text_file(papis_id, type)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   log.debug("Opening a text file")
-  local entry = db.data:get({ papis_id = papis_id }, { "notes", "id" })[1]
+  local entry = db.data:get({ papis_id = papis_id }, { "notes", "id", "ref" })[1]
   local info_path = Path(db.metadata:get_value({ entry = entry.id }, "path"))
   log.debug("Text file in folder: " .. tostring(info_path))
   local cmd = ""
@@ -134,7 +134,7 @@ function M:do_open_text_file(papis_id, type)
       cmd = string.format("edit %s", entry.notes[1])
     else
       local choice = vim.fn.confirm(
-        "This entry has no notes.\nCreate a new one?",
+        string.format("The entry '%s' has no notes.\nCreate a new one?", entry.ref),
         "&Yes\n&No",
         2
       )
