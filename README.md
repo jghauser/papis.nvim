@@ -671,16 +671,6 @@ require("cmp").setup({
 
 Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. It will then prompt you to run `:Papis reload data` to import all of your library into the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config` and run `:Papis reload data` again.
 
-## Keymaps
-
-By default, papis.nvim doesn't set any keymaps (except in the picker). You can, however, enable them by setting `enable_keymaps` to true. This provides you with the following:
-
-- `<leader>pp` (normal) / `<c-o>p` (insert): Open the picker
-- `<leader>pf` (normal): Open file under cursor
-- `<leader>pe` (normal): Edit entry under cursor
-- `<leader>pn` (normal): Open note under cursor
-- `<leader>pi` (normal): Show entry info popup
-
 ## Highlights
 
 Papis.nvim defines and links a number of default highlight groups. In order to change the colours, simply override them with whatever you desire.
