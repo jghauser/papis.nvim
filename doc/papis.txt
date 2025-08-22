@@ -8,7 +8,7 @@ Table of Contents                                    *papis-table-of-contents*
   - Installation                                          |papis-installation|
   - Setup                                                        |papis-setup|
   - Usage                                                        |papis-usage|
-  - Highlights                                              |papis-highlights|
+  - Highlight Groups                                  |papis-highlight-groups|
   - Issues/Troubleshooting                      |papis-issues/troubleshooting|
   - Contributing                                          |papis-contributing|
   - Planned features and improvements|papis-planned-features-and-improvements|
@@ -717,7 +717,7 @@ should re-import the configuration into papis.nvim with `:Papis reload config`
 and run `:Papis reload data` again.
 
 
-HIGHLIGHTS                                                  *papis-highlights*
+HIGHLIGHT GROUPS                                      *papis-highlight-groups*
 
 Papis.nvim defines and links a number of default highlight groups. In order to
 change the colours, simply override them with whatever you desire.
