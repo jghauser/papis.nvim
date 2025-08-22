@@ -175,6 +175,7 @@ Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search)
     "nvim-neotest/nvim-nio",
     -- if not already installed, you may also want:
     -- "hrsh7th/nvim-cmp",
+    -- "saghen/blink.cmp",
 
     -- Choose one of the following two if not already installed:
     -- "nvim-telescope/telescope.nvim",
@@ -203,8 +204,9 @@ use({
     "MunifTanjim/nui.nvim",
     "pysan3/pathlib.nvim",
     "nvim-neotest/nvim-nio",
-    -- if not already installed, you may also want:
+    -- if not already installed, you may also want one of:
     -- "hrsh7th/nvim-cmp",
+    -- "saghen/blink.cmp",
 
     -- Choose one of the following two if not already installed:
     -- "nvim-telescope/telescope.nvim",
@@ -249,8 +251,9 @@ The released version of papis.nvim can be installed with the `vimPlugins.papis-n
               ];
               plugins = with pkgs.vimPlugins; [
                 papis-nvim
-                # if not already installed, you may also want:
+                # if not already installed, you may also want one of:
                 # nvim-cmp",
+                # blink-cmp,
 
                 # choose one of the following:
                 # telescope-nvim,
