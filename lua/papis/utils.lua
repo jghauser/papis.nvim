@@ -6,7 +6,6 @@
 --
 
 local NuiLine = require("nui.line")
-local NuiPopup = require("nui.popup")
 local Path = require("pathlib")
 
 local new_timer = vim.uv.new_timer
@@ -107,17 +106,17 @@ function M:do_open_attached_files(papis_id)
   end
 end
 
-local popup
-local file_queue = {}
-
+-- local popup
+-- local file_queue = {}
+--
 -- Function to be called when a popup is closed
-function M:on_popup_close()
-  -- If there are no more active popups, open the files in the queue
-  if (not popup) and (#file_queue > 0) then
-    self:do_open_text_file(unpack(file_queue[1]))
-    table.remove(file_queue, 1)
-  end
-end
+-- function M:on_popup_close()
+--   -- If there are no more active popups, open the files in the queue
+--   if (not popup) and (#file_queue > 0) then
+--     self:do_open_text_file(unpack(file_queue[1]))
+--     table.remove(file_queue, 1)
+--   end
+-- end
 
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
 ---@param papis_id string The `papis_id` of the entry
@@ -133,43 +132,14 @@ function M:do_open_text_file(papis_id, type)
     log.debug("Opening a note")
     if entry.notes then
       cmd = string.format("edit %s", entry.notes[1])
-      popup = nil
-      self:on_popup_close()
     else
-      local lines_text = {
-        { "This entry has no notes.", "WarningMsg" },
-        { "Create a new one? (Y/n)" },
-      }
-      local width = 0
-      for _, line in pairs(lines_text) do
-        width = math.max(width, #line[1])
-      end
+      local choice = vim.fn.confirm(
+        "This entry has no notes.\nCreate a new one?",
+        "&Yes\n&No",
+        2
+      )
 
-      -- If there are active popups, add the file to the queue and return
-      if popup then
-        table.insert(file_queue, { papis_id, type })
-        return
-      end
-
-      popup = NuiPopup({
-        enter = true,
-        position = "50%",
-        size = {
-          width = width,
-          height = #lines_text,
-        },
-        border = {
-          padding = { 1, 1, 1, 1 },
-          style = "single",
-        },
-        buf_options = {
-          modifiable = false,
-          readonly = true,
-        },
-      })
-
-      popup:map("n", { "Y", "y", "<cr>" }, function()
-        popup:unmount()
+      if choice == 1 then
         local config = require("papis.config")
         local notes_name = db.config:get_conf_value("notes_name")
 
@@ -205,23 +175,8 @@ function M:do_open_text_file(papis_id, type)
             end
           end)
         )
-      end, { noremap = true, nowait = true })
-
-      popup:map("n", { "N", "n", "<esc>", "q" }, function()
-        popup:unmount()
-        popup = nil
-        self:on_popup_close()
-      end, { noremap = true, nowait = true })
-
-      for k, line in pairs(lines_text) do
-        local nuiline = NuiLine()
-        nuiline:append(unpack(line))
-        nuiline:render(popup.bufnr, -1, k)
+      else
       end
-
-      vim.schedule(function()
-        popup:mount()
-      end)
     end
   elseif type == "info" then
     log.debug("Opening an info file")
