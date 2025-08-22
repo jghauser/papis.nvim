@@ -21,7 +21,7 @@ local module_keymaps = {
     rhs = function()
       vim.cmd("Papis ask")
     end,
-    opts = { desc = "Papis: open and ask questions" },
+    opts = { desc = "Papis: open ask picker" },
   },
   open_ask_insert = {
     mode = "i",
@@ -29,7 +29,7 @@ local module_keymaps = {
     rhs = function()
       vim.cmd("Papis ask")
     end,
-    opts = { desc = "Papis: open and ask questions" },
+    opts = { desc = "Papis: open ask picker" },
   },
 }
 

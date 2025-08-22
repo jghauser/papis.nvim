@@ -19,7 +19,7 @@ local module_keymaps = {
     rhs = function()
       vim.cmd("Papis search")
     end,
-    opts = { desc = "Papis: search library" },
+    opts = { desc = "Papis: open search picker" },
   },
   open_search_insert = {
     mode = "i",
@@ -27,7 +27,7 @@ local module_keymaps = {
     rhs = function()
       vim.cmd("Papis search")
     end,
-    opts = { desc = "Papis: search library" },
+    opts = { desc = "Papis: open search picker" },
   },
 }
 
