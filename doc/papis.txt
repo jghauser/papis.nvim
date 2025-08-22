@@ -200,7 +200,7 @@ rocks.nvim ~
 <
 
 Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for
-search) and `nvim-cmp` (for completion).
+search) and `nvim-cmp` or `blink.cmp` (for completion).
 
 lazy.nvim ~
 
