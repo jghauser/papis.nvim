@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.8.0...v0.8.0) (2025-08-22)
+
+
+### Features
+
+* **add:** add new module ([8d71411](https://github.com/jghauser/papis.nvim/commit/8d71411eae426a696e15ccc741be0b6887925bac))
+* **init:** depracation warning about enable_modules option ([4a38a77](https://github.com/jghauser/papis.nvim/commit/4a38a77843b55b317158b7481ca7dc0a5bcbb919))
+* more descriptive command descs ([f23f5af](https://github.com/jghauser/papis.nvim/commit/f23f5af2701e5d16902f366ccbb0ebe7203d372d))
+* move enable_modules option to individual modules ([1f050a9](https://github.com/jghauser/papis.nvim/commit/1f050a98a74ba498d77fb4c0fcf4c311d7146b0e))
+* move files into `papis` subdirs ([fb73312](https://github.com/jghauser/papis.nvim/commit/fb73312516a5c407fb334161687cda0608df830c))
+* remove create_new_note_fn option ([8e7a715](https://github.com/jghauser/papis.nvim/commit/8e7a7152412359f2b018936282127e8fdd93f86e))
+
+
+### Bug Fixes
+
+* **colors:** add missing and fix existing hl groups ([8f5a7bc](https://github.com/jghauser/papis.nvim/commit/8f5a7bccf8c9440e3384e6026b67ed5b9bdc4182))
+* **config:** add forgotten enable option ([ad7babf](https://github.com/jghauser/papis.nvim/commit/ad7babfcbd2d000c4913cb6f0fc4442cccb0fe99))
+
+
+### Miscellaneous Chores
+
+* release 0.8.0 ([62cc876](https://github.com/jghauser/papis.nvim/commit/62cc87673989c24c0cc3cc6bff0af2b0ebcf9e88))
+
 ## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.7.0...v0.8.0) (2025-07-27)
 
 
