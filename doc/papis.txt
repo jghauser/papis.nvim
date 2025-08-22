@@ -8,7 +8,6 @@ Table of Contents                                    *papis-table-of-contents*
   - Installation                                          |papis-installation|
   - Setup                                                        |papis-setup|
   - Usage                                                        |papis-usage|
-  - Keymaps                                                    |papis-keymaps|
   - Highlights                                              |papis-highlights|
   - Issues/Troubleshooting                      |papis-issues/troubleshooting|
   - Contributing                                          |papis-contributing|
@@ -716,19 +715,6 @@ the database. It will then prompt you to run `:Papis reload data` to import all
 of your library into the database. If you update your Papis configuration, you
 should re-import the configuration into papis.nvim with `:Papis reload config`
 and run `:Papis reload data` again.
-
-
-KEYMAPS                                                        *papis-keymaps*
-
-By default, papis.nvim doesn’t set any keymaps (except in the picker). You
-can, however, enable them by setting `enable_keymaps` to true. This provides
-you with the following:
-
-- `<leader>pp` (normal) / `<c-o>p` (insert): Open the picker
-- `<leader>pf` (normal): Open file under cursor
-- `<leader>pe` (normal): Edit entry under cursor
-- `<leader>pn` (normal): Open note under cursor
-- `<leader>pi` (normal): Show entry info popup
 
 
 HIGHLIGHTS                                                  *papis-highlights*
