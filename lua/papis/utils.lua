@@ -259,25 +259,17 @@ end
 ---@param pid? number pid of the process
 ---@return boolean pid_exists True if process exists, false otherwise
 function M.does_pid_exist(pid)
-  local output
-  local cmd
   local pid_exists = false
-  if pid then
-    if is_linux or is_macos then
-      cmd = "ps -p " .. pid
-    elseif is_windows then
-      cmd = 'tasklist /FI "PID eq ' .. pid .. '"'
-    end
-    local file = io.popen(cmd)
-    if file then
-      output = file:read("*all")
-      file:close()
-    end
-    local pid_found = string.find(output, tostring(pid), 1, true)
-    if pid_found then
-      pid_exists = true
-    end
+  pid = tonumber(pid)
+  if not pid then
+    return false
   end
+
+  local ok, _, name = vim.uv.kill(pid, 0)
+  if ok or (name == "EPERM") then
+    pid_exists = true
+  end
+
   return pid_exists
 end
 
