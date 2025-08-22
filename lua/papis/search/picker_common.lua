@@ -86,6 +86,7 @@ function M.create_preview(entry, buf, win)
   vim.api.nvim_set_option_value("wrap", wrap, { win = win })
   vim.api.nvim_set_option_value("number", false, { win = win })
   vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+  vim.api.nvim_set_option_value("spell", false, { win = win })
 end
 
 return M

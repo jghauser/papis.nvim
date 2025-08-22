@@ -159,6 +159,7 @@ function M.create_preview(entry, buf, win)
   vim.api.nvim_set_option_value("number", false, { win = win })
   vim.api.nvim_set_option_value("filetype", "markdown", { buf = buf })
   vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+  vim.api.nvim_set_option_value("spell", false, { win = win })
 end
 
 ---Runs the command associated with the slash command
