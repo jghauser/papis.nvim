@@ -186,9 +186,9 @@ local default_config = {
         ask = { "󰪡  ", "M " },
         shortask = { "󰄰  ", "S" },
         longask = { "󰪥  ", "L " },
-      }, "PapisResultsFiles", "force_space" },
+      }, "PapisResultsCommand", "force_space" },
       { "question",   "%s ",   "PapisResultsQuestion" },
-      { "time_added", "(%s) ", "PapisResultsCreatedAt" },
+      { "time_added", "(%s) ", "PapisResultsTimeAdded" },
     },
   },
   ["papis-storage"] = {
