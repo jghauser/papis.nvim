@@ -35,9 +35,28 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 Papis.nvim integrates with telescope and snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
-Commands:
+This module is enabled by default.
 
-- `:Papis search`: Opens the papis.nvim picker
+<details>
+  <summary>Commands and keymaps</summary>
+
+#### Commands:
+
+- `:Papis search`: Opens the search picker
+
+#### Default keymaps:
+
+- <leader>pp (normal) / <c-o>p (insert): Open search picker
+
+With the picker open, the following keymaps become available:
+
+- `<cr>` (normal/insert): Insert a reference key (e.g. `@Holland2023OthA`)
+- `f` (normal) / `<c-f>` (insert): Open files attached to the entry
+- `n` (normal) / `<c-n>` (insert): Open notes attached to the entry (asks for the creation of a new one if none exists)
+- `e` (normal) / `c-e` (insert): Open the `info.yaml` file
+- `r` (normal) / `c-r` (insert): Insert a formatted full reference (e.g. `Holland (2023). Other - A Black Feminist Consideration of Animal Life.`)
+
+</details>
 
 ### *Completion* module
 
@@ -45,18 +64,34 @@ Commands:
 
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) or [blink.cmp](https://github.com/Saghen/blink.cmp) source.
 
+This module is enabled by default.
+
 ### *At-cursor* module
 
 ![at-cursor (trimmed)](https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif)
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
 
-Commands:
+This module is enabled by default.
 
-- `:Papis at-cursor show-popup`: Opens a floating window with information about the entry
-- `:Papis at-cursor open-file`: Opens files attached to the entry
-- `:Papis at-cursor open-note`: Opens notes attached to the entry (asks for the creation of a new one if none exists)
-- `:Papis at-cursor edit`: Opens the `info.yaml` file
+<details>
+  <summary>Commands and keymaps</summary>
+
+#### Commands:
+
+- `:Papis at-cursor show-popup`: Open a floating window with information about the entry
+- `:Papis at-cursor open-file`: Open files attached to the entry
+- `:Papis at-cursor open-note`: Open notes attached to the entry (asks for the creation of a new one if none exists)
+- `:Papis at-cursor edit`: Open the `info.yaml` file
+
+#### Default keymaps:
+
+- `<leader>pf` (normal): Open file attached to entry under cursor
+- `<leader>pe` (normal): Edit the `info.yaml` file of entry under cursor
+- `<leader>pn` (normal): Open note attached to entry under cursor
+- `<leader>pi` (normal): Show popup with information about entry under cursor
+
+</details>
 
 ### *Formatter* module
 
@@ -64,15 +99,33 @@ Commands:
 
 When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
 
+This module is enabled by default.
+
 ### *Ask* module
 
 Ask questions about your library and browse the LLM-generated answers with the picker. This functionality depends on the [Papis-ask](https://github.com/jghauser/papis-ask) plugin.
 
-Commands:
+This module is disabled by default.
 
-- `:Papis ask`: Opens a picker to questions and browse existing answers
+<details>
+  <summary>Commands and keymaps</summary>
 
-You can ask questions with (user-configurable) slash commands, for instance `/ask What is de se thought?`. In addition to `/ask`, papis.nvim by default ships with `/shortask` (limited number of sources), `/longask` (more sources), and `/index` (index new documents).
+#### Commands:
+
+- `:Papis ask`: Opens a picker to ask questions and browse existing answers
+
+You can ask questions with (user-configurable) slash commands, for instance `/ask What is de se thought?`. In addition to `/ask`, papis.nvim by default ships with `/shortask` (limited number of sources), `/longask` (higher number of sources), and `/index` (index new documents).
+
+#### Default keymaps
+
+- <leader>pa (normal) / <c-o>a (insert): Open ask picker
+
+With the picker open, the following keymaps become available:
+
+- `<cr>` (normal/insert): Open a question (or run slash command)
+- `d` (normal) / `<c-d>` (insert): Delete an answer
+
+</details>
 
 ## The database
 
@@ -550,9 +603,9 @@ enable_icons = true,
       ask = { "󰪡  ", "M " },
       shortask = { "󰄰  ", "S" },
       longask = { "󰪥  ", "L " },
-    }, "PapisResultsFiles", "force_space" },
+    }, "PapisResultsCommand", "force_space" },
     { "question",   "%s ",   "PapisResultsQuestion" },
-    { "time_added", "(%s) ", "PapisResultsCreatedAt" },
+    { "time_added", "(%s) ", "PapisResultsTimeAdded" },
   },
 },
 
@@ -638,13 +691,18 @@ Papis.nvim defines and links a number of default highlight groups. In order to c
 - `PapisPreviewAuthor`: The author field in the picker previewer
 - `PapisPreviewYear`: The year field in the picker previewer
 - `PapisPreviewTitle`: The title field in the picker previewer
-- `PapisPreviewKey`: The keys in the picker previewer (when set with `show_key`, see the setup section).
-- `PapisPreviewValue`: The values in the picker previewer (when set with `show_key`, see the setup section).
+- `PapisPreviewKey`: The keys in the picker previewer (when set with `show_key`, see the setup section)
+- `PapisPreviewValue`: The values in the picker previewer (when set with `show_key`, see the setup section)
+- `PapisPreviewQuestion`: The answer in the picker previewer
+- `PapisPreviewAnswer`: The answer in the picker previewer
 - `PapisResultsAuthor`: The author in the picker results window
 - `PapisResultsYear`: The year in the picker results window
 - `PapisResultsTitle`: The title in the picker results window
 - `PapisResultsFiles`: The files in the picker results window
 - `PapisResultsNotes`: The notes in the picker results window
+- `PapisResultsQuestion`: The question in the picker results window
+- `PapisResultsTimeAdded`: The time_added in the picker results window
+- `PapisResultsCommand`: The slash command in the picker results window
 - `PapisPopupAuthor`: The author in the cursor action popup
 - `PapisPopupYear`: The year in the cursor action popup
 - `PapisPopupTitle`: The title in the cursor action popup
