@@ -671,7 +671,7 @@ require("cmp").setup({
 
 Papis.nvim will start automatically according to the filetypes defined in `init_filetypes` (see the [setup section](#setup)). When first starting, papis.nvim will import some configuration values from Papis and save them in the database. It will then prompt you to run `:Papis reload data` to import all of your library into the database. If you update your Papis configuration, you should re-import the configuration into papis.nvim with `:Papis reload config` and run `:Papis reload data` again.
 
-## Highlights
+## Highlight Groups
 
 Papis.nvim defines and links a number of default highlight groups. In order to change the colours, simply override them with whatever you desire.
 
