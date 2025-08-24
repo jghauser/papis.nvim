@@ -120,7 +120,7 @@ M.check = function()
   if config.enable_fs_watcher then
     reports["fs-watcher"]()
   end
-  for module_name, _ in pairs(config.enabled_modules) do
+  for _, module_name in pairs(config.enabled_modules) do
     if reports[module_name] then
       reports[module_name]()
     end

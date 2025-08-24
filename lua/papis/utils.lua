@@ -163,8 +163,8 @@ function M:do_open_text_file(papis_id, type)
           vim.schedule_wrap(function()
             entry = db.data:get({ papis_id = papis_id })[1]
             if entry.notes and not file_opened then
-              local enabled_modules = config.enabled_modules
-              if enabled_modules["formatter"] then
+              local formatter_enabled = vim.tbl_contains(config.enabled_modules, "formatter")
+              if formatter_enabled then
                 require("papis.formatter").format_entire_file(entry)
               end
               log.debug("Opening newly created notes file")

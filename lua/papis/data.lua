@@ -12,7 +12,7 @@ local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-
 
 ---Updates the module tables
 local function update_module_tbls()
-  for module_name, _ in pairs(enabled_modules) do
+  for _, module_name in pairs(enabled_modules) do
     local has_module, _ = pcall(require, "papis." .. module_name .. ".data")
     if has_module then
       log.debug(string.format("Updating module '%s' sqlite table", module_name))
@@ -59,7 +59,7 @@ local function update_main_tbls(metadata)
       db.data:remove({ id = id })
       -- HACK because `on_delete = cascade` doesn't work
       db.metadata:remove({ entry = id })
-      for module_name, _ in pairs(enabled_modules) do
+      for _, module_name in pairs(enabled_modules) do
         module_name = string.gsub(module_name, "-", "_")
       end
     end
@@ -117,7 +117,7 @@ function M:reset_db()
   db.data:drop()
   db.metadata:drop()
   -- HACK because `on_delete = cascade` doesn't work
-  for module_name, _ in pairs(enabled_modules) do
+  for _, module_name in pairs(enabled_modules) do
     module_name = string.gsub(module_name, "-", "_")
     if db[module_name] then
       db[module_name]:drop()
