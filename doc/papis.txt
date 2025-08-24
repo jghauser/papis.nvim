@@ -1,4 +1,4 @@
-*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 22
+*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 24
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -62,7 +62,7 @@ Commands and keymaps ~
 
 COMMANDS:
 
-- `:Papis search`: Opens the search picker
+- `:Papis search`: Open the search picker
 
 
 DEFAULT KEYMAPS:
@@ -138,7 +138,7 @@ Commands and keymaps ~
 
 COMMANDS:
 
-- `:Papis ask`: Opens a picker to ask questions and browse existing answers
+- `:Papis ask`: Open a picker to ask questions and browse existing answers
 
 You can ask questions with (user-configurable) slash commands, for instance
 `/ask What is de se thought?`. In addition to `/ask`, papis.nvim by default
