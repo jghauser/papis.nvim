@@ -42,7 +42,7 @@ This module is enabled by default.
 
 #### Commands:
 
-- `:Papis search`: Opens the search picker
+- `:Papis search`: Open the search picker
 
 #### Default keymaps:
 
@@ -112,7 +112,7 @@ This module is disabled by default.
 
 #### Commands:
 
-- `:Papis ask`: Opens a picker to ask questions and browse existing answers
+- `:Papis ask`: Open a picker to ask questions and browse existing answers
 
 You can ask questions with (user-configurable) slash commands, for instance `/ask What is de se thought?`. In addition to `/ask`, papis.nvim by default ships with `/shortask` (limited number of sources), `/longask` (higher number of sources), and `/index` (index new documents).
 
