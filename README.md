@@ -12,7 +12,7 @@ Manage your bibliography from within your favourite editor
 
 Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
-![Papis search](https://github.com/jghauser/papis.nvim/assets/10319377/dd7bad33-762c-41dd-9eca-9538d6117ac1)
+<img width="2257" height="1504" alt="2025-08-24T17:12:17,199172948+02:00" src="https://github.com/user-attachments/assets/d56541a2-dd0f-498e-be29-89d41a823c1c" />
 
 - Search your bibliography
 - Place your cursor over a citation key and get information about the entry
@@ -31,7 +31,7 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 ### *Search* module
 
-![search (trimmed)](https://user-images.githubusercontent.com/10319377/193468846-327988b0-de69-4484-887f-e294f1ed8ed8.gif)
+![search](https://github.com/user-attachments/assets/8df838e0-b5d8-48fa-a0b1-fe235e06898d)
 
 Papis.nvim integrates with telescope and snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
@@ -60,7 +60,7 @@ With the picker open, the following keymaps become available:
 
 ### *Completion* module
 
-![completion (trimmed)](https://user-images.githubusercontent.com/10319377/193469045-4941bb6d-3582-4ad0-9e29-249ddc8aae46.gif)
+![completion](https://github.com/user-attachments/assets/e2ecc78b-7a49-4db4-89e5-ef8f35a33e58)
 
 When editing `tags` in `info.yaml` files, papis.nvim will suggest tags found in the database. This module is implemented as a [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) or [blink.cmp](https://github.com/Saghen/blink.cmp) source.
 
@@ -68,7 +68,7 @@ This module is enabled by default.
 
 ### *At-cursor* module
 
-![at-cursor (trimmed)](https://user-images.githubusercontent.com/10319377/193468973-3755f5b9-e2bb-4de9-900c-bf130ea09bad.gif)
+![at-cursor](https://github.com/user-attachments/assets/c9980e66-f082-4400-93c1-f87583585030)
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
 
@@ -95,13 +95,15 @@ This module is enabled by default.
 
 ### *Formatter* module
 
-![formatter_trimmed](https://user-images.githubusercontent.com/10319377/193469179-35e1a3b5-bad6-4289-a9ae-586dc9b3af8a.gif)
+![formatter](https://github.com/user-attachments/assets/ab8943ca-0574-48b8-b02f-79ab6aad5a46)
 
 When creating new notes (via `:Papis search` or `:Papis at-cursor open-note`), papis.nvim can be set up to format the new note with a custom function. You can, for example, give the note a title that corresponds to the entry's title or provide it with a skeleton structure. Below, in the setup section, there's an example suitable for the `markdown` format.
 
 This module is enabled by default.
 
 ### *Ask* module
+
+![ask](https://github.com/user-attachments/assets/f289d9a8-c5dc-46ef-b494-d162e8329bc6)
 
 Ask questions about your library and browse the LLM-generated answers with the picker. This functionality depends on the [Papis-ask](https://github.com/jghauser/papis-ask) plugin.
 
