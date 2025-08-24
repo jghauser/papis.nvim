@@ -256,7 +256,7 @@ function M:update(opts)
   table.insert(newconf.init_filetypes, "checkhealth")
 
   -- if debug mode is on, log level should be at least debug
-  if newconf["debug"] == true then
+  if vim.tbl_contains(newconf.enabled_modules, "debug") then
     newconf.log = {
       level = "trace",
       use_console = "false",
