@@ -19,7 +19,6 @@ dependencies = {
   "lua >= 5.1, < 5.4",
   "nui.nvim",
   "sqlite",
-  "pathlib.nvim",
 }
 
 source = {

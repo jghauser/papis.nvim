@@ -7,15 +7,12 @@
 -- Adapted from: https://github.com/rktjmp/fwatch.nvim
 --
 
-local Path = require("pathlib")
-
 local uv = vim.uv
-local fs_stat = uv.fs_stat
-local new_timer = uv.new_timer
+local fs = vim.fs
 local api = vim.api
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
-local does_pid_exist = require("papis.utils").does_pid_exist
+local utils = require("papis.utils")
 local data = assert(require("papis.data"), "Failed to load papis.data")
 local file_read_timer
 local autocmd_id
@@ -42,19 +39,15 @@ local function do_watch(path, on_event, on_error)
       on_event(filename, unwatch_cb)
     end
   end
-  handle:start(tostring(path), {}, event_cb)
+  handle:start(path, {}, event_cb)
   handles[#handles + 1] = handle
 end
 
 ---Gets all directories in the library_dir
----@return table library_dirs A list of all directories in library_dir
+---@return table dirs A list of all directories in library_dir
 local function get_library_dirs()
-  local library_dir = Path(db.config:get_conf_value("dir"))
-  local library_dirs = {}
-  for path in library_dir:fs_iterdir() do
-    library_dirs[#library_dirs + 1] = path
-  end
-  return library_dirs
+  local library_dir = db.config:get_conf_value("dir")
+  return utils:scan_dir_recursive(library_dir, "directory")
 end
 
 ---Initialises file system watchers for papis.nvim
@@ -88,47 +81,44 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     vim.defer_fn(function()
       if is_library_root then
         log.debug("Filesystem event in the library root directory")
-        entry_dir = Path(dir_to_watch, filename)
-        info_path = entry_dir / info_name
-        local entry_dir_str = tostring(entry_dir)
-        local info_path_str = tostring(info_path)
-        if entry_dir:exists() and entry_dir:is_dir() then
-          log.debug(string.format("Filesystem event: path '%s' added", entry_dir_str))
-          init_fs_watcher(entry_dir_str)
-          if info_path:exists() then
-            mtime = fs_stat(info_path_str).mtime.sec
+        entry_dir = fs.joinpath(dir_to_watch, filename) -- TODO: why is this entry_dir if it may not be a dir
+        info_path = fs.joinpath(entry_dir, info_name)
+        local stat_entry_dir = uv.fs_stat(entry_dir)
+        if stat_entry_dir and stat_entry_dir.type == "directory" then
+          log.debug(string.format("Filesystem event: path '%s' added", entry_dir))
+          init_fs_watcher(entry_dir)
+          if uv.fs_stat(info_path) then
+            mtime = uv.fs_stat(info_path).mtime.sec
           end
-        elseif entry_dir:is_dir() then
-          log.debug(string.format("Filesystem event: path '' removed", entry_dir_str))
-          -- don't update here, because we'll catch it below under entry events
+        elseif stat_entry_dir and stat_entry_dir.type == "file" then
+          -- it's a file (not a directory). ignore
           do_update = false
         else
-          -- it's a file (not a directory). ignore
+          log.debug(string.format("Filesystem event: path '' removed", entry_dir))
+          -- don't update here, because we'll catch it below under entry events
           do_update = false
         end
       else
         log.debug("Filesystem event in entry directory")
-        entry_dir = Path(dir_to_watch)
-        info_path = entry_dir / info_name
-        local info_path_str = tostring(info_path)
-        if info_path:exists() then
+        entry_dir = dir_to_watch
+        info_path = fs.joinpath(entry_dir, info_name)
+        if uv.fs_stat(info_path) then
           -- info file exists, update with new info
-          log.debug(string.format("Filesystem event: '%s' changed", info_path_str))
-          mtime = fs_stat(tostring(info_path)).mtime.sec
-        elseif not entry_dir:exists() then
+          log.debug(string.format("Filesystem event: '%s' changed", info_path))
+          mtime = uv.fs_stat(info_path).mtime.sec
+        elseif not uv.fs_stat(entry_dir) then
           -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
-          log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
+          log.debug(string.format("Filesystem event: '%s' removed", info_path))
           do_unwatch = true
         else
           -- info file doesn't exist but entry dir does. delete entry but keep watcher
-          log.debug(string.format("Filesystem event: '%s' removed", info_path_str))
+          log.debug(string.format("Filesystem event: '%s' removed", info_path))
         end
       end
       if do_update then
-        local info_path_str = tostring(info_path)
         log.debug("Update database for this fs event...")
-        log.debug("Updating: " .. vim.inspect({ path = info_path_str, mtime = mtime }))
-        data.update_db({ path = info_path_str, mtime = mtime })
+        log.debug("Updating: " .. vim.inspect({ path = info_path, mtime = mtime }))
+        data.update_db({ path = info_path, mtime = mtime })
       elseif do_unwatch then
         log.debug("Removing watcher")
         unwatch_cb()
@@ -167,7 +157,7 @@ end
 ---Starts file system watchers for root dir and all entry dirs
 local function start_fs_watchers()
   log.debug("Set db state to indicate fswatcher is active")
-  local library_dir = Path(db.config:get_conf_value("dir"))
+  local library_dir = db.config:get_conf_value("dir")
   db.state:set_fw_running(uv.os_getpid())
 
   log.debug("Setting up fswatcher for library root directory")
@@ -183,7 +173,7 @@ end
 local function start_fs_watch_active_timer()
   log.debug("Timer started to check if need to take over fswatch")
   if not file_read_timer then
-    file_read_timer = new_timer()
+    file_read_timer = uv.new_timer()
     assert(file_read_timer, "Failed to create libuv timer")
   end
   uv.timer_start(
@@ -191,7 +181,7 @@ local function start_fs_watch_active_timer()
     0,
     10000,
     vim.schedule_wrap(function()
-      if not does_pid_exist(db.state:get_fw_running()) then
+      if not utils.does_pid_exist(db.state:get_fw_running()) then
         log.debug("Taking over file system watching duties")
         data:sync_db()
         start_fs_watchers()
@@ -214,7 +204,7 @@ end
 
 ---Starts file watchers and the timer that takes over file watching duty
 function M.start()
-  if not does_pid_exist(db.state:get_fw_running()) then
+  if not utils.does_pid_exist(db.state:get_fw_running()) then
     log.debug("Starting file watchers")
     start_fs_watchers()
     log.debug("Start autocmd to unset db state if this instance stops fs watchers")

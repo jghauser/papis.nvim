@@ -12,7 +12,6 @@ let
         luaOlder,
         nui-nvim,
         sqlite,
-        pathlib-nvim,
       }:
       buildLuarocksPackage {
         pname = name;
@@ -22,7 +21,6 @@ let
         propagatedBuildInputs = [
           nui-nvim
           sqlite
-          pathlib-nvim
         ];
         src = self;
       }

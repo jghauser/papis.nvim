@@ -5,13 +5,13 @@
 -- Reads out all the Papis yaml files and creates data ready for db
 --
 
-local Path = require("pathlib")
-
-local fs_stat = vim.uv.fs_stat
+local uv = vim.uv
+local fs = vim.fs
 
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local config = require("papis.config")
+local utils = require("papis.utils")
 local data_tbl_schema = config.data_tbl_schema
 local key_name_conversions = config["papis-storage"].key_name_conversions
 local required_keys = config["papis-storage"].required_keys
@@ -42,8 +42,7 @@ end
 local function read_yaml(path)
   log.trace("Reading path: " .. path)
   local entry
-  local filepath = Path(path)
-  local handler = io.popen(yq_bin .. ' -oj "' .. tostring(filepath) .. '" 2>/dev/null')
+  local handler = io.popen(yq_bin .. ' -oj "' .. path .. '" 2>/dev/null')
   if handler then
     local as_json = handler:read("*all")
     handler:close()
@@ -84,7 +83,7 @@ local function make_full_paths(filenames, path)
 
   local full_paths = {}
   for _, filename in ipairs(filenames) do
-    local full_path = tostring(Path(path, filename))
+    local full_path = fs.joinpath(path, filename)
     full_paths[#full_paths + 1] = full_path
   end
   return full_paths
@@ -96,20 +95,21 @@ local M = {}
 ---@param paths? table A list with paths of papis entries
 ---@return table metadata A list of { path = path, mtime = mtime } values
 function M.get_metadata(paths)
-  local library_dir = Path(db.config:get_conf_value("dir"))
+  local library_dir = db.config:get_conf_value("dir")
   local info_name = db.config:get_conf_value("info_name")
+  local info_paths = {}
   if not paths then
-    paths = {}
-    for path in library_dir:fs_iterdir() do
-      if path:basename() == info_name then
-        paths[#paths + 1] = path
+    paths = utils:scan_dir_recursive(library_dir, "file")
+    for _, path in ipairs(paths) do
+      if fs.basename(path) == info_name then
+        info_paths[#info_paths + 1] = path
       end
     end
   end
   local metadata = {}
-  for _, path in ipairs(paths) do
-    local mtime = fs_stat(tostring(path)).mtime.sec
-    metadata[#metadata + 1] = { path = tostring(path), mtime = mtime }
+  for _, path in ipairs(info_paths) do
+    local mtime = uv.fs_stat(path).mtime.sec
+    metadata[#metadata + 1] = { path = path, mtime = mtime }
   end
   return metadata
 end
@@ -140,7 +140,7 @@ function M.get_data_full(metadata)
             end
           end
           if (key == "files") or (key == "notes") then
-            local entry_path = Path(path):parent()
+            local entry_path = fs.dirname(path)
             entry[key] = make_full_paths(entry[key], entry_path)
           end
 
