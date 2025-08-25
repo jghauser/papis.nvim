@@ -590,9 +590,9 @@ enable_icons = true,
 
   -- Picker keymaps
   picker_keymaps = {
-    ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
-    ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
-    ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+    ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis) Open answer in float" },
+    ["d"] = { "delete_answer", mode = "n", desc = "(Papis) Delete entry" },
+    ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis) Delete entry" },
   },
 
   -- The format of the picker preview (see above for details).
