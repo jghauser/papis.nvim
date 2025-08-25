@@ -31,7 +31,7 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 ### *Search* module
 
-![search](https://github.com/user-attachments/assets/8df838e0-b5d8-48fa-a0b1-fe235e06898d)
+![search](https://github.com/user-attachments/assets/bb3f9efa-aef9-49cc-9a9a-4d9171ff6d7a)
 
 Papis.nvim integrates with telescope and snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
