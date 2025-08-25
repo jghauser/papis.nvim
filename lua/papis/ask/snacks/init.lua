@@ -70,7 +70,7 @@ M.opts = {
 ---Open the ask picker
 ---@return snacks.Picker The snacks picker instance
 function M.picker()
-  return Snacks.picker("Papis Ask", M.opts)
+  return Snacks.picker("Papis ask", M.opts)
 end
 
 return M

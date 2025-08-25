@@ -62,7 +62,7 @@ M.opts = {
 ---Open the search picker
 ---@return snacks.Picker #The snacks picker instance
 function M.picker()
-  return Snacks.picker("Papis References", M.opts)
+  return Snacks.picker("Papis search", M.opts)
 end
 
 return M
