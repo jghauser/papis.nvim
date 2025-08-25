@@ -76,6 +76,7 @@ end
 ---@param win number The window to set the preview in
 function M.create_preview(entry, buf, win)
   vim.api.nvim_set_option_value("modifiable", true, { buf = buf })
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
 
   local preview_lines = utils:make_nui_lines(preview_format, entry)
 
