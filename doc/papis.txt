@@ -778,7 +778,7 @@ contributing the beautiful logo.
 ==============================================================================
 1. Links                                                         *papis-links*
 
-1. *search*: https://github.com/user-attachments/assets/8df838e0-b5d8-48fa-a0b1-fe235e06898d
+1. *search*: https://github.com/user-attachments/assets/bb3f9efa-aef9-49cc-9a9a-4d9171ff6d7a
 2. *completion*: https://github.com/user-attachments/assets/e2ecc78b-7a49-4db4-89e5-ef8f35a33e58
 3. *at-cursor*: https://github.com/user-attachments/assets/c9980e66-f082-4400-93c1-f87583585030
 4. *formatter*: https://github.com/user-attachments/assets/ab8943ca-0574-48b8-b02f-79ab6aad5a46
