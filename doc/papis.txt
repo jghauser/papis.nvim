@@ -1,4 +1,4 @@
-*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 24
+*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 25
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -629,9 +629,9 @@ All configuration options (with defaults) ~
     
       -- Picker keymaps
       picker_keymaps = {
-        ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
-        ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
-        ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+        ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis) Open answer in float" },
+        ["d"] = { "delete_answer", mode = "n", desc = "(Papis) Delete entry" },
+        ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis) Delete entry" },
       },
     
       -- The format of the picker preview (see above for details).
