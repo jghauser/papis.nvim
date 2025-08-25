@@ -13,17 +13,6 @@ local os_name = vim.uv.os_uname()
 
 local log = require("papis.log")
 
-local is_windows
-local is_macos
-local is_linux
-if os_name.sysname == "Linux" then
-  is_linux = true
-elseif os_name.sysname == "Darwin" then
-  is_macos = true
-elseif os_name.version:match("Windows") then
-  is_windows = true
-end
-
 local M = {}
 
 ---Splits string by `inputstr` and trims whitespace
@@ -105,18 +94,6 @@ function M:do_open_attached_files(papis_id)
     end)
   end
 end
-
--- local popup
--- local file_queue = {}
---
--- Function to be called when a popup is closed
--- function M:on_popup_close()
---   -- If there are no more active popups, open the files in the queue
---   if (not popup) and (#file_queue > 0) then
---     self:do_open_text_file(unpack(file_queue[1]))
---     table.remove(file_queue, 1)
---   end
--- end
 
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
 ---@param papis_id string The `papis_id` of the entry
