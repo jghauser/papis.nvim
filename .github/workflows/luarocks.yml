@@ -18,7 +18,6 @@ jobs:
           dependencies: |
             sqlite
             nui.nvim
-            pathlib.nvim
           labels: |
             neovim
           detailed_description: "Papis.nvim is a neovim companion plugin for the bibliography manager papis. \nIt's meant for all those who do academic and other writing in neovim and who \nwant quick access to their bibliography from within the comfort of their editor.\n"
