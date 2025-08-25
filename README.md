@@ -173,7 +173,6 @@ Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search)
   dependencies = {
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
-    "nvim-neotest/nvim-nio",
     -- if not already installed, you may also want:
     -- "hrsh7th/nvim-cmp",
     -- "saghen/blink.cmp",
