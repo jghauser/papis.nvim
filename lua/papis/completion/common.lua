@@ -5,10 +5,11 @@
 -- Common resources used by different providers.
 --
 
+local fs = vim.fs
+
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local log = require("papis.log")
 local ts = vim.treesitter
-local Path = require("pathlib")
 local api = vim.api
 
 local parse_query = ts.query.parse(
@@ -27,8 +28,8 @@ local M = {}
 ---@return boolean is_available True if info_name file, false otherwise
 function M.is_available()
   local is_available = false
-  local current_filepath = Path(api.nvim_buf_get_name(0))
-  local filename = current_filepath:basename()
+  local current_filepath = api.nvim_buf_get_name(0)
+  local filename = fs.basename(current_filepath)
 
   local info_name = db.config:get_conf_value("info_name")
   if filename == info_name then

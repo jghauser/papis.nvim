@@ -8,7 +8,7 @@
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
 
-local uv = vim.loop
+local uv = vim.uv
 
 --- @alias LogLevel
 --- | "trace"

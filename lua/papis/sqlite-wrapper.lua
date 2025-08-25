@@ -5,6 +5,9 @@
 -- Wrapper around sqlite.lua setting up the main database and associated methods.
 --
 
+local fs = vim.fs
+local uv = vim.uv
+
 local log = require("papis.log")
 
 local has_sqlite, sqlite = pcall(require, "sqlite")
@@ -13,13 +16,15 @@ if not has_sqlite then
 end
 local sqlite_utils = require "sqlite.utils"
 
-local Path = require("pathlib")
 local config = require("papis.config")
-local db_uri = Path(config.db_path)
+local db_uri = config.db_path
 local papis_conf_keys = config.papis_conf_keys
 
-if not db_uri:exists() then
-  db_uri:parent_assert():mkdir(Path.permission("rwxr-xr-x"), true)
+if not uv.fs_stat(db_uri) then
+  local parent_dir = fs.dirname(db_uri)
+  if not uv.fs_stat(parent_dir) then
+    uv.fs_mkdir(parent_dir, 493)
+  end
 end
 
 ---Queries Papis to get various options.

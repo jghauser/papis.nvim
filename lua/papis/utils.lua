@@ -6,14 +6,40 @@
 --
 
 local NuiLine = require("nui.line")
-local Path = require("pathlib")
 
-local new_timer = vim.uv.new_timer
-local os_name = vim.uv.os_uname()
+local uv = vim.uv
+local fs = vim.fs
 
 local log = require("papis.log")
 
 local M = {}
+
+---Recursively searches a dir for all files and dirs
+---@param dir string Directory to be searched
+---@param type string Whether files, directories, or all paths are returned
+---@return table paths List of paths
+function M:scan_dir_recursive(dir, type)
+  local handle = uv.fs_scandir(dir)
+  local paths = {}
+  if handle then
+    while true do
+      local path, path_type = uv.fs_scandir_next(handle)
+      if not path then break end
+      local full_path = fs.joinpath(dir, path)
+      if path_type == "directory" then
+        if type == "directory" or type == "all" then
+          table.insert(paths, full_path)
+        end
+        vim.list_extend(paths, M:scan_dir_recursive(full_path, type))
+      elseif path_type == "file" then
+        if type == "file" or type == "all" then
+          table.insert(paths, full_path)
+        end
+      end
+    end
+  end
+  return paths
+end
 
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string String to be split
@@ -42,7 +68,7 @@ function M:do_open_file_external(path)
 
   local handle
   ---@diagnostic disable-next-line: missing-fields
-  handle = vim.uv.spawn(command, {
+  handle = uv.spawn(command, {
     args = args,
     stdio = { nil, nil, nil }
   }, vim.schedule_wrap(function()
@@ -59,7 +85,7 @@ function M.get_filenames(full_paths)
   local filenames = {}
   if full_paths then
     for _, full_path in ipairs(full_paths) do
-      local filename = Path(full_path):basename()
+      local filename = fs.basename(full_path)
       filenames[#filenames + 1] = filename
     end
   end
@@ -102,8 +128,8 @@ function M:do_open_text_file(papis_id, type)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   log.debug("Opening a text file")
   local entry = db.data:get({ papis_id = papis_id }, { "notes", "id", "ref" })[1]
-  local info_path = Path(db.metadata:get_value({ entry = entry.id }, "path"))
-  log.debug("Text file in folder: " .. tostring(info_path))
+  local info_path = db.metadata:get_value({ entry = entry.id }, "path")
+  log.debug("Text file in folder: " .. info_path)
   local cmd = ""
   if type == "note" then
     log.debug("Opening a note")
@@ -131,7 +157,7 @@ function M:do_open_text_file(papis_id, type)
           return
         end
 
-        local entry_has_note = new_timer()
+        local entry_has_note = uv.new_timer()
         assert(entry_has_note, "Failed to create libuv timer")
         local file_opened = false
         entry_has_note:start(
@@ -242,7 +268,7 @@ function M.does_pid_exist(pid)
     return false
   end
 
-  local ok, _, name = vim.uv.kill(pid, 0)
+  local ok, _, name = uv.kill(pid, 0)
   if ok or (name == "EPERM") then
     pid_exists = true
   end
