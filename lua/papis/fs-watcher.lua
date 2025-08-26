@@ -47,7 +47,9 @@ end
 ---@return table dirs A list of all directories in library_dir
 local function get_library_dirs()
   local library_dir = db.config:get_conf_value("dir")
-  return utils:scan_dir_recursive(library_dir, "directory")
+  return fs.find(function(_, _)
+    return true
+  end, { limit = math.huge, type = "directory", path = library_dir })
 end
 
 ---Initialises file system watchers for papis.nvim

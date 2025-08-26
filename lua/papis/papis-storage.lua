@@ -97,17 +97,11 @@ local M = {}
 function M.get_metadata(paths)
   local library_dir = db.config:get_conf_value("dir")
   local info_name = db.config:get_conf_value("info_name")
-  local info_paths = {}
   if not paths then
-    paths = utils:scan_dir_recursive(library_dir, "file")
-    for _, path in ipairs(paths) do
-      if fs.basename(path) == info_name then
-        info_paths[#info_paths + 1] = path
-      end
-    end
+    paths = fs.find({ info_name }, { limit = math.huge, type = "file", path = library_dir })
   end
   local metadata = {}
-  for _, path in ipairs(info_paths) do
+  for _, path in ipairs(paths) do
     local mtime = uv.fs_stat(path).mtime.sec
     metadata[#metadata + 1] = { path = path, mtime = mtime }
   end

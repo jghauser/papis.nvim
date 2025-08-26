@@ -14,33 +14,6 @@ local log = require("papis.log")
 
 local M = {}
 
----Recursively searches a dir for all files and dirs
----@param dir string Directory to be searched
----@param type string Whether files, directories, or all paths are returned
----@return table paths List of paths
-function M:scan_dir_recursive(dir, type)
-  local handle = uv.fs_scandir(dir)
-  local paths = {}
-  if handle then
-    while true do
-      local path, path_type = uv.fs_scandir_next(handle)
-      if not path then break end
-      local full_path = fs.joinpath(dir, path)
-      if path_type == "directory" then
-        if type == "directory" or type == "all" then
-          table.insert(paths, full_path)
-        end
-        vim.list_extend(paths, M:scan_dir_recursive(full_path, type))
-      elseif path_type == "file" then
-        if type == "file" or type == "all" then
-          table.insert(paths, full_path)
-        end
-      end
-    end
-  end
-  return paths
-end
-
 ---Splits string by `inputstr` and trims whitespace
 ---@param inputstr string String to be split
 ---@param sep? string String giving each character by which to split
