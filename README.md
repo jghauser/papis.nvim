@@ -173,7 +173,7 @@ Additionally, may want to install `telescope.nvim` or `snacks.nvim` (for search)
   dependencies = {
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
-    -- if not already installed, you may also want:
+    -- If not already installed, you may also want one of:
     -- "hrsh7th/nvim-cmp",
     -- "saghen/blink.cmp",
 
@@ -203,7 +203,7 @@ use({
     "kkharji/sqlite.lua",
     "MunifTanjim/nui.nvim",
     "pysan3/pathlib.nvim",
-    -- if not already installed, you may also want one of:
+    -- If not already installed, you may also want one of:
     -- "hrsh7th/nvim-cmp",
     -- "saghen/blink.cmp",
 
