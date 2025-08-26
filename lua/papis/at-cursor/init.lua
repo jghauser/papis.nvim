@@ -28,6 +28,7 @@ local function get_ref_under_cursor()
   -- get current line and cursor position
   local current_line = vim.api.nvim_get_current_line()
   local _, cursor_col = unpack(vim.api.nvim_win_get_cursor(0))
+  cursor_col = cursor_col + 1 -- Lua is 1-indexed
 
   -- Find the start and end of the word under the cursor
   local line_until_cursor = current_line:sub(1, cursor_col)
