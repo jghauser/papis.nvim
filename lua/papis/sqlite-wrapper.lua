@@ -165,20 +165,26 @@ local function has_schema_changed(new_schema, old_schema)
   if not vim.deep_equal(old_schema_okays, new_schema_okays) then
     return true
   else
-    for _, key in pairs(new_schema_okays) do
+    for _, schema_key in pairs(new_schema_okays) do
       local normalised_value = {}
-      if new_schema[key] == true then
-        normalised_value = { type = "INTEGER", primary = true, required = true }
-      elseif type(new_schema[key]) == "string" then
-        local new_schema_type = new_schema[key]
-        if new_schema_type ~= "luatable" then
-          new_schema_type = string.upper(new_schema_type)
+      -- this is not the type that is assigned to the key in the schema
+      local new_schema_key = new_schema[schema_key]
+      if type(new_schema_key) == "boolean" then
+        -- this is what `true` corresponds to
+        if type(new_schema_key) == true then
+          normalised_value = { type = "INTEGER", primary = true, required = true }
         end
-        normalised_value.type = new_schema_type
+      elseif type(new_schema_key) == "string" then
+        -- exception because 'luatable' is always with small letters
+        if new_schema_key ~= "luatable" then
+          new_schema_key = string.upper(new_schema_key)
+        end
+        normalised_value.type = new_schema_key
       else
-        for k, v in pairs(new_schema[key]) do
+        for k, v in pairs(new_schema_key) do
           if k == 1 then
             local new_schema_type = v
+            -- exception because 'luatable' is always with small letters
             if new_schema_type ~= "luatable" then
               new_schema_type = string.upper(new_schema_type)
             end
@@ -189,15 +195,15 @@ local function has_schema_changed(new_schema, old_schema)
             normalised_value[k] = v
           end
         end
-        if not vim.tbl_get(new_schema[key], "primary") then
+        if not vim.tbl_get(new_schema_key, "primary") then
           normalised_value.primary = false
         end
-        if not vim.tbl_get(new_schema[key], "required") then
+        if not vim.tbl_get(new_schema_key, "required") then
           normalised_value.required = false
         end
       end
       for k, v in pairs(normalised_value) do
-        if old_schema[key][k] ~= v then
+        if old_schema[schema_key][k] ~= v then
           return true
         end
       end
