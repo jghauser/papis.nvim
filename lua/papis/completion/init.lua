@@ -18,7 +18,6 @@ local function setup_blink()
     return false
   end
 
-  require("papis.completion.data").init()
   blink.add_source_provider("papis", {
     name = "papis",
     module = "papis.completion.blink",
@@ -34,7 +33,6 @@ local function setup_cmp()
     return false
   end
 
-  require("papis.completion.data").init()
   cmp.register_source("papis", require("papis.completion.cmp").new())
   return true
 end

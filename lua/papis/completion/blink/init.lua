@@ -6,7 +6,6 @@
 --
 
 local log = require("papis.log")
-local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local common = assert(require("papis.completion.common"), "Failed to load papis.completion.common")
 
 --- @module 'blink.cmp completion source'
@@ -50,14 +49,8 @@ function M:get_completions(_, callback)
   vim.api.nvim_win_set_cursor(0, { row, col + 1 })
   col = col + 1
 
-  local tag_strings = db.completion:get()[1].tag_strings
-  local items = {}
-  for _, tag in ipairs(tag_strings) do
-    table.insert(items, { label = tag.label })
-  end
-
   callback({
-    items = items,
+    items = common.get_completion_items(),
     is_incomplete_backward = false,
     is_incomplete_forward = false,
   })
