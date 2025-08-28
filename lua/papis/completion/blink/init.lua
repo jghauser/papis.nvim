@@ -5,16 +5,16 @@
 -- The blink source.
 --
 
+---@module 'blink-cmp'
+
 local log = require("papis.log")
-local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local common = assert(require("papis.completion.common"), "Failed to load papis.completion.common")
 
---- @module 'blink.cmp completion source'
---- @class papis.completion.blink
+---@class PapisCompletionBlink : blink.cmp.Source
 local M = {}
 
 ---Creates a new cmp source
----@return table
+---@return blink.cmp.Source
 function M.new()
   return setmetatable({}, { __index = M })
 end
@@ -30,7 +30,7 @@ end
 M.enabled = common.is_available
 
 ---Completes the current request
----@param _ table The ctx table
+---@param _ table The context table
 ---@param callback function
 function M:get_completions(_, callback)
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -50,14 +50,9 @@ function M:get_completions(_, callback)
   vim.api.nvim_win_set_cursor(0, { row, col + 1 })
   col = col + 1
 
-  local tag_strings = db.completion:get()[1].tag_strings
-  local items = {}
-  for _, tag in ipairs(tag_strings) do
-    table.insert(items, { label = tag.label })
-  end
-
+  log.debug("Running blink completion")
   callback({
-    items = items,
+    items = common.get_completion_items(),
     is_incomplete_backward = false,
     is_incomplete_forward = false,
   })

@@ -10,10 +10,11 @@ local config = require("papis.config")
 
 local api = vim.api
 
+---@class PapisFormatter
 local M = {}
 
 ---Formats a new notes file
----@param entry table The entry to which the notes file belongs
+---@param entry PapisEntry The entry to which the notes file belongs
 function M.format_entire_file(entry)
   log.debug("Formatting new notes file")
   local lines = config["formatter"].format_notes(entry)

@@ -13,7 +13,7 @@ local keymaps = require("papis.keymaps")
 local ask_config = config.ask or config["ask"]
 local provider = ask_config.provider
 
----@class PapisKeymaps
+---@type PapisKeymapTable
 local module_keymaps = {
   open_ask_normal = {
     mode = "n",
@@ -70,7 +70,6 @@ local function setup_telescope()
   keymaps:add_keymaps(module_keymaps)
   return true
 end
-
 
 local M = {}
 

@@ -10,20 +10,8 @@ local enabled_modules = require("papis.config").enabled_modules
 local log = require("papis.log")
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
----Updates the module tables
-local function update_module_tbls()
-  for _, module_name in pairs(enabled_modules) do
-    local has_module, _ = pcall(require, "papis." .. module_name .. ".data")
-    if has_module then
-      log.debug(string.format("Updating module '%s' sqlite table", module_name))
-      module_name = string.gsub(module_name, "-", "_")
-      db[module_name]:update()
-    end
-  end
-end
-
 ---Updates the main tables for an entry specified by `metadata`
----@param metadata table Has structure { path = path, mtime = mtime }
+---@param metadata PapisEntryMetadata Has structure { path = path, mtime = mtime }
 local function update_main_tbls(metadata)
   log.debug("Updating main tables")
   if metadata.mtime then
@@ -46,7 +34,7 @@ local function update_main_tbls(metadata)
         id = db.data:insert(data_row)
         metadata_row.entry = id
         -- check if entry already exists (can happen because fs watcher sends multiple events)
-        if vim.tbl_isempty(db.metadata:__get({ where = { entry = id } })) then
+        if vim.tbl_isempty(db.metadata:get({ entry = id })) then
           db.metadata:insert(metadata_row)
         end
       end
@@ -85,7 +73,6 @@ local function sync_storage_data()
       log.debug("An entry on disk has been deleted. Remove from database...")
       metadata_entry = { path = path_old, mtime = nil }
       update_main_tbls(metadata_entry)
-      update_module_tbls()
     end
   end
   -- handle changed and new files
@@ -95,19 +82,18 @@ local function sync_storage_data()
     if mtime_new ~= mtime_old then
       log.debug("An entry on disk is new or has changed. Updating from yaml...")
       update_main_tbls(metadata_entry)
-      update_module_tbls()
     end
   end
 end
 
+---@class PapisData
 local M = {}
 
 ---Updates the database for a given entry specified by `metadata`
----@param metadata table Has structure { path = path, mtime = mtime } and specifies the entry
+---@param metadata PapisEntryMetadata Has structure { path = path, mtime = mtime } and specifies the entry
 function M.update_db(metadata)
   log.debug("Updating the database")
   update_main_tbls(metadata)
-  update_module_tbls()
   local db_last_modified = os.time()
   db.state:update({ id = 1 }, { db_last_modified = db_last_modified })
 end

@@ -2,6 +2,8 @@
 -- PAPIS | SEARCH | SNACKS
 --
 -- Papis Snacks picker
+--
+-- NOTE: an *item* is a picker item, an *entry* is a papis entry
 
 ---@module 'snacks'
 
@@ -10,11 +12,13 @@ local utils = require("papis.utils")
 local actions = require("papis.search.snacks.actions")
 local picker_common = assert(require("papis.search.picker_common"), "Failed to load papis.search.picker_common")
 
+---@class PapisSearchSnacks
 local M = {}
 
 ---Format a search entry for display in the picker
+---@type snacks.picker.format
 ---@param item snacks.picker.Item
----@return table display_strings Formatted display strings
+---@return PapisDisplayStrings display_strings Formatted display strings
 function M.format(item, _)
   local entry = item.entry
   local results_format = config["search"].results_format
@@ -53,6 +57,7 @@ M.opts = {
   preview = M.preview,
   win = {
     input = {
+      ---@diagnostic disable-next-line: assign-type-mismatch
       keys = config["search"].picker_keymaps,
     },
   },

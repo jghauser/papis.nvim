@@ -7,12 +7,13 @@
 local config = require("papis.config")
 local utils = require("papis.utils")
 
+---@class PapisSearchSnacksActions
 local M = {}
 
 ---Inserts ref(s) into the current buffer
+---@type snacks.picker.Action.fn
 ---@param picker snacks.Picker The picker instance
 ---@param item snacks.picker.Item The item that was selected
----@type snacks.picker.Action.fn
 function M.ref_insert(picker, item)
   ---@type snacks.picker.Item[]
   local selected = picker.list.selected
@@ -56,9 +57,9 @@ function M.ref_insert(picker, item)
 end
 
 ---Inserts full reference(s) into the buffer
+---@type snacks.picker.Action.fn
 ---@param picker snacks.Picker The picker instance
 ---@param item snacks.picker.Item The item that was selected
----@type snacks.picker.Action.fn
 function M.ref_insert_formatted(picker, item)
   ---@type snacks.picker.Item[]
   local selected = picker.list.selected
@@ -79,9 +80,9 @@ function M.ref_insert_formatted(picker, item)
 end
 
 ---Opens attached file(s)
+---@type snacks.picker.Action.fn
 ---@param picker snacks.Picker The picker instance
 ---@param item snacks.picker.Item The item that was selected
----@type snacks.picker.Action.fn
 function M.open_file(picker, item)
   local selected = picker.list.selected
   picker:close()
@@ -96,9 +97,9 @@ function M.open_file(picker, item)
 end
 
 ---Opens attached note(s)
+---@type snacks.picker.Action.fn
 ---@param picker snacks.Picker The picker instance
 ---@param item snacks.picker.Item The item that was selected
----@type snacks.picker.Action.fn
 function M.open_note(picker, item)
   local selected = picker.list.selected
   picker:close()
@@ -113,9 +114,9 @@ function M.open_note(picker, item)
 end
 
 ---Opens metadata info file(s)
+---@type snacks.picker.Action.fn
 ---@param picker snacks.Picker The picker instance
 ---@param item snacks.picker.Item The item that was selected
----@type snacks.picker.Action.fn
 function M.open_info(picker, item)
   local selected = picker.list.selected
   picker:close()

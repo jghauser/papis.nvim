@@ -73,7 +73,7 @@ end
 ---Runs function if there is a valid ref under cursor which exists in the database
 ---@param fun function The function to be run with the papis_id
 ---@param self? table Self argument to be passed to fun
----@param type? string Type argument to be passed to fun
+---@param type? "note"|"info" Type argument to be passed to fun
 local function if_ref_valid_run_fun(fun, self, type)
   local ref = get_ref_under_cursor()
   local entry = db.data:get({ ref = ref }, { "papis_id" })
@@ -120,7 +120,7 @@ local function create_hover_popup(papis_id)
   end
 end
 
----@class PapisSubcommand
+---@type PapisSubcommandTable
 local module_subcommands = {
   ["at-cursor"] = {
     impl = function(args, _)
@@ -150,7 +150,7 @@ local module_subcommands = {
   }
 }
 
----@class PapisKeymaps
+---@type PapisKeymapTable
 local module_keymaps = {
   open_file = {
     mode = "n",
@@ -186,6 +186,7 @@ local module_keymaps = {
   },
 }
 
+---@class PapisAtCursor
 local M = {}
 
 ---Sets up the at-cursor module

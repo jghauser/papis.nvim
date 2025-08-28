@@ -4,6 +4,17 @@
 --
 -- Common functions for all pickers
 --
+-- NOTE: functions defined here should act on entries (not picker items)
+
+---@class PapisAskEntry
+---@field question string
+---@field answer string
+---@field contexts table
+---@field references table
+---@field time_added string
+---@field slash string
+---@field filepath string
+---@field placeholder? string
 
 local fs = vim.fs
 
@@ -23,7 +34,6 @@ local function delete_entry_file(filepath)
   end
   return true
 end
-
 
 ---Get directory where ask JSON files are stored
 ---@return string dir The storage directory path
@@ -64,7 +74,7 @@ local function parse_meta_from_filename(filename)
   return time_added, slash
 end
 
----@type table Text to display when no questions have been asked yet
+---@type string[] Text to display when no questions have been asked yet
 local placeholder_lines = {
   "Welcome to Papis-ask! You can:",
   "",
@@ -75,7 +85,7 @@ local placeholder_lines = {
   "Example: `/ask What is the meaning of life?`",
 }
 
-
+---@class PapisAskPickerCommon
 local M = {}
 
 ---Creates a string that is used to search among entries (not displayed)
@@ -87,7 +97,7 @@ function M.create_search_string(entry)
 end
 
 ---Load all ask entries from JSON files
----@return table entries List of { question, answer, contexts, ... }
+---@return PapisAskEntry[] entries List of { question, answer, contexts, ... }
 function M.load_entries()
   log.debug("Loading entries")
   local dir = get_storage_dir()
@@ -104,6 +114,7 @@ function M.load_entries()
       f:close()
       local ok, data = pcall(vim.json.decode, content, { luanil = { array = true, object = true } })
       if ok and type(data) == "table" then
+        ---@type PapisAskEntry
         local entry = {
           question = data.question,
           answer = data.answer,
@@ -136,7 +147,7 @@ function M.load_entries()
 end
 
 ---Creates a preview buffer for the picker
----@param entry table The selected item
+---@param entry PapisAskEntry The selected entry
 ---@param buf number The buffer to create the preview in
 ---@param win number The window to set the preview in
 function M.create_preview(entry, buf, win)
@@ -207,7 +218,7 @@ function M.run_slash_command(slash, question)
 end
 
 ---Open a signle answer in a buffer or run slash command
----@param entry table The selected entry
+---@param entry PapisAskEntry The selected entry
 function M.open_answer(entry)
   local content = markdown:to_markdown_output(entry)
   local lines = vim.split(content, "\n")

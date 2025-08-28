@@ -4,6 +4,8 @@
 --
 -- With some code from: https://github.com/nvim-telescope/telescope-bibtex.nvim
 
+---@module 'telescope'
+
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local config = require("papis.config")
@@ -11,15 +13,19 @@ local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-
 
 local utils = require("papis.utils")
 
+---Gets all items selected in the picker
+---@param prompt_bufnr number The buffer number of the prompt
+---@return TelescopeItem[] selected A list of all selected items
 local get_selected = function(prompt_bufnr)
   local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
   return picker:get_multi_selection()
 end
 
+---@class PapisSearchTelescopeActions
 local M = {}
 
 ---This function inserts a formatted ref string at the cursor
----@param prompt_bufnr number @The buffer number of the prompt
+---@param prompt_bufnr number The buffer number of the prompt
 M.ref_insert = function(prompt_bufnr)
   local selected = get_selected(prompt_bufnr)
   actions.close(prompt_bufnr)
@@ -61,7 +67,7 @@ M.ref_insert = function(prompt_bufnr)
 end
 
 ---This function inserts a formatted full reference at the cursor
----@param prompt_bufnr number @The buffer number of the prompt
+---@param prompt_bufnr number The buffer number of the prompt
 M.ref_insert_formatted = function(prompt_bufnr)
   local selected = get_selected(prompt_bufnr)
 
@@ -85,7 +91,7 @@ M.ref_insert_formatted = function(prompt_bufnr)
 end
 
 ---This function opens the files attached to the current entry
----@param prompt_bufnr number @The buffer number of the prompt
+---@param prompt_bufnr number The buffer number of the prompt
 M.open_file = function(prompt_bufnr)
   local selected = get_selected(prompt_bufnr)
 
@@ -102,7 +108,7 @@ M.open_file = function(prompt_bufnr)
 end
 
 ---This function opens the note attached to the current entry
----@param prompt_bufnr number @The buffer number of the prompt
+---@param prompt_bufnr number The buffer number of the prompt
 M.open_note = function(prompt_bufnr)
   local selected = get_selected(prompt_bufnr)
 
@@ -119,7 +125,7 @@ M.open_note = function(prompt_bufnr)
 end
 
 ---This function opens the info_file containing this entry's information
----@param prompt_bufnr number @The buffer number of the prompt
+---@param prompt_bufnr number The buffer number of the prompt
 M.open_info = function(prompt_bufnr)
   local selected = get_selected(prompt_bufnr)
 

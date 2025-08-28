@@ -18,7 +18,7 @@ local uv = vim.uv
 --- | "error"
 --- | "fatal"
 
---- @class (exact) papis.log.configuration
+--- @class (exact) PapisLogConfig
 --- @field plugin string                                           Name of the plugin. Prepended to log messages.
 --- @field use_console boolean                                     Whether to print the output to Neovim while running.
 --- @field highlights boolean                                      Whether highlighting should be used in console (using `:echohl`).
@@ -28,7 +28,7 @@ local uv = vim.uv
 --- @field float_precision number                                  Can limit the number of decimals displayed for floats.
 
 --- User configuration section
---- @type papis.log.configuration
+--- @type PapisLogConfig
 local default_config = {
   plugin = "papis.nvim",
 
@@ -63,7 +63,8 @@ local unpack = unpack or table.unpack
 
 local outfile
 
---- @param config papis.log.configuration
+---Create a new logger instance
+--- @param config PapisLogConfig Confguration values for this instance
 --- @param standalone boolean
 M.new = function(config, standalone)
   config = vim.tbl_deep_extend("force", default_config, config)

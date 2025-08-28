@@ -12,6 +12,7 @@ local log = require("papis.log")
 local ts = vim.treesitter
 local api = vim.api
 
+---@type vim.treesitter.Query
 local parse_query = ts.query.parse(
   "yaml",
   [[
@@ -21,8 +22,36 @@ local parse_query = ts.query.parse(
   ]]
 )
 
-
+---@class PapisCompletionCommon
 local M = {}
+
+---@class CompletionItem
+---@field word string
+---@field label string
+
+---Makes a list of all tags
+---@return CompletionItem[] #List of completion items
+function M.get_completion_items()
+  local seen_tags = {}
+  local completion_items = {}
+  local result = db.data:get(nil, { "tags" })
+  for i = 1, #result do
+    local tags = result[i].tags
+    if tags then
+      for j = 1, #tags do
+        local tag = tags[j]
+        if not seen_tags[tag] then
+          seen_tags[tag] = true
+          completion_items[#completion_items + 1] = {
+            word = tag,
+            label = tag,
+          }
+        end
+      end
+    end
+  end
+  return completion_items
+end
 
 ---Ensures that this source is only available in info_name files, and only for the "tags" key
 ---@return boolean is_available True if info_name file, false otherwise

@@ -5,8 +5,8 @@
 -- Adapted from https://github.com/folke/trouble.nvim
 --
 
-local M = {}
-
+---@class PapisHLGroups
+---@field links table<string, string>
 local links = {
   PreviewAuthor = "Title",
   PreviewYear = "@string",
@@ -27,6 +27,9 @@ local links = {
   PopupYear = "@string",
   PopupTitle = "@variable",
 }
+
+---@class PapisColors
+local M = {}
 
 ---Sets up all the default highlight groups
 function M.setup()

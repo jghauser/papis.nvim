@@ -5,22 +5,22 @@
 -- The cmp source.
 --
 
+---@module 'cmp'
+
 local log = require("papis.log")
-local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local common = assert(require("papis.completion.common"), "Failed to load papis.completion.common")
 
---- @module 'cmp-nvim completion source'
---- @class papis.completion.cmp
+---@class PapisCompletionCmp : cmp.Source
 local M = {}
 
 ---Creates a new cmp source
----@return table
+---@return cmp.Source
 function M.new()
   return setmetatable({}, { __index = M })
 end
 
 ---Gets trigger characters
----@return table
+---@return string[]
 function M:get_trigger_characters()
   return { " " }
 end
@@ -40,9 +40,8 @@ function M:complete(request, callback)
   local comp_after_tag_delimiter = vim.endswith(prefix, "- ")
 
   if comp_after_tag_delimiter then
-    log.debug("Running cmp `complete()` function.")
-    self.items = db.completion:get()[1].tag_strings
-    callback(self.items)
+    log.debug("Running cmp completion")
+    callback(common.get_completion_items())
   end
 end
 

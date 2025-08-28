@@ -1,5 +1,9 @@
+--
 -- PAPIS | ASK | TELESCOPE | INIT
--- Minimal picker setup
+--
+-- Papis ask telescope picker
+--
+-- NOTE: an *item* is a picker item, an *entry* is a question/answer item
 
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
@@ -9,8 +13,6 @@ local picker_common = require("papis.ask.picker_common")
 local config = require("papis.config")
 local log = require("papis.log")
 local utils = require("papis.utils")
-
--- NOTE: an *item* is a picker item, an *entry* is a question/answer item
 
 local results_format = config["ask"].results_format
 
@@ -22,8 +24,8 @@ custom_item_display.truncate = function(a)
 end -- HACK: there must better way to turn this off
 
 ---Creates a single telescope entry
----@param entry table A single question/answer entry
----@return table A telescope item
+---@param entry PapisAskEntry A single question/answer entry
+---@return TelescopeItem #A telescope item
 local item_maker = function(entry)
   local display_strings = utils:format_display_strings(entry, results_format, false, true)
   local items = {}
@@ -51,10 +53,11 @@ local item_maker = function(entry)
   }
 end
 
-M = {}
+---@class PapisAskTelescope
+local M = {}
 
 ---Create telescope items
----@return table items A list of items for the papis ask picker
+---@return TelescopeItem[] items A list of items for the telescope papis ask picker
 function M.get_items()
   local entries = picker_common.load_entries()
   local items = {}
@@ -75,10 +78,9 @@ function M.get_items()
 end
 
 ---Defines the papis ask telescope picker
----@param opts table? Options for the papis picker
+---@param opts table? Options for the telescope papis ask picker
 local function papis_ask_picker(opts)
   opts = opts or {}
-
 
   pickers.new({}, {
     prompt_title = 'Papis ask',

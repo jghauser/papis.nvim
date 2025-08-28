@@ -5,6 +5,8 @@
 -- Various utility functions used throughout the plugin.
 --
 
+---@module 'nui'
+
 local NuiLine = require("nui.line")
 
 local uv = vim.uv
@@ -12,12 +14,13 @@ local fs = vim.fs
 
 local log = require("papis.log")
 
+---@class PapisUtils
 local M = {}
 
----Splits string by `inputstr` and trims whitespace
+---Splits string and trims whitespace
 ---@param inputstr string String to be split
 ---@param sep? string String giving each character by which to split
----@return table string_parts List of split elements
+---@return string[] string_parts List of split elements
 function M.do_split_str(inputstr, sep)
   if sep == nil then
     sep = "%s"
@@ -52,8 +55,8 @@ function M:do_open_file_external(path)
 end
 
 ---Gets the file names given a list of full paths
----@param full_paths table? A list of paths or nil
----@return table filenames A list of file names
+---@param full_paths string[]? A list of paths or nil
+---@return string[] filenames A list of file names
 function M.get_filenames(full_paths)
   local filenames = {}
   if full_paths then
@@ -96,7 +99,7 @@ end
 
 ---Opens a text file with neovim, asking to select one if there are multiple buf_options
 ---@param papis_id string The `papis_id` of the entry
----@param type string Either "note" or "info", specifying the type of file
+---@param type "note"|"info" Specifies the type of file
 function M:do_open_text_file(papis_id, type)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
   log.debug("Opening a text file")
@@ -162,9 +165,9 @@ function M:do_open_text_file(papis_id, type)
 end
 
 ---Makes nui lines ready to be displayed
----@param lines_format_tbl table A format table defining multiple lines
----@param entry table An entry
----@return table nui_lines A list of nui lines
+---@param lines_format_tbl FormatEntryTable A format table defining multiple lines
+---@param entry PapisEntry|PapisAskEntry An entry
+---@return NuiLine[] nui_lines A list of nui lines
 ---@return integer max_width The maximum character length of the nui lines
 function M:make_nui_lines(lines_format_tbl, entry)
   local lines = {}
@@ -180,8 +183,8 @@ function M:make_nui_lines(lines_format_tbl, entry)
       line[#line + 1] = { " " }
     else
       -- we format the strings for the line and add them to the line
-      local formatted_strings = self:format_display_strings(entry, line_format_tbl)
-      for k, v in ipairs(formatted_strings) do
+      local display_strings = self:format_display_strings(entry, line_format_tbl)
+      for k, v in ipairs(display_strings) do
         line[#line + 1] = { v[1], v[2] }
         if v[1] == "vspace" then
           -- in case of vspace elements, we gotta keep track where they occur
@@ -232,7 +235,7 @@ function M:make_nui_lines(lines_format_tbl, entry)
 end
 
 ---Determine whether there's a process with a given pid
----@param pid? number pid of the process
+---@param pid? integer pid of the process
 ---@return boolean pid_exists True if process exists, false otherwise
 function M.does_pid_exist(pid)
   local pid_exists = false
@@ -249,13 +252,17 @@ function M.does_pid_exist(pid)
   return pid_exists
 end
 
+---A list of { formatted_text, highlight_group }
+---@alias PapisDisplayStrings
+---| table<string, string>[]
+
 ---Creates a table of formatted strings to be displayed in a line (e.g. Telescope results pane)
----@param entry table A papis entry
----@param line_format_tbl table A table containing format strings defining the line
----@param use_shortitle? boolean If true, use short titles
+---@param entry PapisEntry|PapisAskEntry A papis entry
+---@param line_format_tbl FormatEntryTable A table containing format strings defining the line
+---@param use_shorttitle? boolean If true, use short titles
 ---@param remove_editor_if_author? boolean If true, remove editor if author exists
----@return table formatted_str_and_hl A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
-function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_editor_if_author)
+---@return PapisDisplayStrings display_strings A list of display strings
+function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove_editor_if_author)
   local enable_icons = require("papis.config").enable_icons
 
   -- if the line has just one item, embed within a tbl so we can process like the others
@@ -341,10 +348,10 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
         end
         processed_string = table.concat(editors, ", ")
       end
-    elseif line_item_copy[1] == "title" and (entry.title or entry.shortitle) then
-      if use_shortitle then
-        local shortitle = entry.shortitle or entry.title:match("([^:]+)")
-        processed_string = shortitle
+    elseif line_item_copy[1] == "title" and (entry.title or entry.shorttitle) then
+      if use_shorttitle then
+        local shorttitle = entry.shorttitle or entry.title:match("([^:]+)")
+        processed_string = shorttitle
       else
         processed_string = entry.title
       end
@@ -379,14 +386,13 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
   end
 
   ---Table containing tables {formatted string, highlight group}
-  ---@type table<table<string, string>>
-  local formatted_str_and_hl = {}
+  local display_strings = {}
   for _, formatting_item in ipairs(formatting_items) do
     local formatted_str = string.format(formatting_item[1], formatting_item[2])
-    formatted_str_and_hl[#formatted_str_and_hl + 1] = { formatted_str, formatting_item[3] }
+    display_strings[#display_strings + 1] = { formatted_str, formatting_item[3] }
   end
 
-  return formatted_str_and_hl
+  return display_strings
 end
 
 return M

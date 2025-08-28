@@ -5,6 +5,7 @@
 -- Papis Telescope picker
 --
 -- Adapted from: https://github.com/nvim-telescope/telescope-bibtex.nvim
+-- NOTE: an *item* is a picker item, an *entry* is a papis entry
 
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
@@ -17,8 +18,6 @@ local log = require("papis.log")
 local utils = require("papis.utils")
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 local picker_common = assert(require("papis.search.picker_common"), "Failed to load papis.search.picker_common")
-
--- NOTE: an *item* is a picker item, an *entry* is a question/answer item
 
 local results_format = config["search"].results_format
 
@@ -34,9 +33,15 @@ custom_item_display.truncate = function(a)
   return a
 end -- HACK: there must better way to turn this off
 
+---@class TelescopeItem
+---@field value string
+---@field ordinal string
+---@field display function
+---@field entry table
+
 ---Create a telescope item for a given db entry
----@param entry table #A entry in the library db
----@return table #A telescope entry
+---@param entry PapisEntry A entry in the library db
+---@return TelescopeItem #A telescope item
 local item_maker = function(entry)
   local display_strings = utils:format_display_strings(entry, results_format, false, true)
   local search_string = picker_common.create_search_string(entry)
@@ -66,7 +71,7 @@ local item_maker = function(entry)
 end
 
 ---Get precalcuated telescope entries (or create them if they don't yet exist)
----@return table #Table with precalculated telescope entries for all db entries
+---@return TelescopeItem[] #List of precalculated telescope items
 local function get_precalc_items()
   local db_last_modified = db.state:get_value({ id = 1 }, "db_last_modified")
   if precalc_last_updated < db_last_modified then
@@ -83,7 +88,7 @@ local function get_precalc_items()
 end
 
 ---Defines the papis search telescope picker
----@param opts table? #Options for the papis picker
+---@param opts table? Options for the papis picker
 local function papis_search_picker(opts)
   opts = opts or {}
 
@@ -124,6 +129,7 @@ local function papis_search_picker(opts)
       :find()
 end
 
+---@class PapisSearchTelescope
 local M = {
   exports = {
     papis_ask = papis_search_picker,

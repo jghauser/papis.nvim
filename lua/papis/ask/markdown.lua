@@ -7,8 +7,6 @@
 
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
-local M = {}
-
 ---Convert LaTeX math notation to standard markdown
 ---@param text string Text containing LaTeX math
 ---@return string Text with converted math notation
@@ -27,6 +25,9 @@ local function papis_id_to_ref(papis_id)
   local ref = db.data:get_value({ papis_id = papis_id }, "ref") or papis_id
   return ref
 end
+
+---@class PapisAskModule
+local M = {}
 
 ---Transform answer by converting math notation and formatting references
 ---@param answer string The answer
@@ -55,14 +56,14 @@ function M.transform_answer(answer)
 end
 
 ---Format the answer as a well-formatted markdown document
----@param answer_full table The JSON answer object
+---@param entry PapisAskEntry The ask entry
 ---@return string markdown_string Formatted markdown
-function M:to_markdown_output(answer_full)
-  local transformed_answer = self.transform_answer(vim.deepcopy(answer_full.answer))
+function M:to_markdown_output(entry)
+  local transformed_answer = self.transform_answer(entry.answer)
   local markdown = {}
 
   table.insert(markdown, "# Question\n")
-  table.insert(markdown, answer_full.question .. "\n")
+  table.insert(markdown, entry.question .. "\n")
 
   table.insert(markdown, "# Answer\n")
   local answer_text = transformed_answer
@@ -97,7 +98,7 @@ function M:to_markdown_output(answer_full)
   table.insert(markdown, answer_text .. "\n")
 
   table.insert(markdown, "## References\n")
-  for _, context in ipairs(answer_full.contexts or {}) do
+  for _, context in ipairs(entry.contexts or {}) do
     local ref = papis_id_to_ref(context.papis_id)
     local pages = context.pages or ""
     if pages ~= "" then
@@ -108,7 +109,7 @@ function M:to_markdown_output(answer_full)
   end
 
   table.insert(markdown, "\n# Context\n")
-  for _, context in ipairs(answer_full.contexts or {}) do
+  for _, context in ipairs(entry.contexts or {}) do
     local ref = papis_id_to_ref(context.papis_id)
     local pages = context.pages or ""
     if pages ~= "" then
