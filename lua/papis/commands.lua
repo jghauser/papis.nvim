@@ -9,7 +9,11 @@
 ---@class PapisSubcommand
 ---@field impl fun(args:string[], opts: table) The command implementation
 ---@field complete? fun(subcmd_arg_lead: string): string[] (optional) Command completions callback, taking the lead of the subcommand's arguments
----@type table<string, PapisSubcommand>
+
+---@alias PapisSubcommandTable
+---| table<string, PapisSubcommand>
+
+---@type PapisSubcommandTable
 local subcommand_tbl = {
   reload = {
     impl = function(args, _)
@@ -37,9 +41,9 @@ local subcommand_tbl = {
 }
 
 ---Main Papis command
----@param opts table
-local function papis_cmd(opts)
-  local fargs = opts.fargs
+---@param command_args vim.api.keyset.create_user_command.command_args
+local function papis_cmd(command_args)
+  local fargs = command_args.fargs
   local subcommand_key = fargs[1]
   -- Get the subcommand's arguments, if any
   local args = #fargs > 1 and vim.list_slice(fargs, 2, #fargs) or {}
@@ -49,7 +53,7 @@ local function papis_cmd(opts)
     return
   end
   -- Invoke the subcommand
-  subcommand.impl(args, opts)
+  subcommand.impl(args, command_args)
 end
 
 ---Creates the main Papis command
@@ -82,6 +86,7 @@ local function create_command()
   })
 end
 
+---@class PapisCommands
 local M = {}
 
 ---Sets up main "Papis" command
@@ -90,7 +95,7 @@ function M.setup()
 end
 
 --- Recursively merges the provided table with the subcommand_tbl table.
----@param module_subcommand table #A table with a module's commands
+---@param module_subcommand PapisSubcommandTable #A table with a module's commands
 function M:add_commands(module_subcommand)
   subcommand_tbl = vim.tbl_extend("force", subcommand_tbl, module_subcommand)
 end

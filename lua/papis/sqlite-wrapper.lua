@@ -5,16 +5,19 @@
 -- Wrapper around sqlite.lua setting up the main database and associated methods.
 --
 
+---@module 'sqlite'
+
+---@alias SqliteSchemaDict sqlite_schema_key|boolean|string
+
 local fs = vim.fs
 local uv = vim.uv
 
 local log = require("papis.log")
-
 local has_sqlite, sqlite = pcall(require, "sqlite")
 if not has_sqlite then
   error("The dependency 'sqlite.nvim' is missing. Ensure that it is installed to run papis.nvim")
 end
-local sqlite_utils = require "sqlite.utils"
+local sqlite_utils = require("sqlite.utils")
 
 local config = require("papis.config")
 local db_uri = config.db_path
@@ -28,7 +31,7 @@ if not uv.fs_stat(db_uri) then
 end
 
 ---Queries Papis to get various options.
----@return table papis_py_conf A table with Papis configuration fields: { info_name = val, dir = val }
+---@return table<string, string> papis_py_conf A table with Papis configuration fields: { info_name = val, dir = val }
 local function get_papis_py_conf()
   local papis_py_conf = {}
   for _, key in ipairs(papis_conf_keys) do
@@ -53,16 +56,30 @@ local function get_papis_py_conf()
 end
 
 ---Table that contains all table methods (defined below)
+---@class PapisTblMethods
+---@field for_each table Methods available to all tables
+---@field state table Methods available to the state table
+---@field config table Methods available to the config table
 local tbl_methods = {
-  for_each = {}, -- all tables get these methods
-  state = {},    -- the state table gets these methods
-  config = {},   -- the config table gets these methods
+  for_each = {},
+  state = {},
+  config = {},
 }
 
+---@alias SqliteRow
+---| table<string, string>
+
+---@alias SqliteWhere
+---| table<string, string>
+
+---@alias SqliteSelect
+---| string[]
+
 ---General sqlite get function
----@param where? table The sqlite where clause defining which rows' data to return
----@param select? table The sqlite select statement defining which columns to return
----@return table #Has structure { { col1 = value1, col2 = value2 ... } ... } giving queried data
+---@class PapisForEachGet
+---@param where? SqliteWhere The sqlite where clause defining which rows' data to return
+---@param select? SqliteSelect The sqlite select statement defining which columns to return
+---@return SqliteRow[] #Has structure { { col1 = value1, col2 = value2 ... } ... } giving queried data
 function tbl_methods.for_each:get(where, select)
   return self:__get({
     where = where,
@@ -71,7 +88,8 @@ function tbl_methods.for_each:get(where, select)
 end
 
 ---General sqlite get single value function
----@param where table The sqlite where clause defining which rows' data to return
+---@class PapisForEachGetValue
+---@param where SqliteWhere The sqlite where clause defining which rows' data to return
 ---@param key string The key of which to return the value
 ---@return unknown result The value queried
 function tbl_methods.for_each:get_value(where, key)
@@ -91,8 +109,9 @@ function tbl_methods.for_each:get_value(where, key)
 end
 
 ---Updates a row
----@param where table The sqlite where clause defining which rows' data to return
----@param new_values table The new row to be inserted
+---@class PapisForEachUpdate
+---@param where SqliteWhere The sqlite where clause defining which rows' data to return
+---@param new_values SqliteRow The new row to be inserted
 ---@return boolean #Whether update successful
 function tbl_methods.for_each:update(where, new_values)
   return self:__update({
@@ -102,8 +121,9 @@ function tbl_methods.for_each:update(where, new_values)
 end
 
 ---Updates a row, deleting fields that don't exist in `new_row`
----@param where table The sqlite where clause defining which rows' data to return
----@param new_values table The new row to be inserted
+---@class PapisForEachCleanUpdate
+---@param where SqliteWhere The sqlite where clause defining which rows' data to return
+---@param new_values SqliteRow The new row to be inserted
 function tbl_methods.for_each:clean_update(where, new_values)
   local id = self:get_value(where, "id")
   new_values.id = id
@@ -112,6 +132,7 @@ function tbl_methods.for_each:clean_update(where, new_values)
 end
 
 ---Gets config from Papis and updates the config table with it
+---@class PapisConfigUpdate
 function tbl_methods.config:update()
   local papis_py_conf_new = get_papis_py_conf()
   self:remove({ id = 1 })
@@ -119,11 +140,13 @@ function tbl_methods.config:update()
 end
 
 ---Gets config from Papis and updates the config table with it
+---@class PapisConfigGetConfValue
 function tbl_methods.config:get_conf_value(key)
   return self:get_value({ id = 1 }, key)
 end
 
 ---Gets the pid of the neovim instance that is running file watchers
+---@class PapisStateGetFWRunning
 ---@return number? is_running Pid of the relevant process if they are running, nil if not
 function tbl_methods.state:get_fw_running()
   local is_running
@@ -137,6 +160,7 @@ function tbl_methods.state:get_fw_running()
 end
 
 ---Sets the pid of the neovim process running file watchers
+---@class PapisStateSetFWRunning
 ---@param pid? number #pid of the neovim instance
 function tbl_methods.state:set_fw_running(pid)
   pid = pid or 0
@@ -144,7 +168,7 @@ function tbl_methods.state:set_fw_running(pid)
 end
 
 ---Creates the schema of the config table
----@return table tbl_schema The config table schema
+---@return SqliteSchemaDict[] tbl_schema The config table schema
 local function get_config_tbl_schema()
   ---@type table<string, boolean|table>
   local tbl_schema = { id = true, }
@@ -156,11 +180,13 @@ local function get_config_tbl_schema()
 end
 
 ---Checks whether the schema has changed.
----@param new_schema table The new schema
----@param old_schema table The old schema
+---@param new_schema SqliteSchemaDict[] The new schema
+---@param old_schema SqliteSchemaDict[] The old schema
 ---@return boolean #True if schema has changed, false otherwise
 local function has_schema_changed(new_schema, old_schema)
+  ---@type string[]
   local old_schema_okays = sqlite_utils.okeys(old_schema)
+  ---@type string[]
   local new_schema_okays = sqlite_utils.okeys(new_schema)
   if not vim.deep_equal(old_schema_okays, new_schema_okays) then
     return true
@@ -212,7 +238,12 @@ local function has_schema_changed(new_schema, old_schema)
   return false
 end
 
--- Schemas for all tables
+---Schemas for all tables
+---@class PapisTblSchemas
+---@field data SqliteSchemaDict[]
+---@field metadata SqliteSchemaDict[]
+---@field state SqliteSchemaDict[]
+---@field config SqliteSchemaDict[]
 local schemas = {
   data = config.data_tbl_schema,
   metadata = {
@@ -235,9 +266,42 @@ local schemas = {
   config = get_config_tbl_schema(),
 }
 
--- Create the db
+---@class PapisDataTable : sqlite_tbl
+---@field get PapisForEachGet
+---@field get_value PapisForEachGetValue
+---@field update PapisForEachUpdate
+---@field clean_update PapisForEachCleanUpdate
+
+---@class PapisMetadataTable : sqlite_tbl
+---@field get PapisForEachGet
+---@field get_value PapisForEachGetValue
+---@field update PapisForEachUpdate
+---@field clean_update PapisForEachCleanUpdate
+
+---@class PapisStateTable : sqlite_tbl
+---@field get PapisForEachGet
+---@field get_value PapisForEachGetValue
+---@field update PapisForEachUpdate
+---@field clean_update PapisForEachCleanUpdate
+---@field get_fw_running PapisStateGetFWRunning
+---@field set_fw_running PapisStateSetFWRunning
+
+---@class PapisConfigTable : sqlite_tbl
+---@field get PapisForEachGet
+---@field get_value PapisForEachGetValue
+---@field update PapisConfigUpdate
+---@field clean_update PapisForEachCleanUpdate
+---@field get_conf_value PapisConfigGetConfValue
+
+---Create the db
+---@class sqlite_db
+---@field data PapisDataTable
+---@field metadata PapisMetadataTable
+---@field state PapisStateTable
+---@field config PapisConfigTable
+---@field completion? table
 local M = sqlite({
-  uri = tostring(db_uri),
+  uri = db_uri,
   opts = { busy_timeout = 30000 },
 })
 
@@ -259,10 +323,10 @@ end
 
 ---Intialises the database
 function M:init()
-  self:open()
+  self:open(db_uri)
   local ask_user_to_reload_data = false
   for tbl_name, new_schema in pairs(schemas) do
-    local old_schema = self:tbl(tbl_name):schema()
+    local old_schema = self:schema(tbl_name)
     if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
     else

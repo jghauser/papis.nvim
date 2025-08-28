@@ -12,6 +12,7 @@ local log = require("papis.log")
 local ts = vim.treesitter
 local api = vim.api
 
+---@type vim.treesitter.Query
 local parse_query = ts.query.parse(
   "yaml",
   [[
@@ -21,7 +22,7 @@ local parse_query = ts.query.parse(
   ]]
 )
 
-
+---@class PapisCompletionCommon
 local M = {}
 
 ---@class CompletionItem

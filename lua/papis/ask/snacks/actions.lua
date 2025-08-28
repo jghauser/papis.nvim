@@ -7,6 +7,7 @@
 local log = require("papis.log")
 local picker_common = require("papis.ask.picker_common")
 
+---@class PapisAskSnacksActions
 local M = {}
 
 ---Open the full answer in a buffer

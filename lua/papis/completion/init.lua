@@ -8,8 +8,6 @@
 local log = require("papis.log")
 local provider = require("papis.config").completion.provider
 
-local M = {}
-
 ---Setup blink completion provider
 ---@return boolean #Whether setup succeeded
 local function setup_blink()
@@ -36,6 +34,9 @@ local function setup_cmp()
   cmp.register_source("papis", require("papis.completion.cmp").new())
   return true
 end
+
+---@class PapisCompletion
+local M = {}
 
 ---Sets up the completion module
 function M.setup()

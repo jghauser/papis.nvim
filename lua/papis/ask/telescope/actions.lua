@@ -9,6 +9,9 @@ local picker_common = require("papis.ask.picker_common")
 local ask_telescope = require("papis.ask.telescope")
 local log = require("papis.log")
 
+---Gets all items selected in the picker
+---@param prompt_bufnr number The buffer number of the prompt
+---@return TelescopeItem[] selected A list of all selected items
 local get_selected = function(prompt_bufnr)
   local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
   return picker:get_multi_selection()

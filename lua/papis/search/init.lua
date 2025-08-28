@@ -11,7 +11,7 @@ local provider = config.search.provider
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
 
----@class PapisKeymaps
+---@type PapisKeymapTable
 local module_keymaps = {
   open_search_normal = {
     mode = "n",
@@ -40,6 +40,7 @@ local function setup_snacks()
   end
 
   commands:add_commands({
+    ---@type PapisSubcommand
     search = {
       impl = function(_, _)
         require("papis.search.snacks").picker()
@@ -59,6 +60,7 @@ local function setup_telescope()
   end
 
   commands:add_commands({
+    ---@type PapisSubcommand
     search = {
       impl = function(_, _)
         require("papis.search.telescope").exports.papis_ask()
@@ -69,6 +71,7 @@ local function setup_telescope()
   return true
 end
 
+---@class PapisSearch
 local M = {}
 
 ---Sets up the papis.nvim picker

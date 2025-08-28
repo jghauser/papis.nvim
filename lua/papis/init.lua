@@ -41,15 +41,17 @@ local function are_dependencies_available()
   return true
 end
 
+---@class PapisInit
 local M = {}
 
 ---This function is run when neovim starts and sets up papis.nvim.
----@param opts table User configuration
+---@param opts PapisConfigDefault User configuration
 function M.setup(opts)
   -- update config with user config
   config:update(opts)
 
   -- check if old `enable_modules` option was used
+  ---@diagnostic disable-next-line: undefined-field
   if config.enable_modules then
     vim.notify(
       [[The 'enable_module' option is deprecated. Please use e.g. `["ask"] = { enable = true, }` instead. The papis.nvim plugin will abort now.]],
@@ -65,7 +67,7 @@ end
 ---This function starts all of papis.nvim.
 function M.start()
   local log = require("papis.log")
-  log.new(config["log"] or log.get_default_config(), true)
+  log.new(config["debug"].logging or log.get_default_config(), true)
   log.debug("_________________________STARTING PAPIS.NVIM_________________________")
 
   has_run = true
@@ -76,7 +78,7 @@ function M.start()
 
   -- check for dependencies
   if not are_dependencies_available() then
-    return nil
+    return
   end
 
   -- require what's necessary within `M.start()` instead of globally to allow lazy-loading

@@ -4,6 +4,7 @@
 --
 -- Common functions for all pickers
 --
+-- NOTE: functions defined here should act on entries (not picker items)
 
 local config = require("papis.config")
 local search_keys = config["search"].search_keys
@@ -12,10 +13,11 @@ local utils = require("papis.utils")
 local wrap = config["search"].wrap
 local preview_format = config["search"].preview_format
 
+---@class PapisSearchPickerCommon
 local M = {}
 
 ---Creates a string that is used to search among entries (not displayed)
----@param entry table A papis entry
+---@param entry PapisEntry A papis entry
 ---@return string search_string A string containing all the searchable information
 function M.create_search_string(entry)
   local function do_incl_str(k_in_entry, k_in_conf_keys)
@@ -49,21 +51,16 @@ function M.create_search_string(entry)
 end
 
 ---Find all ask entries for the picker
----@return table entries List of all entries
+---@return PapisEntry[] entries List of all entries
 function M.load_entries()
   local default_time_added = "1900-01-01-00:00:00"
+  local entries = db.data:get()
 
-  local entries = {}
-  entries = db.data:get()
-
-  for _, entry in ipairs(entries) do
-    entry.time_added_or_fake = entry.time_added or default_time_added
-  end
-
-  -- Sort by time added if config option is enabled
   if config["search"].initial_sort_by_time_added then
     table.sort(entries, function(a, b)
-      return a.time_added_or_fake > b.time_added_or_fake
+      local ta = a.time_added or default_time_added
+      local tb = b.time_added or default_time_added
+      return ta > tb
     end)
   end
 
@@ -71,7 +68,7 @@ function M.load_entries()
 end
 
 ---Creates a preview buffer for the picker
----@param entry table The selected item
+---@param entry PapisEntry The selected entry
 ---@param buf number The buffer to create the preview in
 ---@param win number The window to set the preview in
 function M.create_preview(entry, buf, win)

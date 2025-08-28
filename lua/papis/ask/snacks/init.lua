@@ -2,6 +2,8 @@
 -- PAPIS | ASK | SNACKS
 --
 -- Papis Ask Snacks picker
+--
+-- NOTE: an *item* is a picker item, an *entry* is a question/answer item
 
 ---@module 'snacks'
 
@@ -10,11 +12,12 @@ local picker_common = require("papis.ask.picker_common")
 local actions = require("papis.ask.snacks.actions")
 local utils = require("papis.utils")
 
+---@class PapisAskSnacks
 local M = {}
 
 ---Format an ask entry for display in the picker
 ---@param item snacks.picker.Item
----@return table display_strings Formatted display strings
+---@return PapisDisplayStrings display_strings Formatted display strings
 function M.format(item, _)
   local display_strings
 
@@ -61,6 +64,7 @@ M.opts = {
   preview = M.preview,
   win = {
     input = {
+      ---@diagnostic disable-next-line: assign-type-mismatch
       keys = config["ask"].picker_keymaps,
     },
   },

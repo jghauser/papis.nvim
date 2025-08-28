@@ -44,7 +44,7 @@ local function do_watch(path, on_event, on_error)
 end
 
 ---Gets all directories in the library_dir
----@return table dirs A list of all directories in library_dir
+---@return string[] dirs A list of all directories in library_dir
 local function get_library_dirs()
   local library_dir = db.config:get_conf_value("dir")
   return fs.find(function(_, _)
@@ -64,7 +64,7 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
   local function do_handle_event(filename, unwatch_cb)
     local info_name = db.config:get_conf_value("info_name")
     local mtime
-    local entry_dir
+    local entry_dir_or_file
     local info_path
     local do_unwatch = false
     local do_update = true
@@ -83,12 +83,12 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
     vim.defer_fn(function()
       if is_library_root then
         log.debug("Filesystem event in the library root directory")
-        entry_dir = fs.joinpath(dir_to_watch, filename) -- TODO: why is this entry_dir if it may not be a dir
-        info_path = fs.joinpath(entry_dir, info_name)
-        local stat_entry_dir = uv.fs_stat(entry_dir)
+        entry_dir_or_file = fs.joinpath(dir_to_watch, filename)
+        info_path = fs.joinpath(entry_dir_or_file, info_name)
+        local stat_entry_dir = uv.fs_stat(entry_dir_or_file)
         if stat_entry_dir and stat_entry_dir.type == "directory" then
-          log.debug(string.format("Filesystem event: path '%s' added", entry_dir))
-          init_fs_watcher(entry_dir)
+          log.debug(string.format("Filesystem event: path '%s' added", entry_dir_or_file))
+          init_fs_watcher(entry_dir_or_file)
           if uv.fs_stat(info_path) then
             mtime = uv.fs_stat(info_path).mtime.sec
           end
@@ -96,19 +96,19 @@ local function init_fs_watcher(dir_to_watch, is_library_root)
           -- it's a file (not a directory). ignore
           do_update = false
         else
-          log.debug(string.format("Filesystem event: path '' removed", entry_dir))
+          log.debug(string.format("Filesystem event: path '' removed", entry_dir_or_file))
           -- don't update here, because we'll catch it below under entry events
           do_update = false
         end
       else
         log.debug("Filesystem event in entry directory")
-        entry_dir = dir_to_watch
-        info_path = fs.joinpath(entry_dir, info_name)
+        entry_dir_or_file = dir_to_watch
+        info_path = fs.joinpath(entry_dir_or_file, info_name)
         if uv.fs_stat(info_path) then
           -- info file exists, update with new info
           log.debug(string.format("Filesystem event: '%s' changed", info_path))
           mtime = uv.fs_stat(info_path).mtime.sec
-        elseif not uv.fs_stat(entry_dir) then
+        elseif not uv.fs_stat(entry_dir_or_file) then
           -- info file and entry dir don't exist. delete entry (mtime = nil) and remove watcher
           log.debug(string.format("Filesystem event: '%s' removed", info_path))
           do_unwatch = true
@@ -194,6 +194,7 @@ local function start_fs_watch_active_timer()
   )
 end
 
+---@class PapisFsWatcher
 local M = {}
 
 ---Sets up the fs-watcher module

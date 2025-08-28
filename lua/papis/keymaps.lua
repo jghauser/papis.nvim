@@ -8,10 +8,16 @@
 local api = vim.api
 local config = require("papis.config")
 
-local M = {}
+---@class PapisKeymapValue
+---@field mode string Keymap mode (e.g., "n" for normal, "i" for insert)
+---@field lhs string Left-hand side (key combination)
+---@field rhs fun() Right-hand side (function to execute)
+---@field opts table Options table (e.g., { desc = string })
 
----@class PapisKeymaps
----@type table<string, table>
+---@alias PapisKeymapTable
+---| table<string, PapisKeymapValue>[]
+
+---@type PapisKeymapTable
 local keymaps_tbl = {}
 
 --- Sets papis.nvim keymaps
@@ -37,6 +43,9 @@ local function make_keymap_autocmd()
   })
 end
 
+---@class PapisKeymaps
+local M = {}
+
 ---Sets up the keymaps and autocmds for keymaps
 function M:setup()
   -- create keymaps for the buffer when papis is first started
@@ -46,7 +55,7 @@ function M:setup()
 end
 
 ---Recursively merges a module's keymap table with the general keymaps table
----@param module_keymaps table A table with a module's keymaps
+---@param module_keymaps PapisKeymapTable A table with a module's keymaps
 function M:add_keymaps(module_keymaps)
   if config.enable_keymaps then
     table.insert(keymaps_tbl, module_keymaps)

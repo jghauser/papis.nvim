@@ -105,6 +105,7 @@ reports["completion"] = function()
   end
 end
 
+---@class PapisHealth
 local M = {}
 
 ---Main function called by checkhealth

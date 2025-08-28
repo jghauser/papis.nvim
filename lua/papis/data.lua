@@ -11,7 +11,7 @@ local log = require("papis.log")
 local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
 
 ---Updates the main tables for an entry specified by `metadata`
----@param metadata table Has structure { path = path, mtime = mtime }
+---@param metadata PapisEntryMetadata Has structure { path = path, mtime = mtime }
 local function update_main_tbls(metadata)
   log.debug("Updating main tables")
   if metadata.mtime then
@@ -86,10 +86,11 @@ local function sync_storage_data()
   end
 end
 
+---@class PapisData
 local M = {}
 
 ---Updates the database for a given entry specified by `metadata`
----@param metadata table Has structure { path = path, mtime = mtime } and specifies the entry
+---@param metadata PapisEntryMetadata Has structure { path = path, mtime = mtime } and specifies the entry
 function M.update_db(metadata)
   log.debug("Updating the database")
   update_main_tbls(metadata)

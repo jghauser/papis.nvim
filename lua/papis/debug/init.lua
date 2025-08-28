@@ -8,7 +8,7 @@
 local log = require("papis.log")
 local commands = require("papis.commands")
 
----@class PapisSubcommand
+---@type PapisSubcommandTable
 local module_subcommands = {
   debug = {
     impl = function(args, _)
@@ -35,6 +35,7 @@ local module_subcommands = {
   }
 }
 
+---@class PapisDebug
 local M = {}
 
 ---Sets up the debug module
