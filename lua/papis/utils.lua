@@ -252,10 +252,10 @@ end
 ---Creates a table of formatted strings to be displayed in a line (e.g. Telescope results pane)
 ---@param entry table A papis entry
 ---@param line_format_tbl table A table containing format strings defining the line
----@param use_shortitle? boolean If true, use short titles
+---@param use_shorttitle? boolean If true, use short titles
 ---@param remove_editor_if_author? boolean If true, remove editor if author exists
 ---@return table formatted_str_and_hl A list of lists like { { "formatted string", "HighlightGroup", {opts} }, ... }
-function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_editor_if_author)
+function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove_editor_if_author)
   local enable_icons = require("papis.config").enable_icons
 
   -- if the line has just one item, embed within a tbl so we can process like the others
@@ -341,10 +341,10 @@ function M:format_display_strings(entry, line_format_tbl, use_shortitle, remove_
         end
         processed_string = table.concat(editors, ", ")
       end
-    elseif line_item_copy[1] == "title" and (entry.title or entry.shortitle) then
-      if use_shortitle then
-        local shortitle = entry.shortitle or entry.title:match("([^:]+)")
-        processed_string = shortitle
+    elseif line_item_copy[1] == "title" and (entry.title or entry.shorttitle) then
+      if use_shorttitle then
+        local shorttitle = entry.shorttitle or entry.title:match("([^:]+)")
+        processed_string = shorttitle
       else
         processed_string = entry.title
       end
