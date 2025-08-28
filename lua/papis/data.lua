@@ -46,7 +46,7 @@ local function update_main_tbls(metadata)
         id = db.data:insert(data_row)
         metadata_row.entry = id
         -- check if entry already exists (can happen because fs watcher sends multiple events)
-        if vim.tbl_isempty(db.metadata:__get({ where = { entry = id } })) then
+        if vim.tbl_isempty(db.metadata:get({ entry = id })) then
           db.metadata:insert(metadata_row)
         end
       end
