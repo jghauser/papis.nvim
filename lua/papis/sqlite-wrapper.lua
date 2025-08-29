@@ -324,7 +324,6 @@ end
 ---Intialises the database
 function M:init()
   self:open(db_uri)
-  local ask_user_to_reload_data = false
   for tbl_name, new_schema in pairs(schemas) do
     local old_schema = self:schema(tbl_name)
     if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
@@ -339,11 +338,8 @@ function M:init()
       if tbl_name == "config" then
         self.config:update()
       end
-      ask_user_to_reload_data = true
+      vim.notify("Papis.nvim needs to reset its database. Please run `:Papis reload data`.", vim.log.levels.WARN)
     end
-  end
-  if ask_user_to_reload_data then
-    vim.notify("Papis.nvim needs to reset its database. Please run `:Papis reload data`.", vim.log.levels.WARN)
   end
 end
 
