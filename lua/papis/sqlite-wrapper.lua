@@ -189,6 +189,9 @@ local function has_schema_changed(new_schema, old_schema)
   ---@type string[]
   local new_schema_okays = sqlite_utils.okeys(new_schema)
   if not vim.deep_equal(old_schema_okays, new_schema_okays) then
+    log.debug("The table schema has changed")
+    log.debug(string.format("Old schema keys: %s", vim.inspect(old_schema_okays)))
+    log.debug(string.format("New schema keys: %s", vim.inspect(new_schema_okays)))
     return true
   else
     for _, schema_key in pairs(new_schema_okays) do
@@ -230,6 +233,9 @@ local function has_schema_changed(new_schema, old_schema)
       end
       for k, v in pairs(normalised_value) do
         if old_schema[schema_key][k] ~= v then
+          log.debug("The table schema has changed")
+          log.debug(string.format("Schema key '%s' used to have '%s' defined as '%s' but now it is '%s'", schema_key, k,
+            old_schema[schema_key][k], v))
           return true
         end
       end
@@ -325,11 +331,11 @@ end
 function M:init()
   self:open(db_uri)
   for tbl_name, new_schema in pairs(schemas) do
+    log.debug(string.format("Creating table '%s'", tbl_name))
     local old_schema = self:schema(tbl_name)
     if self:exists(tbl_name) and (not has_schema_changed(new_schema, old_schema)) then
       self[tbl_name] = self:create_tbl_with_methods(tbl_name)
     else
-      log.debug(string.format("The table schema for '%s' has changed", tbl_name))
       if self:exists(tbl_name) then
         self:drop(tbl_name)
         self[tbl_name] = self:create_tbl_with_methods(tbl_name)
