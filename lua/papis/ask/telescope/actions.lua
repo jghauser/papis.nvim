@@ -7,7 +7,6 @@ local finders = require("telescope.finders")
 
 local picker_common = require("papis.ask.picker_common")
 local ask_telescope = require("papis.ask.telescope")
-local log = require("papis.log")
 
 ---Gets all items selected in the picker
 ---@param prompt_bufnr number The buffer number of the prompt

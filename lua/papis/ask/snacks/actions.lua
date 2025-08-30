@@ -4,7 +4,6 @@
 --
 -- Actions for the ask snacks picker
 
-local log = require("papis.log")
 local picker_common = require("papis.ask.picker_common")
 
 ---@class PapisAskSnacksActions
