@@ -3,6 +3,7 @@
 --
 --
 -- Actions for the ask snacks picker
+--
 
 local picker_common = require("papis.ask.picker_common")
 

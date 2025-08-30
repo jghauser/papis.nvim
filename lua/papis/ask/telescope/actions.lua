@@ -1,5 +1,9 @@
--- PAPIS | ASK | TELESCOPE | ACTIONS
--- Minimal actions file for ask picker
+--
+-- PAPIS | ASK | SNACKS | ACTIONS
+--
+--
+-- Actions for the ask telescope picker
+--
 
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
