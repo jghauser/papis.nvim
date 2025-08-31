@@ -374,6 +374,7 @@ data_tbl_schema = {
   author_list = "luatable",
   tags = "luatable",
   files = "luatable",
+  related_to = "luatable",
 },
 
 -- Path to the papis.nvim database.

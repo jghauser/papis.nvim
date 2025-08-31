@@ -14,8 +14,23 @@ local fs = vim.fs
 
 local log = require("papis.log")
 
+local related_entries_results_format = {
+  { "author", "%s ",   "PapisResultsAuthor" },
+  { "year",   "(%s) ", "PapisResultsYear" },
+  { "title",  "%s",    "PapisResultsTitle" },
+}
+
 ---@class PapisUtils
 local M = {}
+
+local function make_related_to_string(entry)
+  local display_strings = M:format_display_strings(entry, related_entries_results_format, true, true)
+  local reference = ""
+  for _, part in ipairs(display_strings) do
+    reference = reference .. part[1]
+  end
+  return reference
+end
 
 ---Splits string and trims whitespace
 ---@param inputstr string String to be split
@@ -72,14 +87,44 @@ end
 ---@param papis_id string The `papis_id` of the entry
 function M:do_open_attached_files(papis_id)
   local db = assert(require("papis.sqlite-wrapper"), "Failed to load papis.sqlite-wrapper")
-  local entry = db.data:get({ papis_id = papis_id }, { "files", "id" })[1]
+  local entry = db.data:get({ papis_id = papis_id }, { "files", "id", "related_to" })[1]
   local filenames = self.get_filenames(entry.files)
   local lookup_tbl = {}
   for k, filename in ipairs(filenames) do
     lookup_tbl[filename] = entry.files[k]
   end
   if vim.tbl_isempty(filenames) then
-    vim.notify("This item has no attached files.", vim.log.levels.WARN)
+    if entry.related_to and not vim.tbl_isempty(entry.related_to) then
+      local related_entries_with_files = {}
+      for _, related_papis_id in ipairs(entry.related_to) do
+        local related_entry = db.data:get({ papis_id = related_papis_id }, nil)[1]
+        local related_filenames = self.get_filenames(related_entry.files)
+        if not vim.tbl_isempty(related_filenames) then
+          table.insert(related_entries_with_files, related_entry)
+        end
+      end
+      if #related_entries_with_files == 0 then
+        vim.notify("This entry and its related entries have no attached files.",
+          vim.log.levels.WARN)
+        return
+      end
+
+      local items = {}
+      for _, related_entry in ipairs(related_entries_with_files) do
+        table.insert(items, { label = make_related_to_string(related_entry), entry = related_entry })
+      end
+
+      vim.ui.select(items, {
+        prompt = "Select a related entry to open its attached files:",
+        format_item = function(item) return item.label end,
+      }, function(choice)
+        if choice then
+          self:do_open_attached_files(choice.entry.papis_id)
+        end
+      end)
+    else
+      vim.notify("This entry has no attached files.", vim.log.levels.WARN)
+    end
   elseif #filenames == 1 then
     log.info(string.format("Opening file '%s' ", filenames[1]))
     local path = lookup_tbl[filenames[1]]
@@ -279,29 +324,6 @@ function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove
   for _, line_item in ipairs(line_format_tbl) do
     local line_item_copy = vim.deepcopy(line_item)
 
-    -- set icons or normal chars as desired
-    local icon_keys = { 2, 5 }
-    for _, icon_key in ipairs(icon_keys) do
-      if type(line_item_copy[icon_key]) == "table" then
-        local value = entry[line_item_copy[1]]
-        local icon_map = line_item_copy[icon_key]
-        local icon_entry = icon_map[value]
-        if icon_entry then
-          if enable_icons then
-            line_item_copy[icon_key] = icon_entry[1]
-          else
-            line_item_copy[icon_key] = icon_entry[2]
-          end
-        else
-          if enable_icons then
-            line_item_copy[icon_key] = icon_map.fallback[1]
-          else
-            line_item_copy[icon_key] = icon_map.fallback[2]
-          end
-        end
-      end
-    end
-
     -- format values
     local processed_string = nil
     if line_item_copy[1] == "author" and (entry.author or entry.author_list or entry.editor) then -- add author
@@ -355,12 +377,18 @@ function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove
       else
         processed_string = entry.title
       end
+    elseif line_item_copy[1] == "files" and (entry.files or entry.related_to) then
+      if entry.files and not vim.tbl_isempty(entry.files) then
+        processed_string = table.concat(self.get_filenames(entry.files), ", ")
+      elseif entry.related_to and not vim.tbl_isempty(entry.related_to) then
+        processed_string = "related_to"
+      end
+    elseif line_item_copy[1] == "notes" and (entry.notes) then
+      processed_string = self.get_filenames(entry.notes)
+    elseif line_item_copy[1] == "related_to" and (entry.related_to) then
+      processed_string = make_related_to_string(entry)
     elseif entry[line_item_copy[1]] then -- add other elements if they exist in the entry
       local input = entry[line_item_copy[1]]
-      if line_item_copy[1] == "notes" or line_item_copy[1] == "files" then
-        -- get only file names (not full path)
-        input = self.get_filenames(entry[line_item_copy[1]])
-      end
       if type(input) == "table" then
         -- if it's a table, convert to string
         processed_string = table.concat(entry[line_item_copy[1]], ", ")
@@ -374,6 +402,30 @@ function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove
       processed_string = "dummy"
     elseif line_item_copy[1] == "vspace" then
       processed_string = "vspace"
+    end
+
+    -- set icons or normal chars as desired
+    local icon_keys = { 2, 5 }
+    for _, icon_key in ipairs(icon_keys) do
+      if type(line_item_copy[icon_key]) == "table" then
+        -- map of strings to {icon, non-icon}
+        local icon_map = line_item_copy[icon_key]
+        -- {icon, non-icon} for the given string
+        local icon_entry = icon_map[processed_string]
+        if icon_entry then
+          if enable_icons then
+            line_item_copy[icon_key] = icon_entry[1]
+          else
+            line_item_copy[icon_key] = icon_entry[2]
+          end
+        else
+          if enable_icons then
+            line_item_copy[icon_key] = icon_map.fallback[1]
+          else
+            line_item_copy[icon_key] = icon_map.fallback[2]
+          end
+        end
+      end
     end
 
     -- if a string exists, add keys if required and add hl group etc

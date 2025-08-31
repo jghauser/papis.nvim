@@ -22,6 +22,8 @@
 ---@field type? string
 ---@field tags? string[]
 ---@field notes? string[] -- NOTE: this is different from Papis, where notes is a string
+---@field files? string[]
+---@field related_to? string[]
 ---@field time_added? string[] -- NOTE: this is different from Papis, where the key is time-added
 
 ---Metadata for a Papis entry
