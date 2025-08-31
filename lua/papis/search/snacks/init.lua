@@ -9,6 +9,7 @@
 
 local config = require("papis.config")
 local utils = require("papis.utils")
+local log = require("papis.log")
 local actions = require("papis.search.snacks.actions")
 local picker_common = assert(require("papis.search.picker_common"), "Failed to load papis.search.picker_common")
 
@@ -70,4 +71,5 @@ function M.picker()
   return Snacks.picker("Papis search", M.opts)
 end
 
+log.debug("Snacks search picker successfully created")
 return M

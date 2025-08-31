@@ -11,6 +11,7 @@ local config = require("papis.config")
 local picker_common = require("papis.ask.picker_common")
 local actions = require("papis.ask.snacks.actions")
 local utils = require("papis.utils")
+local log = require("papis.log")
 
 ---@class PapisAskSnacks
 local M = {}
@@ -77,4 +78,5 @@ function M.picker()
   return Snacks.picker("Papis ask", M.opts)
 end
 
+log.debug("Snacks ask picker successfully created")
 return M
