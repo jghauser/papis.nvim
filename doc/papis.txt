@@ -1,4 +1,4 @@
-*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 29
+*papis.txt*             For NVIM v0.8.0            Last change: 2025 August 31
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -411,6 +411,7 @@ All configuration options (with defaults) ~
       author_list = "luatable",
       tags = "luatable",
       files = "luatable",
+      related_to = "luatable",
     },
     
     -- Path to the papis.nvim database.
