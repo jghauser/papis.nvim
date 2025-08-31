@@ -135,16 +135,20 @@ M.new = function(config, standalone)
 
     -- Output to log file
     if config.use_file then
-      -- create parent folder if missing
-      local log_dir = outfile:match("(.+)/[^/]+$")
-      if log_dir and not uv.fs_stat(log_dir) then
-        uv.fs_mkdir(log_dir, 493) -- 0755 permissions
+      for parent in vim.fs.parents(outfile) do
+        if not uv.fs_stat(parent) then
+          uv.fs_mkdir(parent, 493)
+        else
+          break
+        end
       end
 
-      local fp = assert(io.open(outfile, "a"))
-      local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
-      fp:write(str)
-      fp:close()
+      local fp = io.open(outfile, "a")
+      if fp then
+        local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
+        fp:write(str)
+        fp:close()
+      end
     end
   end
 
