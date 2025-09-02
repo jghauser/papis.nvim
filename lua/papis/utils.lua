@@ -377,15 +377,18 @@ function M:format_display_strings(entry, line_format_tbl, use_shorttitle, remove
       else
         processed_string = entry.title
       end
-    elseif line_item_copy[1] == "files" and (entry.files or entry.related_to) then
-      if entry.files and not vim.tbl_isempty(entry.files) then
+    elseif line_item_copy[1] == "files" and (
+          (type(entry.files) == "table" and not vim.tbl_isempty(entry.files)) or
+          (type(entry.related_to) == "table" and not vim.tbl_isempty(entry.related_to))
+        ) then
+      if type(entry.files) == "table" and not vim.tbl_isempty(entry.files) then
         processed_string = table.concat(self.get_filenames(entry.files), ", ")
-      elseif entry.related_to and not vim.tbl_isempty(entry.related_to) then
+      elseif type(entry.related_to) == "table" and not vim.tbl_isempty(entry.related_to) then
         processed_string = "related_to"
       end
-    elseif line_item_copy[1] == "notes" and (entry.notes) then
+    elseif line_item_copy[1] == "notes" and (type(entry.notes) == "table" and not vim.tbl_isempty(entry.notes)) then
       processed_string = self.get_filenames(entry.notes)
-    elseif line_item_copy[1] == "related_to" and (entry.related_to) then
+    elseif line_item_copy[1] == "related_to" and (type(entry.related_to) == "table" and not vim.tbl_isempty(entry.related_to)) then
       processed_string = make_related_to_string(entry)
     elseif entry[line_item_copy[1]] then -- add other elements if they exist in the entry
       local input = entry[line_item_copy[1]]
