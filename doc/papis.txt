@@ -16,7 +16,7 @@ Table of Contents                                    *papis-table-of-contents*
 
 
 
-Papis.nvim is a neovim <https://github.com/neovim/neovim> companion plugin for
+Papis.nvim is a Neovim <https://github.com/neovim/neovim> companion plugin for
 the bibliography manager Papis <https://github.com/papis/papis>. It’s meant
 for all those who do academic and other writing in neovim and who want quick
 access to their bibliography from within the comfort of their editor.
@@ -48,7 +48,7 @@ These can be (de)activated as desired.
 
 SEARCH MODULE ~
 
-Papis.nvim integrates with telescope and snacks to easily and quickly search
+Papis.nvim integrates with Telescope and Snacks to easily and quickly search
 your bibliography. Open the picker and enter the title (or author, year, etc.)
 of the article you’re looking for. Once you’ve found it, you can insert a
 citation, open attached files and notes, and edit the `info.yaml` file. When
