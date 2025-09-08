@@ -8,6 +8,7 @@
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local previewers = require("telescope.previewers")
+local telescope_config = require("telescope.config").values
 
 local picker_common = require("papis.ask.picker_common")
 local config = require("papis.config")
@@ -95,6 +96,7 @@ local function papis_ask_picker(opts)
         picker_common.create_preview(item.entry, self.state.bufnr, status.preview_win)
       end,
     }),
+    sorter = telescope_config.generic_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
       local papis_actions = require("papis.ask.telescope.actions")
       local actions = require("telescope.actions")
