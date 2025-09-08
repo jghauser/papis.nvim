@@ -10,7 +10,7 @@ Manage your bibliography from within your favourite editor
 
 <br>
 
-Papis.nvim is a [neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
+Papis.nvim is a [Neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
 
 ![Papis search](https://github.com/user-attachments/assets/106822f4-40a1-4cc1-857a-8bfe7adcc788)
 
@@ -33,7 +33,7 @@ A number of features (bundled into `modules`) are shipped with papis.nvim. These
 
 ![search](https://github.com/user-attachments/assets/bb3f9efa-aef9-49cc-9a9a-4d9171ff6d7a)
 
-Papis.nvim integrates with telescope and snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
+Papis.nvim integrates with Telescope and Snacks to easily and quickly search your bibliography. Open the picker and enter the title (or author, year, etc.) of the article you're looking for. Once you've found it, you can insert a citation, open attached files and notes, and edit the `info.yaml` file. When attempting to open a note where none exists, papis.nvim will ask to create a new one.
 
 This module is enabled by default.
 
