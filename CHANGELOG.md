@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.9.0](https://github.com/jghauser/papis.nvim/compare/v0.8.0...v0.9.0) (2025-09-08)
+
+
+### Features
+
+* **add:** add new module ([8d71411](https://github.com/jghauser/papis.nvim/commit/8d71411eae426a696e15ccc741be0b6887925bac))
+* **ask:** Make picker descs consistent ([d18b18e](https://github.com/jghauser/papis.nvim/commit/d18b18ebc299a39df2ce7e6d8ee2a3022c399270))
+* **init:** depracation warning about enable_modules option ([4a38a77](https://github.com/jghauser/papis.nvim/commit/4a38a77843b55b317158b7481ca7dc0a5bcbb919))
+* make picker names consistent ([ecefc0f](https://github.com/jghauser/papis.nvim/commit/ecefc0f264898f148edfd14f309a2c0087d9b72b))
+* more descriptive command descs ([f23f5af](https://github.com/jghauser/papis.nvim/commit/f23f5af2701e5d16902f366ccbb0ebe7203d372d))
+* move enable_modules option to individual modules ([1f050a9](https://github.com/jghauser/papis.nvim/commit/1f050a98a74ba498d77fb4c0fcf4c311d7146b0e))
+* move files into `papis` subdirs ([fb73312](https://github.com/jghauser/papis.nvim/commit/fb73312516a5c407fb334161687cda0608df830c))
+* prepare 0.9.0 ([41c2ade](https://github.com/jghauser/papis.nvim/commit/41c2adedf2dc222a7123b8288170060aab92e69d))
+* remove create_new_note_fn option ([8e7a715](https://github.com/jghauser/papis.nvim/commit/8e7a7152412359f2b018936282127e8fdd93f86e))
+* support related_to keys ([b8644a2](https://github.com/jghauser/papis.nvim/commit/b8644a2c469c6a9023645930c9bf81ea416de12d))
+* **utils:** mention ref when creating new notes ([58013eb](https://github.com/jghauser/papis.nvim/commit/58013eb97892b6931eb200e2eed81522937cedb7))
+
+
+### Bug Fixes
+
+* add sorter for telescope ([5a65559](https://github.com/jghauser/papis.nvim/commit/5a6555982a0bce8f2e0fd53ca0c899800f020efe)), closes [#135](https://github.com/jghauser/papis.nvim/issues/135)
+* **at-cursor:** fix bug stemming from lua 1-indexing ([e21531d](https://github.com/jghauser/papis.nvim/commit/e21531da31a5a06111164c2f32e888d39041180f))
+* **colors:** add missing and fix existing hl groups ([8f5a7bc](https://github.com/jghauser/papis.nvim/commit/8f5a7bccf8c9440e3384e6026b67ed5b9bdc4182))
+* **completion.blink:** only start completion after first `-` ([4ef8531](https://github.com/jghauser/papis.nvim/commit/4ef8531dbc27152c1159990203439b1c3b04ed89))
+* **config:** add forgotten enable option ([ad7babf](https://github.com/jghauser/papis.nvim/commit/ad7babfcbd2d000c4913cb6f0fc4442cccb0fe99))
+* **config:** correctly check whether debug module is enabled ([aeb5b86](https://github.com/jghauser/papis.nvim/commit/aeb5b8689193b41b321591ab9af87eb346f4d613))
+* disable `spell` for picker previewers ([4bd8928](https://github.com/jghauser/papis.nvim/commit/4bd8928973bf2523a1a9aecd84cb825ea924561f))
+* fix problem from transition to new module enabling ([474e454](https://github.com/jghauser/papis.nvim/commit/474e454c129e98f3f773428e6d319c7f55932911))
+* **log:** create parent directories for log file ([8fc0c9a](https://github.com/jghauser/papis.nvim/commit/8fc0c9a1f4c5d9ac17f1e5b87b15be3c95cfe22f))
+* **search:** clear preview buffer ([e7ff4ae](https://github.com/jghauser/papis.nvim/commit/e7ff4ae7402254c9910b68dd7b61660baed9ae15))
+* **utils:** handle empty lists when formatting strings ([9de4579](https://github.com/jghauser/papis.nvim/commit/9de45795d562ae6879d66946fd75b5dc8acbd4cb))
+* **utils:** it's shorttitle, not shortitle ([1b8ed50](https://github.com/jghauser/papis.nvim/commit/1b8ed504f7ba99481cec0fc5b9cc28ea75fdfd07))
+* **utils:** more robust pid check (fixes [#123](https://github.com/jghauser/papis.nvim/issues/123)) ([6cd7497](https://github.com/jghauser/papis.nvim/commit/6cd749730714abb1c749a4015743967e2605ebb7))
+
+
+### Documentation
+
+* **readme:** remove planned features section ([12c9698](https://github.com/jghauser/papis.nvim/commit/12c9698f475b6709aef6d8745763120a42efa924))
+
+
+### Miscellaneous Chores
+
+* prepare 0.9.0 ([8e60cd4](https://github.com/jghauser/papis.nvim/commit/8e60cd460de1a8a04f5da31e07a061734b854f7b))
+* release 0.8.0 ([62cc876](https://github.com/jghauser/papis.nvim/commit/62cc87673989c24c0cc3cc6bff0af2b0ebcf9e88))
+* release 0.9.0 ([409766f](https://github.com/jghauser/papis.nvim/commit/409766f891fa6a4cdbbad59db918347f732fc4da))
+* release 0.9.0 ([d0de886](https://github.com/jghauser/papis.nvim/commit/d0de8864ea8de8bb23b1faef39db3256b0c7b6e2))
+
 ## [0.8.0](https://github.com/jghauser/papis.nvim/compare/v0.7.0...v0.8.0) (2025-07-27)
 
 
