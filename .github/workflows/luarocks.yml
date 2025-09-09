@@ -1,4 +1,4 @@
-name: "LuaRocks release"
+name: luarocks-release
 on:
   push:
     tags:
