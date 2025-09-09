@@ -5,6 +5,14 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
   };
 
   outputs =
@@ -12,6 +20,7 @@
       self,
       nixpkgs,
       flake-parts,
+      neorocks,
       ...
     }:
     let
@@ -45,6 +54,7 @@
             overlays = [
               plugin-overlay
               ci-overlay
+              neorocks.overlays.default
             ];
           };
 
@@ -71,6 +81,10 @@
             default = papis-nvim;
             inherit (pkgs.luajitPackages) papis-nvim;
             inherit (pkgs) neovim-with-plugin;
+          };
+
+          checks = {
+            inherit (pkgs) neovim-test;
           };
         };
       flake = {
