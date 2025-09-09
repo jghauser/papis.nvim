@@ -1,17 +1,16 @@
 name: Release Please
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-      - master
 jobs:
   release:
     name: release
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
         with:
           config-file: .github/release-please/config.json
           manifest-file: .github/release-please/manifest.json
+          token: ${{ secrets.PAT }}
