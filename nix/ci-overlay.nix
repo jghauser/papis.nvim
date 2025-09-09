@@ -4,31 +4,32 @@
 }:
 final: prev:
 let
+  neovimConfig = final.neovimUtils.makeNeovimConfig {
+    withPython3 = false;
+    viAlias = true;
+    extraLuaPackages = luaPkgs: [
+      luaPkgs.papis-nvim
+    ];
+    vimAlias = true;
+    plugins = with final.vimPlugins; [
+      # Completion engines
+      nvim-cmp
+      blink-cmp
+
+      # Pickers
+      telescope-nvim
+      snacks-nvim
+
+      # Base plugins
+      (nvim-treesitter.withPlugins (ps: with ps; [ tree-sitter-yaml ]))
+    ];
+
+  };
+
   mkNvimMinimal =
     nvim:
     with final;
     let
-      neovimConfig = neovimUtils.makeNeovimConfig {
-        withPython3 = false;
-        viAlias = true;
-        vimAlias = true;
-        extraLuaPackages = luaPkgs: [
-          luaPkgs.papis-nvim
-        ];
-        plugins = with vimPlugins; [
-          # Completion engines
-          nvim-cmp
-          blink-cmp
-
-          # Pickers
-          telescope-nvim
-          snacks-nvim
-
-          # Base plugins
-          (nvim-treesitter.withPlugins (ps: with ps; [ tree-sitter-yaml ]))
-        ];
-      };
-
       luaConfig =
         # lua
         ''
@@ -92,34 +93,29 @@ let
           vim.g.mapleader = " "
 
           ---Sets up papis
-          if load_papis then
-            local default_config = {
-              papis_cmd_base = { "papis", "-c", "./tests/papis_config" },
-              enable_keymaps = true,
-              ["search"] = {
-                provider = picker_provider,
-              },
-              ["completion"] = {
-                provider = completion_provider
-              },
-              ["ask"] = {
-                enable = true,
-                provider = picker_provider,
-              },
-              ["debug"] = {
-                enable = true,
-              },
-            }
-            local init_result = require("papis").setup(default_config)
-
-            return init_result
-          end
+          require("papis").setup({
+            papis_cmd_base = { "papis", "-c", "./spec/resources/papis_config" },
+            enable_keymaps = true,
+            ["search"] = {
+              provider = picker_provider,
+            },
+            ["completion"] = {
+              provider = completion_provider
+            },
+            ["ask"] = {
+              enable = true,
+              provider = picker_provider,
+            },
+            ["debug"] = {
+              enable = true,
+            },
+          })
           EOF
         '';
 
       runtimeDeps = [ yq-go ];
     in
-    final.wrapNeovimUnstable nvim (
+    wrapNeovimUnstable nvim (
       neovimConfig
       // {
         wrapperArgs =
@@ -132,7 +128,24 @@ let
         neovimRcContent = luaConfig;
       }
     );
+  mkNeorocksTest =
+    nvim:
+    with final;
+    let
+      nvim-wrapped = wrapNeovimUnstable nvim neovimConfig;
+    in
+    neorocksTest {
+      inherit name;
+      src = self;
+      luaPackages =
+        ps: with ps; [
+          nui-nvim
+          sqlite
+        ];
+      neovim = nvim-wrapped;
+    };
 in
 {
   neovim-with-plugin = mkNvimMinimal final.neovim-unwrapped;
+  neovim-test = mkNeorocksTest final.neovim-unwrapped;
 }

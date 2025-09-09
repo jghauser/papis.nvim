@@ -21,6 +21,13 @@ dependencies = {
   "sqlite",
 }
 
+test_dependencies = {
+  "lua >= 5.1, < 5.4",
+  'nui.nvim',
+  "sqlite",
+  'nlua',
+}
+
 source = {
   url = 'git://github.com/jghauser/papis.nvim',
 }
