@@ -250,9 +250,9 @@ local default_config = {
     },
     initial_sort_by_time_added = true,
     picker_keymaps = {
-      ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer in float" },
-      ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete entry" },
-      ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete entry" },
+      ["<CR>"] = { "open_answer", mode = { "n", "i" }, desc = "(Papis Ask) Open answer" },
+      ["d"] = { "delete_answer", mode = "n", desc = "(Papis Ask) Delete answer" },
+      ["<c-d>"] = { "delete_answer", mode = "i", desc = "(Papis Ask) Delete answer" },
     },
     preview_format = {
       { "question", "%s", "PapisPreviewQuestion", "show_key", { fallback = { "󰍉  ", "Question: " } }, "PapisPreviewKey" },
