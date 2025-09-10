@@ -10,7 +10,7 @@ Manage your bibliography from within your favourite editor
 
 <br>
 
-Papis.nvim is a [Neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in neovim and who want quick access to their bibliography from within the comfort of their editor.
+Papis.nvim is a [Neovim](https://github.com/neovim/neovim) companion plugin for the bibliography manager [Papis](https://github.com/papis/papis). It's meant for all those who do academic and other writing in Neovim and who want quick access to their bibliography from within the comfort of their editor.
 
 ![Papis search](https://github.com/user-attachments/assets/106822f4-40a1-4cc1-857a-8bfe7adcc788)
 
@@ -21,7 +21,7 @@ Papis.nvim is a [Neovim](https://github.com/neovim/neovim) companion plugin for 
 - Insert formatted references
 - Use an LLM to ask questions about your library (requires the [Papis-ask](https://github.com/jghauser/papis-ask) plugin)
 
-And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
+And this is just the beginning! With its fast and always up-to-date sqlite database (courtesy of [sqlite.lua](https://github.com/tami5/sqlite.lua)), a host of [additional features](#planned-features-and-improvements) are just waiting to be implemented. My hope is for this plugin to eventually become Neovim's answer to emacs plugins such as [org-ref](https://github.com/jkitchin/org-ref), [helm-bibtex](https://github.com/tmalsburg/helm-bibtex), and [citar](https://github.com/emacs-citar/citar).
 
 This plugin is in beta and breaking changes are expected. Breaking changes are communicated in a pinned issue and commit messages.
 
@@ -131,7 +131,7 @@ With the picker open, the following keymaps become available:
 
 ## The database
 
-All of papis.nvim's features are made possible by a sqlite database that is created when you run `:Papis reload data`. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one neovim instance with a running papis.nvim session exists.
+All of papis.nvim's features are made possible by a sqlite database that is created when you run `:Papis reload data`. This might take a while, so be patient. From then on, the database is automatically (and very quickly) updated whenever `info.yaml` files are added, changed, or deleted. The database is synchronised when papis.nvim is started and is then kept up-to-date continuously while at least one Neovim instance with a running papis.nvim session exists.
 
 Note that fiddling with the plugin's options can leave the database in a messy state. If strange errors appear, use `:Papis reload data` to re-initialise the database.
 
@@ -141,7 +141,7 @@ Note that papis.nvim is only tested with the latest stable version of Neovim. It
 
 To run, papis.nvim requires:
 
-- [`yq`](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
+- [`yq`](https://github.com/mikefarah/yq). This is used to convert `.yaml` files to `.json` (which can then be read by Neovim). Note that papis.nvim doesn't (currently) support the [python yq](https://github.com/kislyuk/yq).
 - `sqlite`. Needed by the `sqlite.lua` dependency.
 
 Optionally, you'll need:
@@ -707,8 +707,8 @@ Papis.nvim defines and links a number of default highlight groups. In order to c
 You can use `:checkhealth papis` for some basic troubleshooting. Make sure to open a file of a type configured in `init_filetypes` before calling `checkhealth`, so that papis.nvim is properly loaded. In addition, you can enable the `debug` module, which exposes the following commands and a log:
 
 - `:Papis debug info`: Get the path to the log file
-- `:Papis debug stop-watchers`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
-- `:Papis debug start-watchers`: Starts file watching for the current neovim instance
+- `:Papis debug stop-watchers`: Stops file watching for the current Neovim instance. Helps if you want to use one particular instance to try things out, but have other Neovim instances open on the system.
+- `:Papis debug start-watchers`: Starts file watching for the current Neovim instance
 
 Please open an issue when you find bugs!
 
