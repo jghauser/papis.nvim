@@ -1,4 +1,4 @@
-*papis.txt*           For NVIM v0.8.0           Last change: 2025 September 09
+*papis.txt*           For NVIM v0.8.0           Last change: 2025 September 10
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -18,7 +18,7 @@ Table of Contents                                    *papis-table-of-contents*
 
 Papis.nvim is a Neovim <https://github.com/neovim/neovim> companion plugin for
 the bibliography manager Papis <https://github.com/papis/papis>. It’s meant
-for all those who do academic and other writing in neovim and who want quick
+for all those who do academic and other writing in Neovim and who want quick
 access to their bibliography from within the comfort of their editor.
 
 - Search your bibliography
@@ -31,7 +31,7 @@ access to their bibliography from within the comfort of their editor.
 And this is just the beginning! With its fast and always up-to-date sqlite
 database (courtesy of sqlite.lua <https://github.com/tami5/sqlite.lua>), a host
 of |papis-additional-features| are just waiting to be implemented. My hope is
-for this plugin to eventually become neovim’s answer to emacs plugins such as
+for this plugin to eventually become Neovim’s answer to emacs plugins such as
 org-ref <https://github.com/jkitchin/org-ref>, helm-bibtex
 <https://github.com/tmalsburg/helm-bibtex>, and citar
 <https://github.com/emacs-citar/citar>.
@@ -163,7 +163,7 @@ created when you run `:Papis reload data`. This might take a while, so be
 patient. From then on, the database is automatically (and very quickly) updated
 whenever `info.yaml` files are added, changed, or deleted. The database is
 synchronised when papis.nvim is started and is then kept up-to-date
-continuously while at least one neovim instance with a running papis.nvim
+continuously while at least one Neovim instance with a running papis.nvim
 session exists.
 
 Note that fiddling with the plugin’s options can leave the database in a
@@ -180,7 +180,7 @@ installation of Papis is required.
 
 To run, papis.nvim requires:
 
-- `yq` <https://github.com/mikefarah/yq>. This is used to convert `.yaml` files to `.json` (which can then be read by neovim). Note that papis.nvim doesn’t (currently) support the python yq <https://github.com/kislyuk/yq>.
+- `yq` <https://github.com/mikefarah/yq>. This is used to convert `.yaml` files to `.json` (which can then be read by Neovim). Note that papis.nvim doesn’t (currently) support the python yq <https://github.com/kislyuk/yq>.
 - `sqlite`. Needed by the `sqlite.lua` dependency.
 
 Optionally, you’ll need:
@@ -752,8 +752,8 @@ open a file of a type configured in `init_filetypes` before calling
 enable the `debug` module, which exposes the following commands and a log:
 
 - `:Papis debug info`: Get the path to the log file
-- `:Papis debug stop-watchers`: Stops file watching for the current neovim instance. Helps if you want to use one particular instance to try things out, but have other neovim instances open on the system.
-- `:Papis debug start-watchers`: Starts file watching for the current neovim instance
+- `:Papis debug stop-watchers`: Stops file watching for the current Neovim instance. Helps if you want to use one particular instance to try things out, but have other Neovim instances open on the system.
+- `:Papis debug start-watchers`: Starts file watching for the current Neovim instance
 
 Please open an issue when you find bugs!
 
