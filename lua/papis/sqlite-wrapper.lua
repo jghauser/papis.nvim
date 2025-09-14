@@ -184,63 +184,71 @@ end
 ---@param old_schema SqliteSchemaDict[] The old schema
 ---@return boolean #True if schema has changed, false otherwise
 local function has_schema_changed(new_schema, old_schema)
-  ---@type string[]
-  local old_schema_okays = sqlite_utils.okeys(old_schema)
-  ---@type string[]
-  local new_schema_okays = sqlite_utils.okeys(new_schema)
-  if not vim.deep_equal(old_schema_okays, new_schema_okays) then
-    log.debug("The table schema has changed")
-    log.debug(string.format("Old schema keys: %s", vim.inspect(old_schema_okays)))
-    log.debug(string.format("New schema keys: %s", vim.inspect(new_schema_okays)))
-    return true
-  else
-    for _, schema_key in pairs(new_schema_okays) do
-      local normalised_value = {}
-      -- this is not the type that is assigned to the key in the schema
-      local new_schema_key = new_schema[schema_key]
-      if type(new_schema_key) == "boolean" then
-        -- this is what `true` corresponds to
-        if type(new_schema_key) == true then
-          normalised_value = { type = "INTEGER", primary = true, required = true }
-        end
-      elseif type(new_schema_key) == "string" then
-        -- exception because 'luatable' is always with small letters
-        if new_schema_key ~= "luatable" then
-          new_schema_key = string.upper(new_schema_key)
-        end
-        normalised_value.type = new_schema_key
-      else
-        for k, v in pairs(new_schema_key) do
-          if k == 1 then
-            local new_schema_type = v
-            -- exception because 'luatable' is always with small letters
-            if new_schema_type ~= "luatable" then
-              new_schema_type = string.upper(new_schema_type)
-            end
-            normalised_value.type = new_schema_type
-          elseif k == "primary" then
-            normalised_value[k] = v
-          elseif k == "required" then
-            normalised_value[k] = v
-          end
-        end
-        if not vim.tbl_get(new_schema_key, "primary") then
-          normalised_value.primary = false
-        end
-        if not vim.tbl_get(new_schema_key, "required") then
-          normalised_value.required = false
-        end
+  ---Normalizes a single schema entry to a consistent format
+  ---@param value any The schema value (boolean, string, or table)
+  ---@return table normalized The normalized schema entry
+  local function normalize_schema_entry(value)
+    local normalized = {
+      type = nil,
+      primary = false,
+      required = false
+    }
+
+    if type(value) == "boolean" then
+      if value == true then
+        normalized.type = "integer"
+        normalized.primary = true
+        normalized.required = true
       end
-      for k, v in pairs(normalised_value) do
-        if old_schema[schema_key][k] ~= v then
-          log.debug("The table schema has changed")
-          log.debug(string.format("Schema key '%s' used to have '%s' defined as '%s' but now it is '%s'", schema_key, k,
-            old_schema[schema_key][k], v))
-          return true
+    elseif type(value) == "string" then
+      -- When value is a string, that string IS the type
+      normalized.type = string.lower(value)
+    elseif type(value) == "table" then
+      -- Handle different table formats
+      for k, v in pairs(value) do
+        if k == 1 then
+          -- Array-style: { "integer", primary = true }
+          normalized.type = string.lower(v)
+        elseif k == "type" then
+          -- Explicit type field: { type = "integer", ... }
+          normalized.type = string.lower(v)
+        elseif k == "primary" then
+          normalized.primary = v
+        elseif k == "required" then
+          normalized.required = v
+          -- Ignore 'unique' and database-specific fields like 'cid', 'reference', 'on_delete', 'on_update'
         end
       end
     end
+
+    return normalized
   end
+
+  ---Normalizes an entire schema table
+  ---@param schema table|nil The schema to normalize
+  ---@return table normalized The normalized schema
+  local function normalize_schema(schema)
+    if not schema then
+      return {}
+    end
+
+    local normalized = {}
+    for key, value in pairs(schema) do
+      normalized[key] = normalize_schema_entry(value)
+    end
+    return normalized
+  end
+
+  local normalized_new = normalize_schema(new_schema)
+  local normalized_old = normalize_schema(old_schema)
+
+  if not vim.deep_equal(normalized_new, normalized_old) then
+    log.debug("The table schema has changed")
+    log.debug(string.format("Normalized old schema: %s", vim.inspect(normalized_old)))
+    log.debug(string.format("Normalized new schema: %s", vim.inspect(normalized_new)))
+    return true
+  end
+
   return false
 end
 
