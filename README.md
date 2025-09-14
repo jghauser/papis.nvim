@@ -645,6 +645,8 @@ enable_icons = true,
 },
 ```
 
+</details>
+
 To use the blink.cmp source, you need to add it to the list of default sources:
 
 ```lua
@@ -667,8 +669,6 @@ require("cmp").setup({
   })
 })
 ```
-
-</details>
 
 ## Usage
 
