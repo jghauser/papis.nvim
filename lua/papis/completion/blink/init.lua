@@ -36,19 +36,12 @@ function M:get_completions(_, callback)
   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
 
   -- check if we're just after a `-` that is preceded by nothing but whitespace
+  -- if so advance by one whitespace
   local before = (vim.api.nvim_buf_get_text(0, row - 1, 0, row - 1, col, {})[1]) or ""
-  if not before:match("^%s*-$") then
-    return callback({
-      items = {},
-      is_incomplete_backward = false,
-      is_incomplete_forward = false,
-    })
+  if before:match("^%s*-$") then
+    vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { " " })
+    vim.api.nvim_win_set_cursor(0, { row, col + 1 })
   end
-
-  -- jump forward a space
-  vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { " " })
-  vim.api.nvim_win_set_cursor(0, { row, col + 1 })
-  col = col + 1
 
   log.debug("Running blink completion")
   callback({
