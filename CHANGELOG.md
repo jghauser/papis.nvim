@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/jghauser/papis.nvim/compare/v0.9.0...v0.9.1) (2025-10-12)
+
+
+### Bug Fixes
+
+* **sqlite-wrapper:** properly normalise schemas before checking ([70a5b65](https://github.com/jghauser/papis.nvim/commit/70a5b653e7aa2127e6ef2e46f96502ed9aba4d5f)), closes [#98](https://github.com/jghauser/papis.nvim/issues/98)
+
 ## [0.9.0](https://github.com/jghauser/papis.nvim/compare/v0.8.0...v0.9.0) (2025-09-08)
 
 
