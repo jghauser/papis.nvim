@@ -1,5 +1,10 @@
 name: panvimdoc
-on: [push]
+on:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - .github/workflows/panvimdoc.yml
 jobs:
   docs:
     runs-on: ubuntu-latest
