@@ -70,7 +70,7 @@ This module is enabled by default.
 
 ![at-cursor](https://github.com/user-attachments/assets/c9980e66-f082-4400-93c1-f87583585030)
 
-When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim allows you to interact with the bibliography item referenced by it.
+When the cursor is positioned over a citation key (e.g. `Kant1781Critique`), papis.nvim automatically shows a popup with information about the item and allows interacting with it in various ways.
 
 This module is enabled by default.
 
@@ -507,6 +507,16 @@ enable_icons = true,
     { "year",  "%s", "PapisPopupYear" },
     { "title", "%s", "PapisPopupTitle" },
   },
+
+  -- Configuration of the popup that automatically appears when the cursor is on a `ref` in normal mode
+    auto_popup = {
+
+      -- Whether to automatically show the popup
+      enable = true,
+
+      -- The delay (in ms) after which to show the popup after the cursor has been moved to it
+      delay = 1000,
+    }
 },
 
 -- Configuration of formatter module.

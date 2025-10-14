@@ -197,6 +197,10 @@ local default_config = {
       { "year",  "%s", "PapisPopupYear" },
       { "title", "%s", "PapisPopupTitle" },
     },
+    auto_popup = {
+      enable = true,
+      delay = 1000,
+    }
   },
   ["search"] = {
     enable = true,

@@ -12,6 +12,7 @@ local nuiEvent = require("nui.utils.autocmd").event
 local log = require("papis.log")
 local config = require("papis.config")
 local popup_format = config["at-cursor"].popup_format
+local auto_popup = config["at-cursor"].auto_popup
 local utils = require("papis.utils")
 local commands = require("papis.commands")
 local keymaps = require("papis.keymaps")
@@ -74,7 +75,8 @@ end
 ---@param fun function The function to be run with the papis_id
 ---@param self? table Self argument to be passed to fun
 ---@param type? "note"|"info" Type argument to be passed to fun
-local function if_ref_valid_run_fun(fun, self, type)
+---@param dont_notify? boolean If true, don't notify the user if no valid ref is found
+local function if_ref_valid_run_fun(fun, self, type, dont_notify)
   local ref = get_ref_under_cursor()
   local entry = db.data:get({ ref = ref }, { "papis_id" })
   if not vim.tbl_isempty(entry) then
@@ -84,7 +86,7 @@ local function if_ref_valid_run_fun(fun, self, type)
     else
       fun(papis_id, type)
     end
-  else
+  elseif dont_notify ~= true then
     vim.notify(string.format("No entry in database corresponds to '%s'", ref), vim.log.levels.WARN)
   end
 end
@@ -108,9 +110,10 @@ local function create_hover_popup(papis_id)
   })
 
   local bufnr = vim.api.nvim_get_current_buf()
-  nuiAutocmd.buf.define(bufnr, { nuiEvent.BufLeave, nuiEvent.CursorMoved, nuiEvent.BufWinLeave }, function()
-    popup:unmount()
-  end, { once = true })
+  nuiAutocmd.buf.define(bufnr, { nuiEvent.BufLeave, nuiEvent.CursorMoved, nuiEvent.BufWinLeave, nuiEvent.InsertEnter },
+    function()
+      popup:unmount()
+    end, { once = true })
 
   -- mount/open the component
   popup:mount()
@@ -118,6 +121,36 @@ local function create_hover_popup(papis_id)
   for line_nr, line in ipairs(popup_lines) do
     line:render(popup.bufnr, -1, line_nr)
   end
+end
+
+-- Auto-popup state management
+local auto_popup_timer = nil
+
+---Sets up auto-popup timer
+local function setup_auto_popup_timer()
+  if auto_popup_timer then
+    auto_popup_timer:stop()
+    auto_popup_timer:close()
+  end
+
+  auto_popup_timer = vim.uv.new_timer()
+  assert(auto_popup_timer, "Failed to create libuv timer")
+  auto_popup_timer:start(auto_popup.delay, 0, vim.schedule_wrap(function()
+    if_ref_valid_run_fun(create_hover_popup, nil, nil, true)
+    auto_popup_timer = nil
+  end))
+end
+
+---Sets up auto-popup autocmds
+local function setup_auto_popup()
+  -- Set up autocmd for auto-popup
+  local group = vim.api.nvim_create_augroup("PapisAtCursorAutoPopup", { clear = true })
+
+  vim.api.nvim_create_autocmd("CursorMoved", {
+    group = group,
+    callback = setup_auto_popup_timer,
+    desc = "Handle cursor movement for Papis auto-popup",
+  })
 end
 
 ---@type PapisSubcommandTable
@@ -194,6 +227,9 @@ function M.setup()
   log.debug("Setting up at-cursor")
   commands:add_commands(module_subcommands)
   keymaps:add_keymaps(module_keymaps)
+  if auto_popup.enable then
+    setup_auto_popup()
+  end
 end
 
 return M
