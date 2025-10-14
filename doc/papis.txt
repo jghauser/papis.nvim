@@ -1,4 +1,4 @@
-*papis.txt*            For NVIM v0.8.0            Last change: 2025 October 13
+*papis.txt*            For NVIM v0.8.0            Last change: 2025 October 14
 
 ==============================================================================
 Table of Contents                                    *papis-table-of-contents*
@@ -91,7 +91,8 @@ This module is enabled by default.
 AT-CURSOR MODULE ~
 
 When the cursor is positioned over a citation key (e.g. `Kant1781Critique`),
-papis.nvim allows you to interact with the bibliography item referenced by it.
+papis.nvim automatically shows a popup with information about the item and
+allows interacting with it in various ways.
 
 This module is enabled by default.
 
@@ -544,6 +545,16 @@ All configuration options (with defaults) ~
         { "year",  "%s", "PapisPopupYear" },
         { "title", "%s", "PapisPopupTitle" },
       },
+    
+      -- Configuration of the popup that automatically appears when the cursor is on a `ref` in normal mode
+        auto_popup = {
+    
+          -- Whether to automatically show the popup
+          enable = true,
+    
+          -- The delay (in ms) after which to show the popup after the cursor has been moved to it
+          delay = 1000,
+        }
     },
     
     -- Configuration of formatter module.
