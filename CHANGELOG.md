@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.9.2](https://github.com/jghauser/papis.nvim/compare/v0.9.1...v0.9.2) (2025-10-24)
+
+
+### Features
+
+* **at-cursor:** automatically show popup after delay ([ac7831d](https://github.com/jghauser/papis.nvim/commit/ac7831d35ceb700bd6b47380aeb53318c42055bd))
+
+
+### Bug Fixes
+
+* **utils:** wait for db to get info about notes file ([1fd7833](https://github.com/jghauser/papis.nvim/commit/1fd7833a460adb86f370c6ed3f4befc8ecbdad2d))
+
 ## [0.9.1](https://github.com/jghauser/papis.nvim/compare/v0.9.0...v0.9.1) (2025-10-12)
 
 
