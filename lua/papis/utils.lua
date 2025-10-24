@@ -180,23 +180,33 @@ function M:do_open_text_file(papis_id, type)
 
         local entry_has_note = uv.new_timer()
         assert(entry_has_note, "Failed to create libuv timer")
-        local file_opened = false
+        local max_retries = 20
+        local retry_count = 0
+
         entry_has_note:start(
           0,
           5,
           vim.schedule_wrap(function()
             entry = db.data:get({ papis_id = papis_id })[1]
-            if entry.notes and not file_opened then
-              local formatter_enabled = vim.tbl_contains(config.enabled_modules, "formatter")
-              if formatter_enabled then
-                require("papis.formatter").format_entire_file(entry)
+
+            if not entry or not entry.notes then
+              retry_count = retry_count + 1
+              if retry_count >= max_retries then
+                log.warn("Maximum retries reached waiting for notes file to be indexed")
+                entry_has_note:stop()
+                entry_has_note:close()
               end
-              log.debug("Opening newly created notes file")
-              self:do_open_text_file(papis_id, type)
-              file_opened = true
-              entry_has_note:stop()
-              entry_has_note:close()
+              return -- Continue waiting
             end
+
+            local formatter_enabled = vim.tbl_contains(config.enabled_modules, "formatter")
+            if formatter_enabled then
+              require("papis.formatter").format_entire_file(entry)
+            end
+            log.debug("Opening newly created notes file")
+            self:do_open_text_file(papis_id, type)
+            entry_has_note:stop()
+            entry_has_note:close()
           end)
         )
       else
