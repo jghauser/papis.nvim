@@ -183,32 +183,30 @@ function M:do_open_text_file(papis_id, type)
         local max_retries = 20
         local retry_count = 0
 
-        entry_has_note:start(
-          0,
-          5,
-          vim.schedule_wrap(function()
-            entry = db.data:get({ papis_id = papis_id })[1]
+        local function check_for_notes()
+          entry = db.data:get({ papis_id = papis_id })[1]
 
-            if not entry or not entry.notes then
-              retry_count = retry_count + 1
-              if retry_count >= max_retries then
-                log.warn("Maximum retries reached waiting for notes file to be indexed")
-                entry_has_note:stop()
-                entry_has_note:close()
-              end
-              return -- Continue waiting
+          if not entry or not entry.notes then
+            retry_count = retry_count + 1
+            if retry_count >= max_retries then
+              log.warn("Maximum retries reached waiting for notes file to be indexed")
+              entry_has_note:close()
+              return
             end
+            entry_has_note:start(5, 0, vim.schedule_wrap(check_for_notes))
+            return
+          end
 
-            local formatter_enabled = vim.tbl_contains(config.enabled_modules, "formatter")
-            if formatter_enabled then
-              require("papis.formatter").format_entire_file(entry)
-            end
-            log.debug("Opening newly created notes file")
-            self:do_open_text_file(papis_id, type)
-            entry_has_note:stop()
-            entry_has_note:close()
-          end)
-        )
+          entry_has_note:close()
+          local formatter_enabled = vim.tbl_contains(config.enabled_modules, "formatter")
+          if formatter_enabled then
+            require("papis.formatter").format_entire_file(entry)
+          end
+          log.debug("Opening newly created notes file")
+          self:do_open_text_file(papis_id, type)
+        end
+
+        entry_has_note:start(0, 0, vim.schedule_wrap(check_for_notes))
       else
       end
     end
