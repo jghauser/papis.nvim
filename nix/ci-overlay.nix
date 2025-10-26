@@ -7,11 +7,10 @@ let
   neovimConfig = final.neovimUtils.makeNeovimConfig {
     withPython3 = false;
     viAlias = true;
-    extraLuaPackages = luaPkgs: [
-      luaPkgs.papis-nvim
-    ];
     vimAlias = true;
     plugins = with final.vimPlugins; [
+      papis-nvim
+
       # Completion engines
       nvim-cmp
       blink-cmp

@@ -79,7 +79,7 @@
 
           packages = rec {
             default = papis-nvim;
-            inherit (pkgs.luajitPackages) papis-nvim;
+            inherit (pkgs.vimPlugins) papis-nvim;
             inherit (pkgs) neovim-with-plugin;
           };
 

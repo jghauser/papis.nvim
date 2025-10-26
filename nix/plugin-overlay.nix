@@ -46,9 +46,7 @@ in
 
   vimPlugins = prev.vimPlugins // {
     papis-nvim = final.neovimUtils.buildNeovimPlugin {
-      pname = name;
-      src = self;
-      version = "dev";
+      luaAttr = luajitPackages.papis-nvim;
     };
   };
 }
