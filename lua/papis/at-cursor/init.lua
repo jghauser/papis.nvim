@@ -136,7 +136,10 @@ local function setup_auto_popup_timer()
   auto_popup_timer = vim.uv.new_timer()
   assert(auto_popup_timer, "Failed to create libuv timer")
   auto_popup_timer:start(auto_popup.delay, 0, vim.schedule_wrap(function()
-    if_ref_valid_run_fun(create_hover_popup, nil, nil, true)
+    local current_mode = vim.api.nvim_get_mode().mode
+    if current_mode ~= 'i' and current_mode ~= 'ic' and current_mode ~= 'ix' then
+      if_ref_valid_run_fun(create_hover_popup, nil, nil, true)
+    end
     auto_popup_timer = nil
   end))
 end
