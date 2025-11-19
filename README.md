@@ -724,7 +724,7 @@ Please open an issue when you find bugs!
 
 ### Failing to populate the database
 
-Papis.nvim reads all `info.yaml` files to create its sqlite database. A common problem occurs when the Papis library contains faults that papis.nvim cannot deal with. This will lead to errors like:
+Papis.nvim reads all `info.yaml` files to create its sqlite database. A common problem occurs when the Papis library contains faults that papis.nvim cannot deal with. This will lead to errors like
 
 <details>
 
@@ -761,6 +761,8 @@ stack traceback:
 
 </details
 
+or
+
 <details>
 
 <summary>Error from #143 </summary>
@@ -780,7 +782,6 @@ stack traceback:
 	...mbo/.local/share/nvim/lazy/papis.nvim/lua/papis/data.lua:112: in function 'reset_db'
 	....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:24: in function 'impl'
 	....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:56: in function <....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:45>
-
 ```
 
 </details
