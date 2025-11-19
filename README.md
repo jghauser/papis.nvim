@@ -722,6 +722,74 @@ You can use `:checkhealth papis` for some basic troubleshooting. Make sure to op
 
 Please open an issue when you find bugs!
 
+### Failing to populate the database
+
+Papis.nvim reads all `info.yaml` files to create its sqlite database. A common problem occurs when the Papis library contains faults that papis.nvim cannot deal with. This will lead to errors like:
+
+<details>
+
+<summary>Error from #147 </summary>
+
+```
+Error detected while processing BufReadPost Autocommands for "*":
+Error executing lua callback: /usr/share/nvim/runtime/filetype.lua:36: BufReadPost Autocommands for "*"..FileType Autocommands for "tex": Vim(append):Error
+executing lua callback: ...nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/stmt.lua:57: sqlite.lua: couldn't finalize statement, ERRMSG: UNIQUE constraint f
+ailed: data.ref stmt = (insert into data (author, author_list, files, journal, papis_id, ref, time_added, title, type, volume, year) values(:author, :author
+_list, :files, :journal, :papis_id, :ref, :time_added, :title, :type, :volume, :year))
+stack traceback:
+        [C]: in function 'assert'
+        ...nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/stmt.lua:57: in function 'finalize'
+        ...e/nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/db.lua:465: in function 'fn'
+        ...nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/defs.lua:666: in function 'wrap_stmts'
+        ...e/nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/db.lua:459: in function 'insert'
+        .../nvim/site/pack/paks/start/sqlite.lua/lua/sqlite/tbl.lua:380: in function 'insert'
+        .../nvim/site/pack/paks/start/papis.nvim/lua/papis/data.lua:34: in function 'update_main_tbls'
+        .../nvim/site/pack/paks/start/papis.nvim/lua/papis/data.lua:84: in function 'sync_storage_data'
+        .../nvim/site/pack/paks/start/papis.nvim/lua/papis/data.lua:118: in function 'sync_db'
+        .../nvim/site/pack/paks/start/papis.nvim/lua/papis/init.lua:119: in function 'start'
+        .../nvim/site/pack/paks/start/papis.nvim/lua/papis/init.lua:20: in function <.../nvim/site/pack/paks/start/papis.nvim/lua/papis/init.lua:18>
+        [C]: in function 'nvim_cmd'
+        /usr/share/nvim/runtime/filetype.lua:36: in function </usr/share/nvim/runtime/filetype.lua:35>
+        [C]: in function 'pcall'
+        vim/shared.lua: in function <vim/shared.lua:0>
+        [C]: in function '_with'
+        /usr/share/nvim/runtime/filetype.lua:35: in function </usr/share/nvim/runtime/filetype.lua:10>
+stack traceback:
+        [C]: in function '_with'
+        /usr/share/nvim/runtime/filetype.lua:35: in function </usr/share/nvim/runtime/filetype.lua:10>
+```
+
+</details
+
+<details>
+
+<summary>Error from #143 </summary>
+
+```
+Error executing Lua callback: ...bo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/stmt.lua:35: sqlite.lua: sql statement parse, , stmt: `insert into data (author, author_list, files, journal, papis_id, ref, title, type, volume, year) values(:author, :author_list, :files, :journal, :papis_id, :ref, :title, :type, 28(1), :year)`, err: `(`near "(": syntax error`)`
+stack traceback:
+	[C]: in function 'assert'
+	...bo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/stmt.lua:35: in function 'parse'
+	...ambo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/db.lua:461: in function 'fn'
+	...bo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/defs.lua:666: in function 'wrap_stmts'
+	...ambo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/db.lua:459: in function 'insert'
+	...mbo/.local/share/nvim/lazy/sqlite.lua/lua/sqlite/tbl.lua:380: in function 'insert'
+	...mbo/.local/share/nvim/lazy/papis.nvim/lua/papis/data.lua:34: in function 'update_main_tbls'
+	...mbo/.local/share/nvim/lazy/papis.nvim/lua/papis/data.lua:84: in function 'sync_storage_data'
+	...mbo/.local/share/nvim/lazy/papis.nvim/lua/papis/data.lua:118: in function 'sync_db'
+	...mbo/.local/share/nvim/lazy/papis.nvim/lua/papis/data.lua:112: in function 'reset_db'
+	....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:24: in function 'impl'
+	....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:56: in function <....local/share/nvim/lazy/papis.nvim/lua/papis/commands.lua:45>
+
+```
+
+</details
+
+When this happens, there are two courses of action:
+
+1. Run `papis doctor` and fix all errors reported by it. This will usually allow papis.nvim to populate the database.
+2. Run papis.nvim with the debug module enabled. Just before crashing, papis.nvim will log a message that indicates the document at which the error occurred. You can then take a look at this document to see what might be odd. The error message often contains hints about possible causes: in #143 the problem was with a `28(1)` string and in #147 a duplicate `ref` violated the `UNIQUE` database schema constraint.
+
 ## Contributing
 
 I'm more than happy about any contributions, ideas for improvements, ideas for new features, bug reports, and so on. If you have a cool idea for a new functionality you want to implement, I'd be happy to guide you through the process of creating a new module.
