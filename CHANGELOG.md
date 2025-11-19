@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2](https://github.com/jghauser/papis.nvim/compare/v0.9.1...v0.9.2) (2025-11-19)
+
+
+### Features
+
+* **at-cursor:** automatically show popup after delay ([ac7831d](https://github.com/jghauser/papis.nvim/commit/ac7831d35ceb700bd6b47380aeb53318c42055bd))
+
+
+### Bug Fixes
+
+* **at-cursor:** don't show popup in insert mode ([4bd9e19](https://github.com/jghauser/papis.nvim/commit/4bd9e199bbae70484c1d05b520f0533ed87a5450))
+* **utils:** fix retry logic when creating new note ([1457f1f](https://github.com/jghauser/papis.nvim/commit/1457f1f891b059a69b5cda64d2528ab907c2deb2))
+* **utils:** wait for db to get info about notes file ([1fd7833](https://github.com/jghauser/papis.nvim/commit/1fd7833a460adb86f370c6ed3f4befc8ecbdad2d))
+
 ## [0.9.1](https://github.com/jghauser/papis.nvim/compare/v0.9.0...v0.9.1) (2025-10-12)
 
 
