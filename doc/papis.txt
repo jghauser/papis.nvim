@@ -773,7 +773,7 @@ FAILING TO POPULATE THE DATABASE ~
 
 Papis.nvim reads all `info.yaml` files to create its sqlite database. A common
 problem occurs when the Papis library contains faults that papis.nvim cannot
-deal with. This will lead to errors like:
+deal with. This will lead to errors like
 
 Error from #147 ~
 
